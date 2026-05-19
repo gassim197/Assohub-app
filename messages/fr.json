@@ -48,10 +48,17 @@
   },
   "dashboard": {
     "welcome": "Bienvenue",
+    "home": "Tableau de bord",
     "members": "Membres",
     "cotisations": "Cotisations",
     "meetings": "Réunions",
-    "reports": "Rapports"
+    "reports": "Rapports",
+    "settings": "Paramètres",
+    "underConstruction": "Module en construction",
+    "underConstructionDesc": "Ce module sera disponible prochainement.",
+    "emptyTitle": "Bienvenue dans AssoHub",
+    "emptySubtitle": "Votre espace est prêt. Commencez par inviter les membres de votre organisation.",
+    "ctaInvite": "Inviter votre premier membre"
   },
   "members": {
     "title": "Membres",

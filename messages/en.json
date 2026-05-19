@@ -48,10 +48,17 @@
   },
   "dashboard": {
     "welcome": "Welcome",
+    "home": "Dashboard",
     "members": "Members",
     "cotisations": "Contributions",
     "meetings": "Meetings",
-    "reports": "Reports"
+    "reports": "Reports",
+    "settings": "Settings",
+    "underConstruction": "Module under construction",
+    "underConstructionDesc": "This module will be available soon.",
+    "emptyTitle": "Welcome to AssoHub",
+    "emptySubtitle": "Your space is ready. Start by inviting your organization's members.",
+    "ctaInvite": "Invite your first member"
   },
   "members": {
     "title": "Members",
