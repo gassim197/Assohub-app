@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "confirm": "Confirmer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "import": "Importer",
+    "actions": "Actions",
+    "noResults": "Aucun résultat"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signUp": "Créer un compte",
+    "email": "Adresse email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "emailAlreadyUsed": "Cette adresse email est déjà utilisée. Voulez-vous vous connecter ?",
+    "invalidCredentials": "Email ou mot de passe incorrect."
+  },
+  "dashboard": {
+    "welcome": "Bienvenue",
+    "members": "Membres",
+    "cotisations": "Cotisations",
+    "meetings": "Réunions",
+    "reports": "Rapports"
+  },
+  "members": {
+    "title": "Membres",
+    "invite": "Inviter un membre",
+    "newMember": "Nouveau membre",
+    "empty": "Invitez votre premier membre pour commencer.",
+    "search": "Rechercher un membre…",
+    "status": {
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "resigned": "Démissionné"
+    }
+  },
+  "cotisations": {
+    "title": "Cotisations",
+    "collect": "Encaisser",
+    "empty": "Aucune cotisation enregistrée pour le moment.",
+    "status": {
+      "paid": "Payé",
+      "pending": "En attente",
+      "late": "En retard"
+    },
+    "paymentMethod": {
+      "cash": "Espèces",
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtnMomo": "MTN MoMo",
+      "transfer": "Virement",
+      "other": "Autre"
+    }
+  },
+  "meetings": {
+    "title": "Réunions",
+    "schedule": "Planifier une réunion",
+    "upcoming": "Prochaines réunions",
+    "past": "Réunions passées",
+    "empty": "Aucune réunion planifiée.",
+    "minutes": {
+      "draft": "Brouillon",
+      "published": "Publié",
+      "validated": "Validé"
+    }
+  },
+  "reports": {
+    "title": "Rapports",
+    "revenue": "Revenus",
+    "expenses": "Dépenses",
+    "balance": "Solde net",
+    "last30Days": "30 derniers jours",
+    "thisYear": "Cette année",
+    "custom": "Personnalisé"
+  }
+}

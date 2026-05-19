@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "actions": "Actions",
+    "noResults": "No results"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signUp": "Create account",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "emailAlreadyUsed": "This email address is already in use. Would you like to sign in?",
+    "invalidCredentials": "Incorrect email or password."
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "members": "Members",
+    "cotisations": "Contributions",
+    "meetings": "Meetings",
+    "reports": "Reports"
+  },
+  "members": {
+    "title": "Members",
+    "invite": "Invite a member",
+    "newMember": "New member",
+    "empty": "Invite your first member to get started.",
+    "search": "Search a member…",
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "resigned": "Resigned"
+    }
+  },
+  "cotisations": {
+    "title": "Contributions",
+    "collect": "Collect",
+    "empty": "No contributions recorded yet.",
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "late": "Late"
+    },
+    "paymentMethod": {
+      "cash": "Cash",
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtnMomo": "MTN MoMo",
+      "transfer": "Bank transfer",
+      "other": "Other"
+    }
+  },
+  "meetings": {
+    "title": "Meetings",
+    "schedule": "Schedule a meeting",
+    "upcoming": "Upcoming meetings",
+    "past": "Past meetings",
+    "empty": "No meetings scheduled.",
+    "minutes": {
+      "draft": "Draft",
+      "published": "Published",
+      "validated": "Validated"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "revenue": "Revenue",
+    "expenses": "Expenses",
+    "balance": "Net balance",
+    "last30Days": "Last 30 days",
+    "thisYear": "This year",
+    "custom": "Custom"
+  }
+}
