@@ -19,10 +19,11 @@ export default async function DashboardHomePage({
       </div>
       <h1 className="text-3xl font-bold">{t("emptyTitle")}</h1>
       <p className="mt-3 text-muted-foreground max-w-sm">{t("emptySubtitle")}</p>
-      <Button asChild className="mt-8">
-        <Link href={`/${orgSlug}/members?new=true`}>
-          {t("ctaInvite")}
-        </Link>
+      <Button
+        render={<Link href={`/${orgSlug}/members?new=true`} />}
+        className="mt-8"
+      >
+        {t("ctaInvite")}
       </Button>
     </div>
   );

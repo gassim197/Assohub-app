@@ -95,11 +95,9 @@ export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
             <span className="flex-1 truncate text-left">{userName}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" className="w-48">
-            <DropdownMenuItem asChild>
-              <Link href={`/${orgSlug}/settings`}>
-                <Settings className="size-4" />
-                {t("settings")}
-              </Link>
+            <DropdownMenuItem render={<Link href={`/${orgSlug}/settings`} />}>
+              <Settings className="size-4" />
+              {t("settings")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

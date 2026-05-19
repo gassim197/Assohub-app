@@ -79,7 +79,13 @@ function FormLabel({ className, ...props }: React.ComponentProps<"label">) {
   );
 }
 
-function FormControl({ children }: { children: React.ReactElement }) {
+type FormControlProps = {
+  id?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+};
+
+function FormControl({ children }: { children: React.ReactElement<FormControlProps> }) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
   return React.cloneElement(children, {

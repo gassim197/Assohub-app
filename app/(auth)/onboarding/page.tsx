@@ -8,6 +8,17 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { organization } from "@/lib/auth/client";
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +74,7 @@ export default function OnboardingPage() {
     setServerError(null);
     const result = await organization.create({
       name: values.name,
+      slug: slugify(values.name),
       metadata: { type: values.type },
     });
     if (result.error) {
