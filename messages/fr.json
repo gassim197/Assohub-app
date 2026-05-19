@@ -18,11 +18,33 @@
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
     "signUp": "Créer un compte",
+    "createAccount": "Créer votre compte",
     "email": "Adresse email",
     "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "passwordRules": "8 caractères minimum, 1 majuscule, 1 chiffre",
     "forgotPassword": "Mot de passe oublié ?",
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "noAccount": "Pas encore de compte ?",
     "emailAlreadyUsed": "Cette adresse email est déjà utilisée. Voulez-vous vous connecter ?",
-    "invalidCredentials": "Email ou mot de passe incorrect."
+    "invalidCredentials": "Email ou mot de passe incorrect.",
+    "genericError": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "onboarding": {
+    "title": "Créez votre organisation",
+    "subtitle": "Vous pourrez inviter vos collaborateurs une fois l'espace créé.",
+    "orgName": "Nom de l'organisation",
+    "orgType": "Type d'organisation",
+    "orgTypePlaceholder": "Choisir un type",
+    "orgTypes": {
+      "student": "Association étudiante",
+      "ngo": "ONG locale",
+      "community": "Organisation communautaire",
+      "network": "Réseau ou collectif",
+      "other": "Autre"
+    },
+    "submit": "Créer l'organisation",
+    "creating": "Création en cours…"
   },
   "dashboard": {
     "welcome": "Bienvenue",

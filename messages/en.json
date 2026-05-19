@@ -18,11 +18,33 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signUp": "Create account",
+    "createAccount": "Create your account",
     "email": "Email address",
     "password": "Password",
+    "fullName": "Full name",
+    "passwordRules": "At least 8 characters, 1 uppercase, 1 number",
     "forgotPassword": "Forgot password?",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
     "emailAlreadyUsed": "This email address is already in use. Would you like to sign in?",
-    "invalidCredentials": "Incorrect email or password."
+    "invalidCredentials": "Incorrect email or password.",
+    "genericError": "An error occurred. Please try again."
+  },
+  "onboarding": {
+    "title": "Create your organization",
+    "subtitle": "You'll be able to invite collaborators once your space is ready.",
+    "orgName": "Organization name",
+    "orgType": "Organization type",
+    "orgTypePlaceholder": "Select a type",
+    "orgTypes": {
+      "student": "Student association",
+      "ngo": "Local NGO",
+      "community": "Community organization",
+      "network": "Network or collective",
+      "other": "Other"
+    },
+    "submit": "Create organization",
+    "creating": "Creating…"
   },
   "dashboard": {
     "welcome": "Welcome",
