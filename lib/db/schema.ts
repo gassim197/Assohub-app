@@ -1,4 +1,7 @@
-// Tables définies ici au fur et à mesure des modules.
-// Chaque table aura : id (cuid2), created_at, updated_at, deleted_at, organization_id.
+// Point d'entrée unique du schéma Drizzle.
+// Drizzle Kit lit ce fichier pour générer toutes les migrations.
 
-export {};
+export * from "./auth-schema";
+
+// Les tables métier (members, cotisations, meetings, transactions…)
+// seront ajoutées ici au fur et à mesure des modules.
