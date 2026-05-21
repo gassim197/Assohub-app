@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -62,7 +61,6 @@ export default function LoginPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">{t("auth.signIn")}</CardTitle>
-        <CardDescription>AssoHub</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

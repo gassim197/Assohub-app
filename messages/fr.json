@@ -15,6 +15,7 @@
     "noResults": "Aucun résultat"
   },
   "auth": {
+    "tagline": "L'infrastructure numérique des organisations africaines.",
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
     "signUp": "Créer un compte",
