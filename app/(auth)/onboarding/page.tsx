@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,6 @@ function slugify(text: string): string {
 }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -107,18 +106,20 @@ export default function OnboardingPage() {
               )}
             />
 
-            <Controller
+            <FormField
               control={form.control}
               name="type"
-              render={({ field, fieldState }) => (
-                <div className="space-y-2">
-                  <Label htmlFor="org-type">{t("onboarding.orgType")}</Label>
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("onboarding.orgType")}</FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="org-type" className="w-full">
-                      <SelectValue
-                        placeholder={t("onboarding.orgTypePlaceholder")}
-                      />
-                    </SelectTrigger>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder={t("onboarding.orgTypePlaceholder")}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
                     <SelectContent>
                       {ORG_TYPES.map((type) => (
                         <SelectItem key={type} value={type}>
@@ -127,12 +128,8 @@ export default function OnboardingPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  {fieldState.error && (
-                    <p className="text-destructive text-sm font-medium">
-                      {fieldState.error.message}
-                    </p>
-                  )}
-                </div>
+                  <FormMessage />
+                </FormItem>
               )}
             />
 
