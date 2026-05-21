@@ -6,13 +6,14 @@
 
 | Token | CSS var | Valeur | Hex |
 |---|---|---|---|
-| Navy | `--sidebar`, `--foreground` | `oklch(0.208 0.042 266)` | `#0F172A` |
-| Emerald | `--primary`, `--brand`, `--ring` | `oklch(0.696 0.17 162.5)` | `#10B981` |
+| Navy (sidebar) | `--sidebar` | `oklch(0.208 0.042 266)` | `#0F172A` |
+| Texte principal | `--foreground` | `oklch(0.145 0.018 266)` | near-black |
+| Emerald (accent) | `--primary`, `--brand`, `--ring` | `oklch(0.696 0.17 162.5)` | `#10B981` |
 | Emerald subtle | `--brand-subtle` | `oklch(0.979 0.021 166.1)` | emerald-50 |
 
 - **Primary** (emerald) = CTAs, boutons principaux, anneaux de focus, états actifs.
-- **Navy** = fond sidebar (`--sidebar`), ton dominant du texte (`--foreground`).
-- Les deux ne doivent pas se confondre visuellement — maintenir la hiérarchie navy/emerald.
+- **Navy** = fond sidebar (`--sidebar`). Le `--foreground` est volontairement plus sombre que la navy pour garantir le contraste du texte sur fond clair.
+- Navy et emerald ne doivent pas se confondre visuellement — maintenir la hiérarchie navy/emerald.
 
 ### 9.2 Typographie
 
@@ -52,3 +53,13 @@
 
 Page `/style-guide` — affiche tous les tokens, composants, et le logo aux tailles 16→96px.
 Accessible en dev sans authentification.
+
+### 9.6 Routage racine
+
+La route `/` est un Server Component pur (`app/page.tsx`) qui exécute une redirection intelligente basée sur l'état d'authentification — pas de landing marketing en V1 :
+
+- Pas de session → `/login`
+- Session sans organisation → `/onboarding`
+- Session avec organisation → `/<orgSlug>` (organisation active si `session.activeOrganizationId` est défini, sinon la première de la liste retournée par `auth.api.listOrganizations`)
+
+En cas d'erreur lors de la résolution de la session (session corrompue, base indisponible), fallback vers `/login`.
