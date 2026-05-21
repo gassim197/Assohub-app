@@ -23,6 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Logo } from "@/components/ui/logo";
 
 const NAV_ITEMS = [
   { key: "home", icon: LayoutDashboard, path: "" },
@@ -50,10 +51,12 @@ export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
   }
 
   return (
-    <aside className="flex h-screen w-56 flex-col bg-[#0F172A] text-slate-100">
+    <aside className="flex h-screen w-56 flex-col bg-sidebar text-sidebar-foreground">
       {/* Logo */}
-      <div className="flex h-14 items-center px-4 border-b border-white/10">
-        <span className="text-lg font-bold tracking-tight">AssoHub</span>
+      <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
+        <Link href={`/${orgSlug}`} className="outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-sm">
+          <Logo variant="full" scheme="dark" />
+        </Link>
       </div>
 
       {/* Nav */}
@@ -72,8 +75,8 @@ export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
               className={cn(
                 "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-white/10 text-white border-l-2 border-white pl-[10px]"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white",
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-sidebar-primary pl-[10px]"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
               )}
             >
               <Icon className="size-4 shrink-0" />
@@ -84,11 +87,11 @@ export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
       </nav>
 
       {/* User menu */}
-      <div className="border-t border-white/10 p-2">
+      <div className="border-t border-sidebar-border p-2">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors outline-none">
+          <DropdownMenuTrigger className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
             <Avatar size="sm">
-              <AvatarFallback className="bg-white/10 text-slate-100 text-xs">
+              <AvatarFallback className="bg-sidebar-accent text-sidebar-accent-foreground text-xs">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
