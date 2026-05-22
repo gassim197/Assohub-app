@@ -8,6 +8,13 @@
       "when": 1779200027478,
       "tag": "0000_blushing_thing",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779453269479,
+      "tag": "0001_bored_kulan_gath",
+      "breakpoints": true
     }
   ]
 }
