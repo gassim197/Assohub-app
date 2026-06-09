@@ -63,14 +63,50 @@
   },
   "members": {
     "title": "Members",
-    "invite": "Invite a member",
+    "subtitle": "Manage your organization's member directory.",
     "newMember": "New member",
-    "empty": "Invite your first member to get started.",
+    "kpis": {
+      "total": "Total members",
+      "active": "Active members",
+      "new30d": "New (30 days)"
+    },
     "search": "Search a member…",
+    "filterStatus": "Status",
+    "filterAll": "All statuses",
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "joinedAt": "Joined"
+    },
+    "noResults": "No member matches your search.",
+    "empty": {
+      "title": "No members yet",
+      "description": "Start building your directory by adding your first member.",
+      "cta": "Add a member"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "summary": "{from}–{to} of {total}"
+    },
+    "roles": {
+      "president": "President",
+      "vice_president": "Vice-president",
+      "tresorier": "Treasurer",
+      "secretaire": "Secretary",
+      "charge_communication": "Communications officer",
+      "membre": "Member",
+      "administrateur": "Administrator",
+      "autre": "Other"
+    },
     "status": {
       "active": "Active",
       "suspended": "Suspended",
-      "resigned": "Resigned"
+      "resigned": "Resigned",
+      "excluded": "Excluded",
+      "deceased": "Deceased"
     }
   },
   "cotisations": {

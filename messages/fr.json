@@ -63,14 +63,50 @@
   },
   "members": {
     "title": "Membres",
-    "invite": "Inviter un membre",
+    "subtitle": "Gérez l'annuaire des membres de votre organisation.",
     "newMember": "Nouveau membre",
-    "empty": "Invitez votre premier membre pour commencer.",
+    "kpis": {
+      "total": "Total des membres",
+      "active": "Membres actifs",
+      "new30d": "Nouveaux (30 jours)"
+    },
     "search": "Rechercher un membre…",
+    "filterStatus": "Statut",
+    "filterAll": "Tous les statuts",
+    "table": {
+      "name": "Nom",
+      "phone": "Téléphone",
+      "role": "Rôle",
+      "status": "Statut",
+      "joinedAt": "Adhésion"
+    },
+    "noResults": "Aucun membre ne correspond à votre recherche.",
+    "empty": {
+      "title": "Aucun membre pour le moment",
+      "description": "Commencez à constituer votre annuaire en ajoutant votre premier membre.",
+      "cta": "Ajouter un membre"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "summary": "{from}–{to} sur {total}"
+    },
+    "roles": {
+      "president": "Président",
+      "vice_president": "Vice-président",
+      "tresorier": "Trésorier",
+      "secretaire": "Secrétaire",
+      "charge_communication": "Chargé de communication",
+      "membre": "Membre",
+      "administrateur": "Administrateur",
+      "autre": "Autre"
+    },
     "status": {
       "active": "Actif",
       "suspended": "Suspendu",
-      "resigned": "Démissionné"
+      "resigned": "Démissionné",
+      "excluded": "Exclu",
+      "deceased": "Décédé"
     }
   },
   "cotisations": {

@@ -80,6 +80,8 @@ export async function listMembers({
 }
 
 export interface MemberKpis {
+  /** Membres présents dans l'annuaire, tous statuts confondus (hors supprimés). */
+  total: number;
   /** Membres avec status = 'actif'. */
   activeTotal: number;
   /** Membres actifs ayant rejoint dans les 30 derniers jours. */
@@ -89,25 +91,27 @@ export interface MemberKpis {
 export async function getMemberKpis(
   organizationId: string,
 ): Promise<MemberKpis> {
-  const base = and(
+  const inOrg = and(
     eq(associationMembers.organizationId, organizationId),
     isNull(associationMembers.deletedAt),
-    eq(associationMembers.status, "actif"),
   );
+  const active = and(inOrg, eq(associationMembers.status, "actif"));
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const since = thirtyDaysAgo.toISOString().slice(0, 10); // YYYY-MM-DD
 
-  const [activeResult, recentResult] = await Promise.all([
-    db.select({ value: count() }).from(associationMembers).where(base),
+  const [totalResult, activeResult, recentResult] = await Promise.all([
+    db.select({ value: count() }).from(associationMembers).where(inOrg),
+    db.select({ value: count() }).from(associationMembers).where(active),
     db
       .select({ value: count() })
       .from(associationMembers)
-      .where(and(base, sql`${associationMembers.joinedAt} >= ${since}`)),
+      .where(and(active, sql`${associationMembers.joinedAt} >= ${since}`)),
   ]);
 
   return {
+    total: Number(totalResult[0]?.value ?? 0),
     activeTotal: Number(activeResult[0]?.value ?? 0),
     new30d: Number(recentResult[0]?.value ?? 0),
   };

@@ -1,11 +1,225 @@
-import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { Download, Plus, Upload, Users } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export default async function MembersPage() {
-  const t = await getTranslations();
+import { requireOrgAccess } from "@/lib/auth/org";
+import { getMemberKpis, listMembers } from "@/lib/members/queries";
+import {
+  STATUS_BADGE_VARIANT,
+  STATUS_I18N_KEY,
+  isMemberRole,
+  isMemberStatus,
+  type MemberStatus,
+} from "@/lib/members/constants";
+import { formatPhone } from "@/lib/phone";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { MembersPagination } from "@/components/members/members-pagination";
+import { MembersToolbar } from "@/components/members/members-toolbar";
+
+type SearchParams = Record<string, string | string[] | undefined>;
+
+function readParam(value: string | string[] | undefined): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+/** Statut demandé par l'URL, normalisé. Défaut métier : "actif". */
+function parseStatus(value: string | undefined): MemberStatus | "all" {
+  if (value === "all") return "all";
+  if (value && isMemberStatus(value)) return value;
+  return "actif";
+}
+
+export default async function MembersPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ orgSlug: string }>;
+  searchParams: Promise<SearchParams>;
+}) {
+  const { orgSlug } = await params;
+  const sp = await searchParams;
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  const [t, tc, locale] = await Promise.all([
+    getTranslations("members"),
+    getTranslations("common"),
+    getLocale(),
+  ]);
+
+  const search = readParam(sp.search);
+  const status = parseStatus(readParam(sp.status));
+  const page = Math.max(1, Number(readParam(sp.page)) || 1);
+
+  const [kpis, list] = await Promise.all([
+    getMemberKpis(organizationId),
+    listMembers({ organizationId, status, search, page }),
+  ]);
+
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
+  function formatJoined(value: string | null): string {
+    if (!value) return "—";
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? value : dateFormatter.format(parsed);
+  }
+
+  function roleLabel(role: string, customRole: string | null): string {
+    if (role === "autre" && customRole?.trim()) return customRole;
+    return isMemberRole(role) ? t(`roles.${role}`) : role;
+  }
+
+  const kpiCards = [
+    { key: "total", label: t("kpis.total"), value: kpis.total },
+    { key: "active", label: t("kpis.active"), value: kpis.activeTotal },
+    { key: "new30d", label: t("kpis.new30d"), value: kpis.new30d },
+  ];
+
+  // Annuaire vide (aucun membre, tous statuts confondus) → empty state engageant.
+  const directoryEmpty = kpis.total === 0;
+
   return (
-    <div>
-      <h1 className="text-2xl font-semibold">{t("members.title")}</h1>
-      <p className="mt-2 text-muted-foreground">{t("dashboard.underConstructionDesc")}</p>
+    <div className="space-y-6">
+      {/* En-tête */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm">
+            <Upload />
+            {tc("import")}
+          </Button>
+          <Button variant="outline" size="sm">
+            <Download />
+            {tc("export")}
+          </Button>
+          <Button size="sm" render={<Link href={`/${orgSlug}/members?new=true`} />}>
+            <Plus />
+            {t("newMember")}
+          </Button>
+        </div>
+      </div>
+
+      {directoryEmpty ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center px-6 py-16 text-center">
+            <div className="mb-6 rounded-full bg-primary/10 p-4">
+              <Users className="size-10 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold">{t("empty.title")}</h2>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              {t("empty.description")}
+            </p>
+            <Button
+              className="mt-6"
+              render={<Link href={`/${orgSlug}/members?new=true`} />}
+            >
+              <Plus />
+              {t("empty.cta")}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          {/* KPI cards */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            {kpiCards.map((kpi) => (
+              <Card key={kpi.key} size="sm">
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{kpi.label}</p>
+                  <p className="mt-1 text-2xl font-semibold tabular-nums">
+                    {kpi.value}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <MembersToolbar />
+
+          {/* Liste */}
+          <Card className="py-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("table.name")}</TableHead>
+                  <TableHead>{t("table.phone")}</TableHead>
+                  <TableHead>{t("table.role")}</TableHead>
+                  <TableHead>{t("table.status")}</TableHead>
+                  <TableHead>{t("table.joinedAt")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {list.rows.length === 0 ? (
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell
+                      colSpan={5}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      {t("noResults")}
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  list.rows.map((row) => {
+                    const memberStatus = isMemberStatus(row.status)
+                      ? row.status
+                      : null;
+                    return (
+                      <TableRow key={row.id}>
+                        <TableCell className="font-medium text-foreground">
+                          <span className="block">{row.fullName}</span>
+                          {row.email ? (
+                            <span className="block text-xs text-muted-foreground">
+                              {row.email}
+                            </span>
+                          ) : null}
+                        </TableCell>
+                        <TableCell>{formatPhone(row.phoneNumber)}</TableCell>
+                        <TableCell>
+                          {roleLabel(row.role, row.customRole)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              memberStatus
+                                ? STATUS_BADGE_VARIANT[memberStatus]
+                                : "outline"
+                            }
+                          >
+                            {memberStatus
+                              ? t(`status.${STATUS_I18N_KEY[memberStatus]}`)
+                              : row.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground tabular-nums">
+                          {formatJoined(row.joinedAt)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </Card>
+
+          <MembersPagination
+            page={list.page}
+            totalPages={list.totalPages}
+            total={list.total}
+            pageSize={list.pageSize}
+          />
+        </>
+      )}
     </div>
   );
 }
