@@ -107,6 +107,35 @@
       "resigned": "Resigned",
       "excluded": "Excluded",
       "deceased": "Deceased"
+    },
+    "form": {
+      "title": "New member",
+      "description": "Add a person to your organization's directory.",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "phoneHint": "International format, e.g. +224 6 11 55 15 20",
+      "email": "Email",
+      "joinedAt": "Join date",
+      "dateOfBirth": "Date of birth",
+      "profession": "Profession",
+      "notes": "Notes",
+      "role": "Role",
+      "customRole": "Custom role",
+      "status": "Status",
+      "optional": "(optional)",
+      "submit": "Create member",
+      "submitting": "Creating…",
+      "cancel": "Cancel",
+      "success": "Member created successfully.",
+      "errors": {
+        "nameMin": "Name must be at least 2 characters.",
+        "phoneInvalid": "Invalid phone number.",
+        "emailInvalid": "Invalid email address.",
+        "emailTaken": "This email address is already used in your organization.",
+        "customRoleRequired": "Please specify the custom role.",
+        "dateInvalid": "Invalid date.",
+        "generic": "An error occurred. Please try again."
+      }
     }
   },
   "cotisations": {

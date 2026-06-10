@@ -107,6 +107,35 @@
       "resigned": "Démissionné",
       "excluded": "Exclu",
       "deceased": "Décédé"
+    },
+    "form": {
+      "title": "Nouveau membre",
+      "description": "Ajoutez une personne à l'annuaire de votre organisation.",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "phoneHint": "Format international, ex. +224 6 11 55 15 20",
+      "email": "Email",
+      "joinedAt": "Date d'adhésion",
+      "dateOfBirth": "Date de naissance",
+      "profession": "Profession",
+      "notes": "Notes",
+      "role": "Rôle",
+      "customRole": "Rôle personnalisé",
+      "status": "Statut",
+      "optional": "(optionnel)",
+      "submit": "Créer le membre",
+      "submitting": "Création…",
+      "cancel": "Annuler",
+      "success": "Membre créé avec succès.",
+      "errors": {
+        "nameMin": "Le nom doit comporter au moins 2 caractères.",
+        "phoneInvalid": "Numéro de téléphone invalide.",
+        "emailInvalid": "Adresse email invalide.",
+        "emailTaken": "Cette adresse email est déjà utilisée dans votre organisation.",
+        "customRoleRequired": "Précisez le rôle personnalisé.",
+        "dateInvalid": "Date invalide.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
     }
   },
   "cotisations": {

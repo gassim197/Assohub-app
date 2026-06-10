@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { MembersPagination } from "@/components/members/members-pagination";
 import { MembersToolbar } from "@/components/members/members-toolbar";
+import { MemberFormDialog } from "@/components/members/member-form-dialog";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -220,6 +221,8 @@ export default async function MembersPage({
           />
         </>
       )}
+
+      <MemberFormDialog orgSlug={orgSlug} />
     </div>
   );
 }
