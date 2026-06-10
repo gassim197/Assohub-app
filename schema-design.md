@@ -172,6 +172,8 @@ Quand un utilisateur crée son compte ET son organisation lors de l'onboarding, 
 
 Cette création se fait dans la même transaction que la création de l'organisation. Si elle échoue, l'organisation n'est pas créée.
 
+> **Implémentation (juin 2026)** — Réalisée via le hook Better-Auth `organizationHooks.afterCreateOrganization` (`lib/auth/index.ts`) appelant le helper idempotent `ensureFounderMember` (`lib/members/founder.ts`). Le driver `neon-http` ne supportant pas les transactions interactives, l'atomicité SQL stricte n'est pas réalisable : le hook s'exécute après le commit de l'org, l'idempotence évite les doublons et le script `scripts/backfill-founder-members.ts` (`npm run backfill:founders`) répare l'existant et sert de filet. `phone_number` est posé à chaîne vide (le compte n'a pas de téléphone). Détails dans [ADR-0002](docs/decisions/0002-founder-member-autocreation.md).
+
 ### 3.2. Multi-organisations
 
 Un même `user` peut appartenir à plusieurs organisations (via la table `member` de Better-Auth), avec des rôles différents dans chacune.
