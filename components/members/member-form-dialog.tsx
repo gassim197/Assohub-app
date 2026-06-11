@@ -151,6 +151,9 @@ export function MemberFormDialog({
   function closeDialog() {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(param);
+    // Édition en place sur la liste : `?edit=true&memberId=X` → on retire aussi
+    // la cible. Sur la fiche détaillée le memberId est dans le path, no-op ici.
+    if (isEdit) params.delete("memberId");
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,

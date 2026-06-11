@@ -3,7 +3,7 @@ import { Download, Plus, Upload, Users } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
-import { getMemberKpis, listMembers } from "@/lib/members/queries";
+import { getMemberById, getMemberKpis, listMembers } from "@/lib/members/queries";
 import {
   STATUS_BADGE_VARIANT,
   STATUS_I18N_KEY,
@@ -26,6 +26,7 @@ import {
 import { MembersPagination } from "@/components/members/members-pagination";
 import { MembersToolbar } from "@/components/members/members-toolbar";
 import { MemberFormDialog } from "@/components/members/member-form-dialog";
+import { MemberRowActions } from "@/components/members/member-row-actions";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -65,6 +66,14 @@ export default async function MembersPage({
     getMemberKpis(organizationId),
     listMembers({ organizationId, status, search, page }),
   ]);
+
+  // Édition en place : `?edit=true&memberId=X` monte la modal pré-remplie. La
+  // résolution passe par getMemberById (borné au tenant) plutôt que par la page
+  // courante, pour fonctionner même si le membre n'est pas dans les résultats filtrés.
+  const editMemberId = sp.edit === "true" ? readParam(sp.memberId) : undefined;
+  const editMember = editMemberId
+    ? await getMemberById(organizationId, editMemberId)
+    : null;
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
   function formatJoined(value: string | null): string {
@@ -158,13 +167,16 @@ export default async function MembersPage({
                   <TableHead>{t("table.role")}</TableHead>
                   <TableHead>{t("table.status")}</TableHead>
                   <TableHead>{t("table.joinedAt")}</TableHead>
+                  <TableHead className="w-12 text-right">
+                    <span className="sr-only">{tc("actions")}</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {list.rows.length === 0 ? (
                   <TableRow className="hover:bg-transparent">
                     <TableCell
-                      colSpan={5}
+                      colSpan={6}
                       className="h-24 text-center text-muted-foreground"
                     >
                       {t("noResults")}
@@ -205,6 +217,16 @@ export default async function MembersPage({
                         <TableCell className="text-muted-foreground tabular-nums">
                           {formatJoined(row.joinedAt)}
                         </TableCell>
+                        <TableCell className="text-right">
+                          <MemberRowActions
+                            orgSlug={orgSlug}
+                            member={{
+                              id: row.id,
+                              fullName: row.fullName,
+                              status: row.status,
+                            }}
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })
@@ -223,6 +245,9 @@ export default async function MembersPage({
       )}
 
       <MemberFormDialog orgSlug={orgSlug} />
+      {editMember ? (
+        <MemberFormDialog orgSlug={orgSlug} member={editMember} />
+      ) : null}
     </div>
   );
 }
