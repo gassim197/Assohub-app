@@ -136,6 +136,61 @@
         "dateInvalid": "Invalid date.",
         "generic": "An error occurred. Please try again."
       }
+    },
+    "detail": {
+      "backToList": "Back to directory",
+      "edit": "Edit",
+      "moreActions": "More actions",
+      "notProvided": "—",
+      "sectionContact": "Contact",
+      "sectionMembership": "Membership",
+      "sectionPersonal": "Personal information",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "joinedAt": "Join date",
+      "leftAt": "Exit date",
+      "dateOfBirth": "Date of birth",
+      "profession": "Profession",
+      "notes": "Notes",
+      "changeStatus": "Change status",
+      "archive": "Archive member",
+      "notesEmpty": "No notes",
+      "exitLine": "{status} on {date}"
+    },
+    "editForm": {
+      "title": "Edit member",
+      "description": "Update this member's information.",
+      "submit": "Save changes",
+      "submitting": "Saving…",
+      "success": "Member updated."
+    },
+    "rowActions": {
+      "label": "Open actions menu",
+      "view": "View profile",
+      "edit": "Edit",
+      "changeStatus": "Change status",
+      "archive": "Archive"
+    },
+    "statusDialog": {
+      "title": "Change status",
+      "description": "Set the new status for {name}.",
+      "label": "New status",
+      "confirm": "Update status",
+      "submitting": "Updating…",
+      "cancel": "Cancel",
+      "success": "Status updated.",
+      "error": "The status could not be updated. Please try again."
+    },
+    "archiveDialog": {
+      "title": "Archive this member?",
+      "description": "This archives {name}. Their history (dues, attendance) will be preserved. You can restore this archive later if needed.",
+      "confirm": "Archive member",
+      "submitting": "Archiving…",
+      "cancel": "Cancel",
+      "success": "Member archived.",
+      "error": "The member could not be archived. Please try again."
     }
   },
   "cotisations": {

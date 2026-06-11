@@ -79,6 +79,29 @@ export async function listMembers({
   };
 }
 
+/**
+ * Récupère un membre par son id, borné à l'organisation et hors archivés.
+ * Multi-tenant strict : un `memberId` d'une autre organisation renvoie `null`.
+ */
+export async function getMemberById(
+  organizationId: string,
+  memberId: string,
+): Promise<MemberRow | null> {
+  const [row] = await db
+    .select()
+    .from(associationMembers)
+    .where(
+      and(
+        eq(associationMembers.id, memberId),
+        eq(associationMembers.organizationId, organizationId),
+        isNull(associationMembers.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  return row ?? null;
+}
+
 export interface MemberKpis {
   /** Membres présents dans l'annuaire, tous statuts confondus (hors supprimés). */
   total: number;

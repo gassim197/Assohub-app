@@ -136,6 +136,61 @@
         "dateInvalid": "Date invalide.",
         "generic": "Une erreur est survenue. Veuillez réessayer."
       }
+    },
+    "detail": {
+      "backToList": "Retour à l'annuaire",
+      "edit": "Modifier",
+      "moreActions": "Plus d'actions",
+      "notProvided": "—",
+      "sectionContact": "Coordonnées",
+      "sectionMembership": "Adhésion",
+      "sectionPersonal": "Informations personnelles",
+      "email": "Email",
+      "phone": "Téléphone",
+      "role": "Rôle",
+      "status": "Statut",
+      "joinedAt": "Date d'adhésion",
+      "leftAt": "Date de sortie",
+      "dateOfBirth": "Date de naissance",
+      "profession": "Profession",
+      "notes": "Notes",
+      "changeStatus": "Changer le statut",
+      "archive": "Archiver ce membre",
+      "notesEmpty": "Aucune note",
+      "exitLine": "{status} le {date}"
+    },
+    "editForm": {
+      "title": "Modifier le membre",
+      "description": "Mettez à jour les informations de ce membre.",
+      "submit": "Enregistrer les modifications",
+      "submitting": "Enregistrement…",
+      "success": "Membre mis à jour."
+    },
+    "rowActions": {
+      "label": "Ouvrir le menu d'actions",
+      "view": "Voir la fiche",
+      "edit": "Modifier",
+      "changeStatus": "Changer le statut",
+      "archive": "Archiver"
+    },
+    "statusDialog": {
+      "title": "Changer le statut",
+      "description": "Définissez le nouveau statut de {name}.",
+      "label": "Nouveau statut",
+      "confirm": "Mettre à jour le statut",
+      "submitting": "Mise à jour…",
+      "cancel": "Annuler",
+      "success": "Statut mis à jour.",
+      "error": "Le statut n'a pas pu être mis à jour. Veuillez réessayer."
+    },
+    "archiveDialog": {
+      "title": "Archiver ce membre ?",
+      "description": "Cette action archive {name}. Son historique (cotisations, présences) sera préservé. Vous pourrez restaurer cet archivage plus tard si nécessaire.",
+      "confirm": "Archiver ce membre",
+      "submitting": "Archivage…",
+      "cancel": "Annuler",
+      "success": "Membre archivé.",
+      "error": "Le membre n'a pas pu être archivé. Veuillez réessayer."
     }
   },
   "cotisations": {

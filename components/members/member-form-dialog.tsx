@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
-import { createMember } from "@/lib/members/actions";
+import { createMember, updateMember } from "@/lib/members/actions";
 import { buildCreateMemberSchema } from "@/lib/members/schema";
 import {
   DEFAULT_MEMBER_ROLE,
@@ -14,9 +14,12 @@ import {
   MEMBER_ROLES,
   MEMBER_STATUSES,
   STATUS_I18N_KEY,
+  isMemberRole,
+  isMemberStatus,
   type MemberRole,
   type MemberStatus,
 } from "@/lib/members/constants";
+import type { MemberRow } from "@/lib/members/queries";
 import { toast } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,36 +65,61 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function buildDefaults(): MemberFormValues {
+/** Valeurs vierges (création) ou pré-remplies depuis un membre (édition). */
+function buildDefaults(member?: MemberRow): MemberFormValues {
+  if (!member) {
+    return {
+      fullName: "",
+      phoneNumber: "",
+      email: "",
+      joinedAt: todayISO(),
+      dateOfBirth: "",
+      profession: "",
+      notes: "",
+      role: DEFAULT_MEMBER_ROLE,
+      customRole: "",
+      status: DEFAULT_MEMBER_STATUS,
+    };
+  }
+
   return {
-    fullName: "",
-    phoneNumber: "",
-    email: "",
-    joinedAt: todayISO(),
-    dateOfBirth: "",
-    profession: "",
-    notes: "",
-    role: DEFAULT_MEMBER_ROLE,
-    customRole: "",
-    status: DEFAULT_MEMBER_STATUS,
+    fullName: member.fullName,
+    phoneNumber: member.phoneNumber,
+    email: member.email ?? "",
+    joinedAt: member.joinedAt,
+    dateOfBirth: member.dateOfBirth ?? "",
+    profession: member.profession ?? "",
+    notes: member.notes ?? "",
+    role: isMemberRole(member.role) ? member.role : DEFAULT_MEMBER_ROLE,
+    customRole: member.customRole ?? "",
+    status: isMemberStatus(member.status) ? member.status : DEFAULT_MEMBER_STATUS,
   };
 }
 
 /**
- * Modal de création manuelle d'un membre (BLOC 2).
+ * Modal de création (BLOC 2) ou d'édition (BLOC 3) d'un membre.
  *
- * Pilotée par l'URL (`?new=true`) : le bouton « Nouveau membre » de la liste
- * pousse ce paramètre, la fermeture le retire. À la création réussie, on retire
- * `?new`, on rafraîchit la liste et on affiche un toast de succès.
+ * Pilotée par l'URL. En création (`member` absent) : ouverte par `?new=true`,
+ * formulaire vierge, appelle `createMember`. En édition (`member` fourni) :
+ * ouverte par `?edit=true`, formulaire pré-rempli, appelle `updateMember`.
+ * La fermeture retire le paramètre ; au succès on rafraîchit et on toast.
  */
-export function MemberFormDialog({ orgSlug }: { orgSlug: string }) {
+export function MemberFormDialog({
+  orgSlug,
+  member,
+}: {
+  orgSlug: string;
+  member?: MemberRow;
+}) {
   const t = useTranslations("members");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  const open = searchParams.get("new") === "true";
+  const isEdit = Boolean(member);
+  const param = isEdit ? "edit" : "new";
+  const open = searchParams.get(param) === "true";
 
   // Le schéma client porte les messages traduits affichés sous les champs.
   const schema = useMemo(
@@ -109,20 +137,20 @@ export function MemberFormDialog({ orgSlug }: { orgSlug: string }) {
   const form = useForm<MemberFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema as any),
-    defaultValues: buildDefaults(),
+    defaultValues: buildDefaults(member),
   });
 
   const role = useWatch({ control: form.control, name: "role" });
 
-  // Repartir d'un formulaire vierge à chaque ouverture.
+  // Repartir d'un état propre (vierge ou pré-rempli) à chaque ouverture.
   useEffect(() => {
-    if (open) form.reset(buildDefaults());
+    if (open) form.reset(buildDefaults(member));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function closeDialog() {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("new");
+    params.delete(param);
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,
@@ -131,10 +159,13 @@ export function MemberFormDialog({ orgSlug }: { orgSlug: string }) {
 
   function onSubmit(values: MemberFormValues) {
     startTransition(async () => {
-      const result = await createMember(orgSlug, values);
+      const result =
+        member !== undefined
+          ? await updateMember(orgSlug, member.id, values)
+          : await createMember(orgSlug, values);
 
       if (result.ok) {
-        toast.success(t("form.success"));
+        toast.success(isEdit ? t("editForm.success") : t("form.success"));
         closeDialog();
         router.refresh();
         return;
@@ -161,8 +192,12 @@ export function MemberFormDialog({ orgSlug }: { orgSlug: string }) {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.title")}</DialogTitle>
-          <DialogDescription>{t("form.description")}</DialogDescription>
+          <DialogTitle>
+            {isEdit ? t("editForm.title") : t("form.title")}
+          </DialogTitle>
+          <DialogDescription>
+            {isEdit ? t("editForm.description") : t("form.description")}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -386,7 +421,13 @@ export function MemberFormDialog({ orgSlug }: { orgSlug: string }) {
                 {t("form.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? t("form.submitting") : t("form.submit")}
+                {isPending
+                  ? isEdit
+                    ? t("editForm.submitting")
+                    : t("form.submitting")
+                  : isEdit
+                    ? t("editForm.submit")
+                    : t("form.submit")}
               </Button>
             </DialogFooter>
           </form>

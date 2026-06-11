@@ -4,6 +4,14 @@ import { isValidPhone } from "@/lib/phone";
 import { MEMBER_ROLES, MEMBER_STATUSES } from "./constants";
 
 /**
+ * Schéma de changement de statut (action ciblée `changeMemberStatus`, BLOC 3).
+ * Garde-fou serveur : on n'accepte qu'un statut métier connu.
+ */
+export const changeStatusServerSchema = z.object({
+  status: z.enum(MEMBER_STATUSES),
+});
+
+/**
  * Messages d'erreur de validation, injectés depuis l'appelant.
  * - Côté client : traductions next-intl (affichées sous les champs).
  * - Côté serveur : codes bruts (la validation serveur est un garde-fou ;
