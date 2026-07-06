@@ -181,7 +181,10 @@
       "submitting": "Updating…",
       "cancel": "Cancel",
       "success": "Status updated.",
-      "error": "The status could not be updated. Please try again."
+      "error": "The status could not be updated. Please try again.",
+      "criticalTitle": "Confirm status change?",
+      "criticalDescription": "You are about to change {name} from “{from}” to “{to}”. An exit date will be recorded.",
+      "criticalConfirm": "Confirm change"
     },
     "archiveDialog": {
       "title": "Archive this member?",

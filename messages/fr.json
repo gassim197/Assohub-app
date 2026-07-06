@@ -181,7 +181,10 @@
       "submitting": "Mise à jour…",
       "cancel": "Annuler",
       "success": "Statut mis à jour.",
-      "error": "Le statut n'a pas pu être mis à jour. Veuillez réessayer."
+      "error": "Le statut n'a pas pu être mis à jour. Veuillez réessayer.",
+      "criticalTitle": "Confirmer le changement de statut ?",
+      "criticalDescription": "Vous allez faire passer {name} de « {from} » à « {to} ». Une date de sortie sera renseignée.",
+      "criticalConfirm": "Confirmer le changement"
     },
     "archiveDialog": {
       "title": "Archiver ce membre ?",
