@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { changeMemberStatus } from "@/lib/members/actions";
 import {
   DEFAULT_MEMBER_STATUS,
+  EXIT_STATUSES,
   MEMBER_STATUSES,
   STATUS_I18N_KEY,
   isMemberStatus,
@@ -15,13 +16,13 @@ import {
 import { toast } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -65,6 +66,10 @@ export function StatusChangeDialog({
     : DEFAULT_MEMBER_STATUS;
   const [status, setStatus] = useState<MemberStatus>(current);
 
+  // Statut de sortie (démissionné/exclu/décédé) → `left_at` sera renseigné côté
+  // serveur (schema-design §4.1) : on renforce la confirmation en conséquence.
+  const isCritical = EXIT_STATUSES.includes(status);
+
   // Repartir du statut courant à chaque ouverture (ouverture pilotée par le
   // parent : un simple handler onOpenChange ne suffit pas pour un open programmatique).
   useEffect(() => {
@@ -89,14 +94,22 @@ export function StatusChangeDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("statusDialog.title")}</DialogTitle>
-          <DialogDescription>
-            {t("statusDialog.description", { name: member.fullName })}
-          </DialogDescription>
-        </DialogHeader>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="max-w-sm">
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {isCritical ? t("statusDialog.criticalTitle") : t("statusDialog.title")}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {isCritical
+              ? t("statusDialog.criticalDescription", {
+                  name: member.fullName,
+                  from: t(`status.${STATUS_I18N_KEY[current]}`),
+                  to: t(`status.${STATUS_I18N_KEY[status]}`),
+                })
+              : t("statusDialog.description", { name: member.fullName })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
         <div className="grid gap-2">
           <Label>{t("statusDialog.label")}</Label>
@@ -117,7 +130,7 @@ export function StatusChangeDialog({
           </Select>
         </div>
 
-        <DialogFooter>
+        <AlertDialogFooter>
           <Button
             type="button"
             variant="outline"
@@ -126,13 +139,20 @@ export function StatusChangeDialog({
           >
             {t("statusDialog.cancel")}
           </Button>
-          <Button type="button" onClick={onConfirm} disabled={isPending}>
+          <Button
+            type="button"
+            variant={isCritical ? "destructive" : "default"}
+            onClick={onConfirm}
+            disabled={isPending}
+          >
             {isPending
               ? t("statusDialog.submitting")
-              : t("statusDialog.confirm")}
+              : isCritical
+                ? t("statusDialog.criticalConfirm")
+                : t("statusDialog.confirm")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

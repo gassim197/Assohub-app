@@ -8,13 +8,13 @@ import { softDeleteMember } from "@/lib/members/actions";
 import { toast } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 /** Cible minimale d'un archivage (réutilisé fiche + lignes). */
 export interface ArchiveTarget {
@@ -67,16 +67,16 @@ export function ArchiveMemberDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("archiveDialog.title")}</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("archiveDialog.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
             {t("archiveDialog.description", { name: member.fullName })}
-          </DialogDescription>
-        </DialogHeader>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-        <DialogFooter>
+        <AlertDialogFooter>
           <Button
             type="button"
             variant="outline"
@@ -95,8 +95,8 @@ export function ArchiveMemberDialog({
               ? t("archiveDialog.submitting")
               : t("archiveDialog.confirm")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
