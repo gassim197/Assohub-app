@@ -1,19 +1,22 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 
+import { auth } from "@/lib/auth";
 import { requireOrgAccess } from "@/lib/auth/org";
 import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
-import { user } from "@/lib/db/auth-schema";
+import { member, user } from "@/lib/db/auth-schema";
 import { associationMembers, pendingInvitations } from "@/lib/db/members-schema";
 import { toE164 } from "@/lib/phone";
 import { getAppUrl } from "@/lib/url";
 import { sendInvitationEmail } from "@/lib/email/invitation-email";
-import { INVITATION_EXPIRY_DAYS } from "./constants";
-import { inviteMemberServerSchema } from "./schema";
+import { INVITATION_EXPIRY_DAYS, resolveAcceptPageState } from "./constants";
+import { findUserIdByEmail, getInvitationByToken } from "./queries";
+import { inviteMemberServerSchema, registerInviteeServerSchema } from "./schema";
 import { generateInvitationToken } from "./tokens";
 
 export type InviteMemberResult =
@@ -245,4 +248,128 @@ export async function cancelInvitation(
 
   revalidatePath(`/${orgSlug}/members`);
   return { ok: true };
+}
+
+export type RegisterAndJoinResult = {
+  ok: false;
+  error: "invalidInvitation" | "validation" | "phoneInvalid" | "emailTaken" | "unknown";
+};
+
+/**
+ * Inscription + rattachement d'un nouvel invité (volet 2 de la 4B,
+ * checkpoint 2). Le `token` est la seule autorité : on re-vérifie son état à
+ * l'instant T (protège contre un onglet resté ouvert sur une invitation entre
+ * temps expirée/acceptée/annulée ailleurs).
+ *
+ * Pas de vraie transaction SQL (neon-http ne le permet pas, cf.
+ * `lib/auth/index.ts`) : on avance dans un ordre qui rend chaque échec
+ * compensable — création du compte d'abord, et on le supprime (cascade
+ * `account`/`session`) si une étape suivante échoue. Le seul cas qu'on
+ * n'annule PAS est l'échec du marquage `accepted_at` final : à ce stade le
+ * compte et l'appartenance existent déjà, l'utilisateur est bien onboardé.
+ *
+ * Ne retourne qu'en cas d'erreur : le succès se termine par un `redirect`
+ * (jamais de retour au client).
+ */
+export async function registerAndJoin(
+  token: string,
+  raw: unknown,
+): Promise<RegisterAndJoinResult> {
+  const data = await getInvitationByToken(token);
+  const state = resolveAcceptPageState(data);
+  if (state !== "pending") {
+    return { ok: false, error: "invalidInvitation" };
+  }
+  const { invitation, organization } = data!;
+  // `organization` est garanti non-null : resolveAcceptPageState renvoie
+  // "orgDeleted" (donc pas "pending") sinon.
+  const org = organization!;
+
+  const parsed = registerInviteeServerSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "validation" };
+  }
+  const values = parsed.data;
+
+  const phoneE164 = toE164(values.phoneNumber);
+  if (!phoneE164) {
+    return { ok: false, error: "phoneInvalid" };
+  }
+
+  // Pré-check (UX) : l'autorité reste l'erreur de `signUpEmail` plus bas, qui
+  // couvre la course entre ce check et la création effective du compte.
+  const existingUserId = await findUserIdByEmail(invitation.email);
+  if (existingUserId) {
+    return { ok: false, error: "emailTaken" };
+  }
+
+  let newUserId: string;
+  try {
+    const result = await auth.api.signUpEmail({
+      body: {
+        name: values.fullName,
+        email: invitation.email,
+        password: values.password,
+      },
+    });
+    newUserId = result.user.id;
+  } catch {
+    return { ok: false, error: "emailTaken" };
+  }
+
+  try {
+    await db.insert(associationMembers).values({
+      id: newId(),
+      organizationId: org.id,
+      userId: newUserId,
+      fullName: values.fullName,
+      phoneNumber: phoneE164,
+      email: invitation.email,
+      role: invitation.intendedRole,
+      status: "actif",
+    });
+  } catch {
+    await db.delete(user).where(eq(user.id, newUserId));
+    return { ok: false, error: "unknown" };
+  }
+
+  try {
+    await db.insert(member).values({
+      id: newId(),
+      organizationId: org.id,
+      userId: newUserId,
+      role: "member",
+      createdAt: new Date(),
+    });
+  } catch {
+    await db
+      .delete(associationMembers)
+      .where(
+        and(
+          eq(associationMembers.organizationId, org.id),
+          eq(associationMembers.userId, newUserId),
+        ),
+      );
+    await db.delete(user).where(eq(user.id, newUserId));
+    return { ok: false, error: "unknown" };
+  }
+
+  try {
+    await db
+      .update(pendingInvitations)
+      .set({ acceptedAt: new Date() })
+      .where(
+        and(eq(pendingInvitations.id, invitation.id), eq(pendingInvitations.token, token)),
+      );
+  } catch (error) {
+    // Compte et appartenance déjà créés : on ne rollback pas, même logique
+    // dégradée que l'échec d'envoi d'email (cf. `inviteMember`).
+    console.error(
+      "[invitations] échec du marquage accepted_at après inscription réussie",
+      error,
+    );
+  }
+
+  revalidatePath(`/${org.slug}`);
+  redirect(`/${org.slug}?welcome=true`);
 }

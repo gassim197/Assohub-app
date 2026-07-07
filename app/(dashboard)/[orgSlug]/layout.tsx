@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { WelcomeToast } from "@/components/layout/welcome-toast";
 import { Toaster } from "@/components/ui/toaster";
 
 function getInitials(name: string): string {
@@ -48,6 +49,7 @@ export default async function DashboardLayout({
         </main>
       </div>
       <Toaster />
+      <WelcomeToast />
     </div>
   );
 }

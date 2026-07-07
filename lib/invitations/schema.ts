@@ -53,3 +53,42 @@ const RAW_MESSAGES: InviteMemberFormMessages = {
 export const inviteMemberServerSchema = buildInviteMemberSchema(RAW_MESSAGES);
 
 export type InviteMemberValues = z.output<typeof inviteMemberServerSchema>;
+
+/**
+ * Messages du formulaire d'inscription d'un invité (volet 2, checkpoint 2).
+ * Pas de champ `email` : il vient de l'invitation, jamais du client.
+ */
+export interface RegisterInviteeFormMessages {
+  nameMin: string;
+  phoneInvalid: string;
+  passwordMin: string;
+  passwordUppercase: string;
+  passwordNumber: string;
+}
+
+/** Téléphone obligatoire ici (contrairement à l'invitation) : E.164 strict, saisi par l'invité lui-même. */
+export function buildRegisterInviteeSchema(m: RegisterInviteeFormMessages) {
+  return z.object({
+    fullName: z.string().trim().min(2, m.nameMin),
+    phoneNumber: z.string().trim().refine(isValidPhone, m.phoneInvalid),
+    password: z
+      .string()
+      .min(8, m.passwordMin)
+      .regex(/[A-Z]/, m.passwordUppercase)
+      .regex(/[0-9]/, m.passwordNumber),
+  });
+}
+
+const RAW_REGISTER_MESSAGES: RegisterInviteeFormMessages = {
+  nameMin: "nameMin",
+  phoneInvalid: "phoneInvalid",
+  passwordMin: "passwordMin",
+  passwordUppercase: "passwordUppercase",
+  passwordNumber: "passwordNumber",
+};
+
+export const registerInviteeServerSchema = buildRegisterInviteeSchema(
+  RAW_REGISTER_MESSAGES,
+);
+
+export type RegisterInviteeValues = z.output<typeof registerInviteeServerSchema>;

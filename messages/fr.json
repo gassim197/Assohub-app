@@ -261,6 +261,27 @@
           "title": "Organisation introuvable",
           "description": "L'organisation à laquelle vous étiez invité n'existe plus."
         }
+      },
+      "welcomeToast": "Bienvenue sur AssoHub ! Vous avez rejoint l'organisation.",
+      "register": {
+        "title": "Créer votre compte",
+        "subtitle": "Complétez votre profil pour rejoindre {orgName}.",
+        "phone": "Téléphone",
+        "phoneHint": "Requis pour rejoindre l'organisation.",
+        "submit": "Créer mon compte et rejoindre",
+        "submitting": "Création du compte…",
+        "back": "Retour à l'invitation",
+        "errors": {
+          "nameMin": "Le nom doit comporter au moins 2 caractères.",
+          "phoneInvalid": "Numéro de téléphone invalide.",
+          "passwordMin": "8 caractères minimum.",
+          "passwordUppercase": "Au moins une majuscule requise.",
+          "passwordNumber": "Au moins un chiffre requis.",
+          "emailTaken": "Un compte existe déjà pour cet email.",
+          "emailTakenCta": "Se connecter",
+          "invalidInvitation": "Cette invitation n'est plus valide.",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
       }
     },
     "tab": {

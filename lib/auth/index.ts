@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { ensureFounderMember } from "@/lib/members/founder";
@@ -37,6 +38,11 @@ export const auth = betterAuth({
         },
       },
     }),
+    // Doit rester le DERNIER plugin : transfère automatiquement le
+    // Set-Cookie de session vers `next/headers` cookies() quand un
+    // `auth.api.*` (ex. `signUpEmail`) est appelé depuis une Server Action —
+    // condition de la connexion automatique après inscription (volet 2, 4B).
+    nextCookies(),
   ],
 
   // V1.1 : magic link + OAuth Google (non activés)
