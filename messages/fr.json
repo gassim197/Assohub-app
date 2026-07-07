@@ -65,6 +65,12 @@
     "title": "Membres",
     "subtitle": "Gérez l'annuaire des membres de votre organisation.",
     "newMember": "Nouveau membre",
+    "inviteMember": "Inviter un membre",
+    "tabs": {
+      "directory": "Annuaire",
+      "invitations": "Invitations",
+      "invitationsWithCount": "Invitations ({count} en attente)"
+    },
     "kpis": {
       "total": "Total des membres",
       "active": "Membres actifs",
@@ -194,6 +200,62 @@
       "cancel": "Annuler",
       "success": "Membre archivé.",
       "error": "Le membre n'a pas pu être archivé. Veuillez réessayer."
+    }
+  },
+  "invitations": {
+    "dialog": {
+      "title": "Inviter un membre",
+      "description": "Envoyez une invitation par email pour rejoindre votre organisation.",
+      "email": "Email",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "phoneHint": "Optionnel à l'invitation, sera demandé à l'acceptation.",
+      "role": "Rôle prévu",
+      "personalMessage": "Message personnel",
+      "optional": "(optionnel)",
+      "submit": "Envoyer l'invitation",
+      "submitting": "Envoi…",
+      "cancel": "Annuler",
+      "success": "Invitation envoyée.",
+      "errors": {
+        "nameMin": "Le nom doit comporter au moins 2 caractères.",
+        "emailInvalid": "Adresse email invalide.",
+        "phoneInvalid": "Numéro de téléphone invalide.",
+        "messageMax": "Le message ne peut pas dépasser 1000 caractères.",
+        "alreadyMember": "Cette personne est déjà membre actif de votre organisation.",
+        "invitationPending": "Une invitation est déjà en cours pour cet email. Renvoyez-la ou annulez-la depuis l'onglet Invitations.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "tab": {
+      "empty": "Aucune invitation en attente.",
+      "table": {
+        "name": "Nom",
+        "email": "Email",
+        "role": "Rôle prévu",
+        "status": "Statut",
+        "expiresAt": "Expire le"
+      },
+      "status": {
+        "pending": "En attente",
+        "expired": "Expirée"
+      },
+      "actions": {
+        "label": "Ouvrir le menu d'actions",
+        "resend": "Renvoyer",
+        "cancel": "Annuler"
+      },
+      "resendSuccess": "Invitation renvoyée.",
+      "resendError": "L'invitation n'a pas pu être renvoyée. Veuillez réessayer.",
+      "cancelConfirm": {
+        "title": "Annuler cette invitation ?",
+        "description": "L'invitation envoyée à {email} sera annulée. Vous pourrez en envoyer une nouvelle si besoin.",
+        "confirm": "Annuler l'invitation",
+        "submitting": "Annulation…",
+        "back": "Retour",
+        "success": "Invitation annulée.",
+        "error": "L'invitation n'a pas pu être annulée. Veuillez réessayer."
+      }
     }
   },
   "cotisations": {

@@ -65,6 +65,12 @@
     "title": "Members",
     "subtitle": "Manage your organization's member directory.",
     "newMember": "New member",
+    "inviteMember": "Invite a member",
+    "tabs": {
+      "directory": "Directory",
+      "invitations": "Invitations",
+      "invitationsWithCount": "Invitations ({count} pending)"
+    },
     "kpis": {
       "total": "Total members",
       "active": "Active members",
@@ -194,6 +200,62 @@
       "cancel": "Cancel",
       "success": "Member archived.",
       "error": "The member could not be archived. Please try again."
+    }
+  },
+  "invitations": {
+    "dialog": {
+      "title": "Invite a member",
+      "description": "Send an email invitation to join your organization.",
+      "email": "Email",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "phoneHint": "Optional at invitation, will be required at acceptance.",
+      "role": "Intended role",
+      "personalMessage": "Personal message",
+      "optional": "(optional)",
+      "submit": "Send invitation",
+      "submitting": "Sending…",
+      "cancel": "Cancel",
+      "success": "Invitation sent.",
+      "errors": {
+        "nameMin": "Name must be at least 2 characters.",
+        "emailInvalid": "Invalid email address.",
+        "phoneInvalid": "Invalid phone number.",
+        "messageMax": "The message cannot exceed 1000 characters.",
+        "alreadyMember": "This person is already an active member of your organization.",
+        "invitationPending": "An invitation is already pending for this email. Resend or cancel it from the Invitations tab.",
+        "generic": "An error occurred. Please try again."
+      }
+    },
+    "tab": {
+      "empty": "No pending invitations.",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Intended role",
+        "status": "Status",
+        "expiresAt": "Expires on"
+      },
+      "status": {
+        "pending": "Pending",
+        "expired": "Expired"
+      },
+      "actions": {
+        "label": "Open actions menu",
+        "resend": "Resend",
+        "cancel": "Cancel"
+      },
+      "resendSuccess": "Invitation resent.",
+      "resendError": "The invitation could not be resent. Please try again.",
+      "cancelConfirm": {
+        "title": "Cancel this invitation?",
+        "description": "The invitation sent to {email} will be cancelled. You can send a new one if needed.",
+        "confirm": "Cancel invitation",
+        "submitting": "Cancelling…",
+        "back": "Back",
+        "success": "Invitation cancelled.",
+        "error": "The invitation could not be cancelled. Please try again."
+      }
     }
   },
   "cotisations": {

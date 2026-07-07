@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, Plus, Upload, Users } from "lucide-react";
+import { Download, Mail, Plus, Upload, Users } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
@@ -12,6 +12,10 @@ import {
   type MemberStatus,
 } from "@/lib/members/constants";
 import { formatPhone } from "@/lib/phone";
+import {
+  countActuallyPending,
+  listPendingInvitations,
+} from "@/lib/invitations/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,10 +27,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MembersPagination } from "@/components/members/members-pagination";
 import { MembersToolbar } from "@/components/members/members-toolbar";
 import { MemberFormDialog } from "@/components/members/member-form-dialog";
 import { MemberRowActions } from "@/components/members/member-row-actions";
+import { InviteMemberDialog } from "@/components/invitations/invite-member-dialog";
+import { PendingInvitationsTab } from "@/components/invitations/pending-invitations-tab";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -62,10 +69,12 @@ export default async function MembersPage({
   const status = parseStatus(readParam(sp.status));
   const page = Math.max(1, Number(readParam(sp.page)) || 1);
 
-  const [kpis, list] = await Promise.all([
+  const [kpis, list, invitations] = await Promise.all([
     getMemberKpis(organizationId),
     listMembers({ organizationId, status, search, page }),
+    listPendingInvitations(organizationId),
   ]);
+  const pendingInvitationsCount = countActuallyPending(invitations);
 
   // Édition en place : `?edit=true&memberId=X` monte la modal pré-remplie. La
   // résolution passe par getMemberById (borné au tenant) plutôt que par la page
@@ -113,6 +122,14 @@ export default async function MembersPage({
             <Download />
             {tc("export")}
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link href={`/${orgSlug}/members?invite=true`} />}
+          >
+            <Mail />
+            {t("inviteMember")}
+          </Button>
           <Button size="sm" render={<Link href={`/${orgSlug}/members?new=true`} />}>
             <Plus />
             {t("newMember")}
@@ -120,134 +137,152 @@ export default async function MembersPage({
         </div>
       </div>
 
-      {directoryEmpty ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center px-6 py-16 text-center">
-            <div className="mb-6 rounded-full bg-primary/10 p-4">
-              <Users className="size-10 text-primary" />
-            </div>
-            <h2 className="text-lg font-semibold">{t("empty.title")}</h2>
-            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-              {t("empty.description")}
-            </p>
-            <Button
-              className="mt-6"
-              render={<Link href={`/${orgSlug}/members?new=true`} />}
-            >
-              <Plus />
-              {t("empty.cta")}
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          {/* KPI cards */}
-          <div className="grid gap-4 sm:grid-cols-3">
-            {kpiCards.map((kpi) => (
-              <Card key={kpi.key} size="sm">
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{kpi.label}</p>
-                  <p className="mt-1 text-2xl font-semibold tabular-nums">
-                    {kpi.value}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      <Tabs defaultValue="directory">
+        <TabsList>
+          <TabsTrigger value="directory">{t("tabs.directory")}</TabsTrigger>
+          <TabsTrigger value="invitations">
+            {pendingInvitationsCount > 0
+              ? t("tabs.invitationsWithCount", { count: pendingInvitationsCount })
+              : t("tabs.invitations")}
+          </TabsTrigger>
+        </TabsList>
 
-          <MembersToolbar />
+        <TabsContent value="directory" className="space-y-6 pt-4">
+          {directoryEmpty ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                <div className="mb-6 rounded-full bg-primary/10 p-4">
+                  <Users className="size-10 text-primary" />
+                </div>
+                <h2 className="text-lg font-semibold">{t("empty.title")}</h2>
+                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                  {t("empty.description")}
+                </p>
+                <Button
+                  className="mt-6"
+                  render={<Link href={`/${orgSlug}/members?new=true`} />}
+                >
+                  <Plus />
+                  {t("empty.cta")}
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {/* KPI cards */}
+              <div className="grid gap-4 sm:grid-cols-3">
+                {kpiCards.map((kpi) => (
+                  <Card key={kpi.key} size="sm">
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{kpi.label}</p>
+                      <p className="mt-1 text-2xl font-semibold tabular-nums">
+                        {kpi.value}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-          {/* Liste */}
-          <Card className="py-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("table.name")}</TableHead>
-                  <TableHead>{t("table.phone")}</TableHead>
-                  <TableHead>{t("table.role")}</TableHead>
-                  <TableHead>{t("table.status")}</TableHead>
-                  <TableHead>{t("table.joinedAt")}</TableHead>
-                  <TableHead className="w-12 text-right">
-                    <span className="sr-only">{tc("actions")}</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {list.rows.length === 0 ? (
-                  <TableRow className="hover:bg-transparent">
-                    <TableCell
-                      colSpan={6}
-                      className="h-24 text-center text-muted-foreground"
-                    >
-                      {t("noResults")}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  list.rows.map((row) => {
-                    const memberStatus = isMemberStatus(row.status)
-                      ? row.status
-                      : null;
-                    return (
-                      <TableRow key={row.id}>
-                        <TableCell className="font-medium text-foreground">
-                          <span className="block">{row.fullName}</span>
-                          {row.email ? (
-                            <span className="block text-xs text-muted-foreground">
-                              {row.email}
-                            </span>
-                          ) : null}
-                        </TableCell>
-                        <TableCell>{formatPhone(row.phoneNumber)}</TableCell>
-                        <TableCell>
-                          {roleLabel(row.role, row.customRole)}
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              memberStatus
-                                ? STATUS_BADGE_VARIANT[memberStatus]
-                                : "outline"
-                            }
-                          >
-                            {memberStatus
-                              ? t(`status.${STATUS_I18N_KEY[memberStatus]}`)
-                              : row.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground tabular-nums">
-                          {formatJoined(row.joinedAt)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <MemberRowActions
-                            orgSlug={orgSlug}
-                            member={{
-                              id: row.id,
-                              fullName: row.fullName,
-                              status: row.status,
-                            }}
-                          />
+              <MembersToolbar />
+
+              {/* Liste */}
+              <Card className="py-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("table.name")}</TableHead>
+                      <TableHead>{t("table.phone")}</TableHead>
+                      <TableHead>{t("table.role")}</TableHead>
+                      <TableHead>{t("table.status")}</TableHead>
+                      <TableHead>{t("table.joinedAt")}</TableHead>
+                      <TableHead className="w-12 text-right">
+                        <span className="sr-only">{tc("actions")}</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {list.rows.length === 0 ? (
+                      <TableRow className="hover:bg-transparent">
+                        <TableCell
+                          colSpan={6}
+                          className="h-24 text-center text-muted-foreground"
+                        >
+                          {t("noResults")}
                         </TableCell>
                       </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </Card>
+                    ) : (
+                      list.rows.map((row) => {
+                        const memberStatus = isMemberStatus(row.status)
+                          ? row.status
+                          : null;
+                        return (
+                          <TableRow key={row.id}>
+                            <TableCell className="font-medium text-foreground">
+                              <span className="block">{row.fullName}</span>
+                              {row.email ? (
+                                <span className="block text-xs text-muted-foreground">
+                                  {row.email}
+                                </span>
+                              ) : null}
+                            </TableCell>
+                            <TableCell>{formatPhone(row.phoneNumber)}</TableCell>
+                            <TableCell>
+                              {roleLabel(row.role, row.customRole)}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  memberStatus
+                                    ? STATUS_BADGE_VARIANT[memberStatus]
+                                    : "outline"
+                                }
+                              >
+                                {memberStatus
+                                  ? t(`status.${STATUS_I18N_KEY[memberStatus]}`)
+                                  : row.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground tabular-nums">
+                              {formatJoined(row.joinedAt)}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <MemberRowActions
+                                orgSlug={orgSlug}
+                                member={{
+                                  id: row.id,
+                                  fullName: row.fullName,
+                                  status: row.status,
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </Card>
 
-          <MembersPagination
-            page={list.page}
-            totalPages={list.totalPages}
-            total={list.total}
-            pageSize={list.pageSize}
-          />
-        </>
-      )}
+              <MembersPagination
+                page={list.page}
+                totalPages={list.totalPages}
+                total={list.total}
+                pageSize={list.pageSize}
+              />
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="invitations" className="pt-4">
+          <PendingInvitationsTab orgSlug={orgSlug} invitations={invitations} />
+        </TabsContent>
+      </Tabs>
 
       <MemberFormDialog orgSlug={orgSlug} />
       {editMember ? (
         <MemberFormDialog orgSlug={orgSlug} member={editMember} />
       ) : null}
+      <InviteMemberDialog orgSlug={orgSlug} />
     </div>
   );
 }
