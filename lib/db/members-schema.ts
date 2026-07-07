@@ -25,6 +25,7 @@ export const pendingInvitations = pgTable(
     phoneNumber: text("phone_number"),
     email: text("email").notNull(),
     intendedRole: text("intended_role").notNull().default("membre"),
+    personalMessage: text("personal_message"),
     token: text("token").notNull().unique(),
     invitedByUserId: text("invited_by_user_id")
       .notNull()

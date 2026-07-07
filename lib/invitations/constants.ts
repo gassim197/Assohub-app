@@ -33,3 +33,21 @@ export function invitationStatus(row: {
   if (row.expiresAt.getTime() < Date.now()) return "expired";
   return "pending";
 }
+
+/**
+ * États affichables sur la page publique `/invitations/accept/[token]`
+ * (volet 2 de la 4B) : sur-ensemble de `PendingInvitationStatus` avec les cas
+ * "token inconnu" et "organisation introuvable" propres à cette route.
+ */
+export type AcceptPageState = "notFound" | "orgDeleted" | PendingInvitationStatus;
+
+export function resolveAcceptPageState(
+  data: {
+    invitation: { acceptedAt: Date | null; declinedAt: Date | null; expiresAt: Date };
+    organization: unknown;
+  } | null,
+): AcceptPageState {
+  if (!data) return "notFound";
+  if (!data.organization) return "orgDeleted";
+  return invitationStatus(data.invitation);
+}

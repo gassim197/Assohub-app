@@ -1,0 +1,1 @@
+ALTER TABLE "pending_invitations" ADD COLUMN "personal_message" text;

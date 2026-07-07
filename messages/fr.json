@@ -227,6 +227,42 @@
         "generic": "Une erreur est survenue. Veuillez réessayer."
       }
     },
+    "accept": {
+      "title": "Vous êtes invité(e) à rejoindre {orgName}",
+      "subtitle": "{inviterName} vous invite à rejoindre son organisation sur AssoHub",
+      "roleLabel": "Rôle proposé",
+      "cta": {
+        "registerAndJoin": "Créer mon compte et rejoindre",
+        "loginAndJoin": "Se connecter et rejoindre"
+      },
+      "footer": {
+        "tagline": "L'infrastructure numérique des organisations africaines",
+        "legal": "En rejoignant AssoHub, vous acceptez nos conditions d'utilisation."
+      },
+      "errors": {
+        "notFound": {
+          "title": "Invitation invalide",
+          "description": "Ce lien d'invitation est invalide ou a expiré. Contactez la personne qui vous a invité pour recevoir un nouveau lien."
+        },
+        "expired": {
+          "title": "Invitation expirée",
+          "description": "Cette invitation a expiré le {date}. Demandez à {inviterName} de vous en envoyer une nouvelle."
+        },
+        "accepted": {
+          "title": "Invitation déjà acceptée",
+          "description": "Cette invitation a déjà été acceptée. Si vous êtes déjà membre, connectez-vous.",
+          "cta": "Se connecter"
+        },
+        "declined": {
+          "title": "Invitation refusée",
+          "description": "Cette invitation a été refusée. Contactez {inviterName} si c'était une erreur."
+        },
+        "orgDeleted": {
+          "title": "Organisation introuvable",
+          "description": "L'organisation à laquelle vous étiez invité n'existe plus."
+        }
+      }
+    },
     "tab": {
       "empty": "Aucune invitation en attente.",
       "table": {

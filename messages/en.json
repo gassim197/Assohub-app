@@ -227,6 +227,42 @@
         "generic": "An error occurred. Please try again."
       }
     },
+    "accept": {
+      "title": "You're invited to join {orgName}",
+      "subtitle": "{inviterName} invites you to join their organization on AssoHub",
+      "roleLabel": "Proposed role",
+      "cta": {
+        "registerAndJoin": "Create my account and join",
+        "loginAndJoin": "Sign in and join"
+      },
+      "footer": {
+        "tagline": "The digital backbone of African organizations",
+        "legal": "By joining AssoHub, you agree to our terms of use."
+      },
+      "errors": {
+        "notFound": {
+          "title": "Invalid invitation",
+          "description": "This invitation link is invalid or has expired. Contact the person who invited you to get a new link."
+        },
+        "expired": {
+          "title": "Invitation expired",
+          "description": "This invitation expired on {date}. Ask {inviterName} to send you a new one."
+        },
+        "accepted": {
+          "title": "Invitation already accepted",
+          "description": "This invitation has already been accepted. If you're already a member, sign in.",
+          "cta": "Sign in"
+        },
+        "declined": {
+          "title": "Invitation declined",
+          "description": "This invitation was declined. Contact {inviterName} if this was a mistake."
+        },
+        "orgDeleted": {
+          "title": "Organization not found",
+          "description": "The organization you were invited to no longer exists."
+        }
+      }
+    },
     "tab": {
       "empty": "No pending invitations.",
       "table": {

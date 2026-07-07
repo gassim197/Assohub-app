@@ -15,6 +15,13 @@
       "when": 1779453269479,
       "tag": "0001_bored_kulan_gath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783382968263,
+      "tag": "0002_sour_hobgoblin",
+      "breakpoints": true
     }
   ]
 }

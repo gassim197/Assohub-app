@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
+import { organization, user } from "@/lib/db/auth-schema";
 import { pendingInvitations } from "@/lib/db/members-schema";
 
 export type PendingInvitationRow = typeof pendingInvitations.$inferSelect;
@@ -35,4 +36,69 @@ export async function listPendingInvitations(
 export function countActuallyPending(rows: PendingInvitationRow[]): number {
   const now = Date.now();
   return rows.filter((row) => row.expiresAt.getTime() >= now).length;
+}
+
+export interface InvitationWithContext {
+  invitation: PendingInvitationRow;
+  organization: { id: string; name: string; slug: string; metadata: string | null } | null;
+  inviterName: string | null;
+}
+
+/**
+ * Résout un token public d'invitation (route `/invitations/accept/[token]`,
+ * volet 2 de la 4B) : le token est la SEULE clé d'autorisation de cette page,
+ * il n'y a délibérément aucun `requireOrgAccess` ici. `organization` est
+ * `leftJoin`é (jamais `null` en pratique tant que la FK l'empêche, mais on ne
+ * fait pas confiance à cette contrainte pour l'affichage — cf. cas d'erreur
+ * "organisation supprimée").
+ */
+export async function getInvitationByToken(
+  token: string,
+): Promise<InvitationWithContext | null> {
+  const [row] = await db
+    .select({
+      invitation: pendingInvitations,
+      organization: {
+        id: organization.id,
+        name: organization.name,
+        slug: organization.slug,
+        metadata: organization.metadata,
+      },
+      inviterName: user.name,
+    })
+    .from(pendingInvitations)
+    .leftJoin(organization, eq(pendingInvitations.organizationId, organization.id))
+    .leftJoin(user, eq(pendingInvitations.invitedByUserId, user.id))
+    .where(and(eq(pendingInvitations.token, token), isNull(pendingInvitations.deletedAt)))
+    .limit(1);
+
+  return row ?? null;
+}
+
+// Miroir de `ORG_TYPES` dans `app/(auth)/onboarding/page.tsx` — dupliqué ici
+// plutôt qu'importé depuis un Client Component. Garde nécessaire : un type
+// inconnu ferait planter `t("onboarding.orgTypes.<type>")` côté page.
+const KNOWN_ORG_TYPES = ["student", "ngo", "community", "network", "other"] as const;
+
+/** Type d'organisation saisi à l'onboarding, stocké en JSON dans `organization.metadata`. */
+export function parseOrganizationType(metadata: string | null): string | null {
+  if (!metadata) return null;
+  try {
+    const parsed = JSON.parse(metadata) as { type?: unknown };
+    return (KNOWN_ORG_TYPES as readonly string[]).includes(parsed.type as string)
+      ? (parsed.type as string)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Existe-t-il déjà un compte AssoHub pour cet email ? Pilote le CTA intelligent. */
+export async function findUserIdByEmail(email: string): Promise<string | null> {
+  const [row] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, email))
+    .limit(1);
+  return row?.id ?? null;
 }

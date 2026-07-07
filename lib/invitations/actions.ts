@@ -118,6 +118,7 @@ export async function inviteMember(
       phoneNumber: phoneE164,
       email: data.email,
       intendedRole: data.intendedRole,
+      personalMessage: data.personalMessage ?? null,
       token,
       invitedByUserId: userId,
       expiresAt,
@@ -203,7 +204,7 @@ export async function resendInvitation(
       organizationName: organization.name,
       inviterName,
       roleLabel: tMembers(`roles.${existing.intendedRole}`),
-      personalMessage: null,
+      personalMessage: existing.personalMessage,
       acceptUrl: `${getAppUrl()}/invitations/accept/${existing.token}`,
     });
   } catch (error) {
