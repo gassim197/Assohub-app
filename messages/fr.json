@@ -70,7 +70,9 @@
       "directory": "Annuaire",
       "invitations": "Invitations",
       "invitationsWithCount": "Invitations ({count} en attente)",
-      "inviteLink": "Lien d'invitation"
+      "inviteLink": "Lien d'invitation",
+      "joinRequests": "Demandes d'adhésion",
+      "joinRequestsWithCount": "Demandes d'adhésion ({count})"
     },
     "kpis": {
       "total": "Total des membres",
@@ -201,6 +203,31 @@
       "cancel": "Annuler",
       "success": "Membre archivé.",
       "error": "Le membre n'a pas pu être archivé. Veuillez réessayer."
+    },
+    "joinRequests": {
+      "empty": "Aucune demande d'adhésion en attente.",
+      "table": {
+        "name": "Nom",
+        "contact": "Contact",
+        "role": "Rôle",
+        "requestedAt": "Demandé le"
+      },
+      "actions": {
+        "label": "Ouvrir le menu d'actions",
+        "approve": "Approuver",
+        "reject": "Refuser"
+      },
+      "approveSuccess": "Demande approuvée. La personne a maintenant accès à l'organisation.",
+      "approveError": "La demande n'a pas pu être approuvée. Veuillez réessayer.",
+      "rejectConfirm": {
+        "title": "Refuser cette demande ?",
+        "description": "La demande d'adhésion de {fullName} sera refusée et supprimée. Cette action est irréversible.",
+        "confirm": "Refuser la demande",
+        "submitting": "Refus…",
+        "back": "Annuler",
+        "success": "Demande refusée.",
+        "error": "La demande n'a pas pu être refusée. Veuillez réessayer."
+      }
     }
   },
   "invitations": {

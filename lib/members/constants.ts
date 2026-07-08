@@ -36,6 +36,15 @@ export const MEMBER_STATUSES = [
 
 export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
+/**
+ * Statut réservé aux demandes d'adhésion via lien partageable en mode
+ * "validation manuelle" (volet 4 de la 4B, checkpoint 3). Volontairement HORS
+ * `MEMBER_STATUSES` (donc jamais sélectionnable dans le CRUD manuel) : une
+ * ligne dans cet état ne devient un vrai membre qu'après validation par
+ * `approveJoinRequest`.
+ */
+export const PENDING_VALIDATION_STATUS = "en_attente_validation";
+
 export const DEFAULT_MEMBER_STATUS: MemberStatus = "actif";
 
 // Statuts qui matérialisent une sortie : on remplit `left_at` au passage. La

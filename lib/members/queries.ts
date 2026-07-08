@@ -1,8 +1,12 @@
-import { and, count, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, ilike, isNull, ne, or, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { associationMembers } from "@/lib/db/members-schema";
-import { MEMBERS_PAGE_SIZE, type MemberStatus } from "./constants";
+import {
+  MEMBERS_PAGE_SIZE,
+  PENDING_VALIDATION_STATUS,
+  type MemberStatus,
+} from "./constants";
 
 export type MemberRow = typeof associationMembers.$inferSelect;
 
@@ -39,6 +43,11 @@ export async function listMembers({
 
   if (status !== "all") {
     conditions.push(eq(associationMembers.status, status));
+  } else {
+    // "Tous" reste un filtre du CRUD manuel : les demandes d'adhésion en
+    // attente de validation (volet 4 de la 4B) ont leur propre onglet dédié,
+    // elles ne doivent pas se mélanger au répertoire.
+    conditions.push(ne(associationMembers.status, PENDING_VALIDATION_STATUS));
   }
 
   const term = search?.trim();
@@ -117,6 +126,9 @@ export async function getMemberKpis(
   const inOrg = and(
     eq(associationMembers.organizationId, organizationId),
     isNull(associationMembers.deletedAt),
+    // Les demandes d'adhésion en attente de validation ne sont pas encore
+    // des membres : exclues des KPI comme du répertoire.
+    ne(associationMembers.status, PENDING_VALIDATION_STATUS),
   );
   const active = and(inOrg, eq(associationMembers.status, "actif"));
 
@@ -138,4 +150,25 @@ export async function getMemberKpis(
     activeTotal: Number(activeResult[0]?.value ?? 0),
     new30d: Number(recentResult[0]?.value ?? 0),
   };
+}
+
+/**
+ * Demandes d'adhésion en attente de validation (volet 4 de la 4B, checkpoint
+ * 3) : lignes créées par `registerAndJoinViaLink`/`joinViaInviteLink` quand
+ * le lien partageable utilisé est en mode "validation manuelle".
+ */
+export async function listPendingJoinRequests(
+  organizationId: string,
+): Promise<MemberRow[]> {
+  return db
+    .select()
+    .from(associationMembers)
+    .where(
+      and(
+        eq(associationMembers.organizationId, organizationId),
+        eq(associationMembers.status, PENDING_VALIDATION_STATUS),
+        isNull(associationMembers.deletedAt),
+      ),
+    )
+    .orderBy(desc(associationMembers.createdAt));
 }

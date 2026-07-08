@@ -3,7 +3,12 @@ import { Download, Mail, Plus, Upload, Users } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
-import { getMemberById, getMemberKpis, listMembers } from "@/lib/members/queries";
+import {
+  getMemberById,
+  getMemberKpis,
+  listMembers,
+  listPendingJoinRequests,
+} from "@/lib/members/queries";
 import {
   STATUS_BADGE_VARIANT,
   STATUS_I18N_KEY,
@@ -33,6 +38,7 @@ import { MembersPagination } from "@/components/members/members-pagination";
 import { MembersToolbar } from "@/components/members/members-toolbar";
 import { MemberFormDialog } from "@/components/members/member-form-dialog";
 import { MemberRowActions } from "@/components/members/member-row-actions";
+import { PendingJoinRequestsTab } from "@/components/members/pending-join-requests-tab";
 import { InviteMemberDialog } from "@/components/invitations/invite-member-dialog";
 import { PendingInvitationsTab } from "@/components/invitations/pending-invitations-tab";
 import { InviteLinkTab } from "@/components/invitations/invite-link-tab";
@@ -72,11 +78,12 @@ export default async function MembersPage({
   const status = parseStatus(readParam(sp.status));
   const page = Math.max(1, Number(readParam(sp.page)) || 1);
 
-  const [kpis, list, invitations, activeInviteLink] = await Promise.all([
+  const [kpis, list, invitations, activeInviteLink, joinRequests] = await Promise.all([
     getMemberKpis(organizationId),
     listMembers({ organizationId, status, search, page }),
     listPendingInvitations(organizationId),
     getActiveOrganizationInviteLink(organizationId),
+    listPendingJoinRequests(organizationId),
   ]);
   const pendingInvitationsCount = countActuallyPending(invitations);
 
@@ -150,6 +157,11 @@ export default async function MembersPage({
               : t("tabs.invitations")}
           </TabsTrigger>
           <TabsTrigger value="inviteLink">{t("tabs.inviteLink")}</TabsTrigger>
+          <TabsTrigger value="joinRequests">
+            {joinRequests.length > 0
+              ? t("tabs.joinRequestsWithCount", { count: joinRequests.length })
+              : t("tabs.joinRequests")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="directory" className="space-y-6 pt-4">
@@ -288,6 +300,10 @@ export default async function MembersPage({
             organizationName={organization.name}
             activeLink={activeInviteLink}
           />
+        </TabsContent>
+
+        <TabsContent value="joinRequests" className="pt-4">
+          <PendingJoinRequestsTab orgSlug={orgSlug} requests={joinRequests} />
         </TabsContent>
       </Tabs>
 

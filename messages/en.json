@@ -70,7 +70,9 @@
       "directory": "Directory",
       "invitations": "Invitations",
       "invitationsWithCount": "Invitations ({count} pending)",
-      "inviteLink": "Invite link"
+      "inviteLink": "Invite link",
+      "joinRequests": "Join requests",
+      "joinRequestsWithCount": "Join requests ({count})"
     },
     "kpis": {
       "total": "Total members",
@@ -201,6 +203,31 @@
       "cancel": "Cancel",
       "success": "Member archived.",
       "error": "The member could not be archived. Please try again."
+    },
+    "joinRequests": {
+      "empty": "No pending join requests.",
+      "table": {
+        "name": "Name",
+        "contact": "Contact",
+        "role": "Role",
+        "requestedAt": "Requested on"
+      },
+      "actions": {
+        "label": "Open actions menu",
+        "approve": "Approve",
+        "reject": "Reject"
+      },
+      "approveSuccess": "Request approved. This person now has access to the organization.",
+      "approveError": "The request could not be approved. Please try again.",
+      "rejectConfirm": {
+        "title": "Reject this request?",
+        "description": "{fullName}'s join request will be rejected and removed. This action cannot be undone.",
+        "confirm": "Reject request",
+        "submitting": "Rejecting…",
+        "back": "Cancel",
+        "success": "Request rejected.",
+        "error": "The request could not be rejected. Please try again."
+      }
     }
   },
   "invitations": {

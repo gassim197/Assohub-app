@@ -6,9 +6,10 @@ import { and, eq, isNull, ne } from "drizzle-orm";
 import { requireOrgAccess } from "@/lib/auth/org";
 import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
+import { member } from "@/lib/db/auth-schema";
 import { associationMembers } from "@/lib/db/members-schema";
 import { toE164 } from "@/lib/phone";
-import { EXIT_STATUSES, type MemberStatus } from "./constants";
+import { EXIT_STATUSES, PENDING_VALIDATION_STATUS, type MemberStatus } from "./constants";
 import { changeStatusServerSchema, createMemberServerSchema } from "./schema";
 
 export type CreateMemberResult =
@@ -291,6 +292,105 @@ export async function softDeleteMember(
         and(
           eq(associationMembers.id, memberId),
           eq(associationMembers.organizationId, organizationId),
+          isNull(associationMembers.deletedAt),
+        ),
+      )
+      .returning({ id: associationMembers.id });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  if (!updated) {
+    return { ok: false, error: "notFound" };
+  }
+
+  revalidatePath(`/${orgSlug}/members`);
+  return { ok: true };
+}
+
+/**
+ * Approuve une demande d'adhésion en attente (volet 4 de la 4B, checkpoint 3,
+ * mode "validation manuelle" d'un lien partageable) : bascule le statut à
+ * "actif" et crée la ligne `member` (Better-Auth), jamais créée à
+ * l'inscription pour ce mode — c'est cette ligne qui donne l'accès dashboard.
+ *
+ * Restreint aux lignes `PENDING_VALIDATION_STATUS` : un `memberId` déjà actif,
+ * archivé, ou d'une autre organisation est traité comme introuvable — jamais
+ * un moyen détourné de re-déclencher l'accès d'un membre existant.
+ */
+export async function approveJoinRequest(
+  orgSlug: string,
+  memberId: string,
+): Promise<MemberActionResult> {
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  const [existing] = await db
+    .select({ userId: associationMembers.userId })
+    .from(associationMembers)
+    .where(
+      and(
+        eq(associationMembers.id, memberId),
+        eq(associationMembers.organizationId, organizationId),
+        eq(associationMembers.status, PENDING_VALIDATION_STATUS),
+        isNull(associationMembers.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  // Le userId est toujours renseigné pour une demande via lien (compte requis
+  // pour s'inscrire) — un enregistrement sans userId n'est pas une vraie
+  // demande d'adhésion validable.
+  if (!existing || !existing.userId) {
+    return { ok: false, error: "notFound" };
+  }
+
+  try {
+    await db
+      .update(associationMembers)
+      .set({ status: "actif" })
+      .where(
+        and(
+          eq(associationMembers.id, memberId),
+          eq(associationMembers.organizationId, organizationId),
+        ),
+      );
+
+    await db.insert(member).values({
+      id: newId(),
+      organizationId,
+      userId: existing.userId,
+      role: "member",
+      createdAt: new Date(),
+    });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  revalidatePath(`/${orgSlug}/members`);
+  return { ok: true };
+}
+
+/**
+ * Refuse une demande d'adhésion en attente (volet 4 de la 4B, checkpoint 3) :
+ * soft delete, même convention que `cancelInvitation` — la personne n'a
+ * jamais eu de ligne `member`, il n'y a donc rien d'autre à défaire.
+ */
+export async function rejectJoinRequest(
+  orgSlug: string,
+  memberId: string,
+): Promise<MemberActionResult> {
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  let updated: { id: string } | undefined;
+  try {
+    [updated] = await db
+      .update(associationMembers)
+      .set({ deletedAt: new Date() })
+      .where(
+        and(
+          eq(associationMembers.id, memberId),
+          eq(associationMembers.organizationId, organizationId),
+          eq(associationMembers.status, PENDING_VALIDATION_STATUS),
           isNull(associationMembers.deletedAt),
         ),
       )
