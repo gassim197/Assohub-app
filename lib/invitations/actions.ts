@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 
 import { auth } from "@/lib/auth";
@@ -19,12 +19,24 @@ import {
 import { toE164 } from "@/lib/phone";
 import { getAppUrl } from "@/lib/url";
 import { sendInvitationEmail } from "@/lib/email/invitation-email";
-import { INVITATION_EXPIRY_DAYS, resolveAcceptPageState, resolveInviteLinkExpiresAt } from "./constants";
-import { findUserIdByEmail, getInvitationByToken } from "./queries";
+import {
+  INVITATION_EXPIRY_DAYS,
+  isInviteLinkAcceptanceMode,
+  resolveAcceptPageState,
+  resolveInviteLinkExpiresAt,
+  resolveInviteLinkPageState,
+} from "./constants";
+import {
+  findAssociationMemberByUser,
+  findUserIdByEmail,
+  getInvitationByToken,
+  getInviteLinkByToken,
+} from "./queries";
 import {
   generateInviteLinkServerSchema,
   inviteMemberServerSchema,
   registerInviteeServerSchema,
+  registerViaLinkServerSchema,
 } from "./schema";
 import { generateInvitationToken } from "./tokens";
 
@@ -632,4 +644,233 @@ export async function revokeOrganizationInviteLink(
 
   revalidatePath(`/${orgSlug}/members`);
   return { ok: true };
+}
+
+export type RegisterAndJoinViaLinkResult = {
+  ok: false;
+  error: "invalidLink" | "validation" | "phoneInvalid" | "emailAlreadyExists" | "unknown";
+};
+
+/**
+ * Inscription + rattachement via lien d'invitation partageable (volet 4 de la
+ * 4B, checkpoint 2). Contrairement à `registerAndJoin` (invitation
+ * nominative), l'email n'est pas connu à l'avance : c'est un champ du
+ * formulaire, d'où `emailAlreadyExists` en plus des erreurs habituelles.
+ *
+ * L'état du lien est re-vérifié ICI (pas seulement à l'affichage de la page) :
+ * un onglet resté ouvert ne doit pas pouvoir contourner une révocation, une
+ * expiration ou un quota atteint entre-temps.
+ *
+ * Mode `auto` → membre actif immédiat (ligne `member` créée, accès dashboard).
+ * Mode `manual` → `association_members` en `en_attente_validation`, PAS de
+ * ligne `member` (aucun accès tant qu'un admin n'a pas validé la demande).
+ */
+export async function registerAndJoinViaLink(
+  token: string,
+  raw: unknown,
+): Promise<RegisterAndJoinViaLinkResult> {
+  const data = await getInviteLinkByToken(token);
+  const state = resolveInviteLinkPageState(data);
+  if (state !== "active") {
+    return { ok: false, error: "invalidLink" };
+  }
+  const { link, organization } = data!;
+  // `organization` est garanti non-null : resolveInviteLinkPageState renvoie
+  // "orgDeleted" (donc pas "active") sinon.
+  const org = organization!;
+
+  const parsed = registerViaLinkServerSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "validation" };
+  }
+  const values = parsed.data;
+
+  const phoneE164 = toE164(values.phoneNumber);
+  if (!phoneE164) {
+    return { ok: false, error: "phoneInvalid" };
+  }
+
+  // Pré-check (UX) : l'autorité reste l'erreur de `signUpEmail` plus bas, qui
+  // couvre la course entre ce check et la création effective du compte.
+  const existingUserId = await findUserIdByEmail(values.email);
+  if (existingUserId) {
+    return { ok: false, error: "emailAlreadyExists" };
+  }
+
+  let newUserId: string;
+  try {
+    const result = await auth.api.signUpEmail({
+      body: {
+        name: values.fullName,
+        email: values.email,
+        password: values.password,
+      },
+    });
+    newUserId = result.user.id;
+  } catch {
+    return { ok: false, error: "emailAlreadyExists" };
+  }
+
+  const acceptanceMode = isInviteLinkAcceptanceMode(link.acceptanceMode)
+    ? link.acceptanceMode
+    : "auto";
+  const status = acceptanceMode === "auto" ? "actif" : "en_attente_validation";
+
+  try {
+    await db.insert(associationMembers).values({
+      id: newId(),
+      organizationId: org.id,
+      userId: newUserId,
+      fullName: values.fullName,
+      phoneNumber: phoneE164,
+      email: values.email,
+      role: link.defaultRole,
+      status,
+    });
+  } catch {
+    await db.delete(user).where(eq(user.id, newUserId));
+    return { ok: false, error: "unknown" };
+  }
+
+  if (acceptanceMode === "auto") {
+    try {
+      await db.insert(member).values({
+        id: newId(),
+        organizationId: org.id,
+        userId: newUserId,
+        role: "member",
+        createdAt: new Date(),
+      });
+    } catch {
+      await db
+        .delete(associationMembers)
+        .where(
+          and(
+            eq(associationMembers.organizationId, org.id),
+            eq(associationMembers.userId, newUserId),
+          ),
+        );
+      await db.delete(user).where(eq(user.id, newUserId));
+      return { ok: false, error: "unknown" };
+    }
+  }
+
+  try {
+    await db
+      .update(organizationInviteLinks)
+      .set({ usesCount: sql`${organizationInviteLinks.usesCount} + 1` })
+      .where(eq(organizationInviteLinks.id, link.id));
+  } catch (error) {
+    console.error(
+      "[invitations] échec de l'incrément usesCount (inscription via lien)",
+      error,
+    );
+  }
+
+  if (acceptanceMode === "auto") {
+    revalidatePath(`/${org.slug}`);
+    redirect(`/${org.slug}?welcome=true`);
+  }
+
+  redirect("/join/pending");
+}
+
+export type JoinViaInviteLinkResult =
+  | { ok: false; error: "invalidLink" | "unauthenticated" | "unknown" };
+
+/**
+ * Rattachement via lien partageable pour un visiteur déjà authentifié (volet
+ * 4 de la 4B, checkpoint 2). Pas de vérification d'email (contrairement à
+ * `joinExistingOrganization`) : un lien partageable n'a pas de destinataire
+ * nommé — seule la contrainte "pas déjà membre" s'applique, déjà vérifiée en
+ * amont par la page (`AlreadyMemberNotice`, brief point A) ; le check ici est
+ * une défense en profondeur/idempotence (double clic, onglet dupliqué).
+ */
+export async function joinViaInviteLink(
+  token: string,
+): Promise<JoinViaInviteLinkResult> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return { ok: false, error: "unauthenticated" };
+  }
+
+  const data = await getInviteLinkByToken(token);
+  const state = resolveInviteLinkPageState(data);
+  if (state !== "active") {
+    return { ok: false, error: "invalidLink" };
+  }
+  const { link, organization } = data!;
+  const org = organization!;
+  const userId = session.user.id;
+
+  const existing = await findAssociationMemberByUser(org.id, userId);
+
+  if (existing) {
+    // Idempotent : déjà membre actif, ou demande déjà en attente — dans les
+    // deux cas, aucune nouvelle écriture n'est nécessaire.
+    redirect(existing.status === "actif" ? `/${org.slug}` : "/join/pending");
+  }
+
+  const acceptanceMode = isInviteLinkAcceptanceMode(link.acceptanceMode)
+    ? link.acceptanceMode
+    : "auto";
+  const status = acceptanceMode === "auto" ? "actif" : "en_attente_validation";
+
+  try {
+    await db.insert(associationMembers).values({
+      id: newId(),
+      organizationId: org.id,
+      userId,
+      fullName: session.user.name,
+      // Pas de saisie de téléphone dans ce flow (compte déjà existant) —
+      // même convention que `joinExistingOrganization`.
+      phoneNumber: "",
+      email: session.user.email,
+      role: link.defaultRole,
+      status,
+    });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  if (acceptanceMode === "auto") {
+    try {
+      await db.insert(member).values({
+        id: newId(),
+        organizationId: org.id,
+        userId,
+        role: "member",
+        createdAt: new Date(),
+      });
+    } catch {
+      await db
+        .delete(associationMembers)
+        .where(
+          and(
+            eq(associationMembers.organizationId, org.id),
+            eq(associationMembers.userId, userId),
+          ),
+        );
+      return { ok: false, error: "unknown" };
+    }
+  }
+
+  try {
+    await db
+      .update(organizationInviteLinks)
+      .set({ usesCount: sql`${organizationInviteLinks.usesCount} + 1` })
+      .where(eq(organizationInviteLinks.id, link.id));
+  } catch (error) {
+    console.error(
+      "[invitations] échec de l'incrément usesCount (rejoindre via lien - compte existant)",
+      error,
+    );
+  }
+
+  if (acceptanceMode === "auto") {
+    revalidatePath(`/${org.slug}`);
+    redirect(`/${org.slug}?welcome=true`);
+  }
+
+  redirect("/join/pending");
 }

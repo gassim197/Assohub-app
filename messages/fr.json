@@ -367,6 +367,37 @@
           "title": "Lien épuisé",
           "description": "Ce lien d'invitation a atteint son nombre maximum d'utilisations. Contactez l'organisation pour en obtenir un nouveau."
         }
+      },
+      "cta": {
+        "join": "Rejoindre l'organisation",
+        "joining": "Adhésion en cours…",
+        "registerAndJoin": "Créer mon compte et rejoindre",
+        "creating": "Création du compte…"
+      },
+      "joinError": "Une erreur est survenue. Veuillez réessayer.",
+      "alreadyMember": {
+        "title": "Vous êtes déjà membre de {orgName}",
+        "description": "Vous pouvez accéder directement à votre tableau de bord.",
+        "cta": "Aller au tableau de bord"
+      },
+      "alreadyPending": "Votre demande d'adhésion à {orgName} est déjà en attente de validation par un administrateur.",
+      "register": {
+        "phone": "Téléphone",
+        "phoneHint": "Requis pour rejoindre l'organisation.",
+        "errors": {
+          "nameMin": "Le nom doit comporter au moins 2 caractères.",
+          "emailInvalid": "Adresse email invalide.",
+          "phoneInvalid": "Numéro de téléphone invalide.",
+          "passwordMin": "8 caractères minimum.",
+          "passwordUppercase": "Au moins une majuscule requise.",
+          "passwordNumber": "Au moins un chiffre requis.",
+          "invalidLink": "Ce lien d'invitation n'est plus valide.",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
+      },
+      "pendingPage": {
+        "title": "Demande envoyée",
+        "description": "Votre demande d'adhésion a été envoyée. Un administrateur doit encore la valider avant que vous puissiez accéder à l'organisation."
       }
     },
     "inviteLink": {

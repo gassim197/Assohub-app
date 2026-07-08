@@ -367,6 +367,37 @@
           "title": "Link exhausted",
           "description": "This invite link has reached its maximum number of uses. Contact the organization to get a new one."
         }
+      },
+      "cta": {
+        "join": "Join the organization",
+        "joining": "Joining…",
+        "registerAndJoin": "Create my account and join",
+        "creating": "Creating account…"
+      },
+      "joinError": "An error occurred. Please try again.",
+      "alreadyMember": {
+        "title": "You're already a member of {orgName}",
+        "description": "You can go straight to your dashboard.",
+        "cta": "Go to dashboard"
+      },
+      "alreadyPending": "Your request to join {orgName} is already pending review by an administrator.",
+      "register": {
+        "phone": "Phone",
+        "phoneHint": "Required to join the organization.",
+        "errors": {
+          "nameMin": "The name must be at least 2 characters long.",
+          "emailInvalid": "Invalid email address.",
+          "phoneInvalid": "Invalid phone number.",
+          "passwordMin": "8 characters minimum.",
+          "passwordUppercase": "At least one uppercase letter required.",
+          "passwordNumber": "At least one digit required.",
+          "invalidLink": "This invite link is no longer valid.",
+          "generic": "An error occurred. Please try again."
+        }
+      },
+      "pendingPage": {
+        "title": "Request sent",
+        "description": "Your request to join has been sent. An administrator still needs to approve it before you can access the organization."
       }
     },
     "inviteLink": {

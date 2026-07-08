@@ -1,6 +1,11 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { auth } from "@/lib/auth";
 import {
+  findAssociationMemberByUser,
   getInviteLinkByToken,
   parseOrganizationType,
 } from "@/lib/invitations/queries";
@@ -9,15 +14,16 @@ import {
   resolveInviteLinkPageState,
 } from "@/lib/invitations/constants";
 import { isMemberRole } from "@/lib/members/constants";
+import { AlreadyMemberNotice } from "@/components/invitations/already-member-notice";
 import { InviteLinkAcceptCard } from "@/components/invitations/invite-link-accept-card";
 import { InvitationErrorState } from "@/components/invitations/invitation-error-state";
+import { JoinViaLinkButton } from "@/components/invitations/join-via-link-button";
+import { RegisterViaLinkForm } from "@/components/invitations/register-via-link-form";
 
 /**
  * Route publique de consommation du lien d'invitation partageable (volet 4
- * de la 4B, checkpoint 1 : états en lecture seule uniquement — le lien n'a
- * pas encore de bouton "Rejoindre" fonctionnel, ajouté au checkpoint 2). Le
- * `token` est la seule clé d'autorisation : pas de `requireOrgAccess`, pas
- * d'`orgSlug` dans l'URL — voir `getInviteLinkByToken`.
+ * de la 4B). Le `token` est la seule clé d'autorisation : pas de
+ * `requireOrgAccess`, pas d'`orgSlug` dans l'URL — voir `getInviteLinkByToken`.
  */
 export default async function JoinInviteLinkPage({
   params,
@@ -26,9 +32,11 @@ export default async function JoinInviteLinkPage({
 }) {
   const { token } = await params;
 
-  const [data, t, tOnboarding, tMembers, locale] = await Promise.all([
+  const [data, session, t, tAuth, tOnboarding, tMembers, locale] = await Promise.all([
     getInviteLinkByToken(token),
+    auth.api.getSession({ headers: await headers() }),
     getTranslations("invitations.join"),
+    getTranslations("auth"),
     getTranslations("onboarding"),
     getTranslations("members"),
     getLocale(),
@@ -89,14 +97,41 @@ export default async function JoinInviteLinkPage({
   }
 
   // state === "active" — cas nominal.
-  const organizationName = organization!.name;
-  const organizationType = parseOrganizationType(organization!.metadata);
+  const org = organization!;
+  const organizationName = org.name;
+  const organizationType = parseOrganizationType(org.metadata);
   const roleLabel = isMemberRole(link.defaultRole)
     ? tMembers(`roles.${link.defaultRole}`)
     : link.defaultRole;
   const acceptanceMode = isInviteLinkAcceptanceMode(link.acceptanceMode)
     ? link.acceptanceMode
     : "auto";
+
+  const existingMembership = session
+    ? await findAssociationMemberByUser(org.id, session.user.id)
+    : null;
+
+  // Déjà membre actif : rien à faire ici, accès direct au tableau de bord
+  // (brief 4B volet 4, point A) — jamais un message d'erreur, pas de doublon
+  // possible en base.
+  if (existingMembership?.status === "actif") {
+    return (
+      <AlreadyMemberNotice orgSlug={org.slug} organizationName={organizationName} />
+    );
+  }
+
+  // Demande déjà soumise (mode manuel) : pas de nouveau bouton, juste un
+  // rappel à la place de la note habituelle sur le mode d'acceptation.
+  const modeNote = existingMembership
+    ? t("alreadyPending", { orgName: organizationName })
+    : t(`modeNote.${acceptanceMode}`);
+
+  let primaryAction: ReactNode = null;
+  if (!existingMembership && session) {
+    primaryAction = <JoinViaLinkButton token={token} />;
+  }
+
+  const showRegisterForm = !session && !existingMembership;
 
   return (
     <div className="flex flex-col items-center gap-6 text-center">
@@ -114,8 +149,24 @@ export default async function JoinInviteLinkPage({
         }
         roleLabelText={t("roleLabel")}
         roleLabel={roleLabel}
-        modeNote={t(`modeNote.${acceptanceMode}`)}
+        modeNote={modeNote}
+        primaryAction={primaryAction}
       />
+
+      {showRegisterForm && (
+        <>
+          <RegisterViaLinkForm token={token} />
+          <p className="text-sm text-muted-foreground">
+            {tAuth("alreadyHaveAccount")}{" "}
+            <Link
+              href={`/login?redirect=${encodeURIComponent(`/join/${token}`)}`}
+              className="underline underline-offset-4"
+            >
+              {tAuth("signIn")}
+            </Link>
+          </p>
+        </>
+      )}
     </div>
   );
 }

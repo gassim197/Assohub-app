@@ -2,7 +2,11 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { organization, user } from "@/lib/db/auth-schema";
-import { organizationInviteLinks, pendingInvitations } from "@/lib/db/members-schema";
+import {
+  associationMembers,
+  organizationInviteLinks,
+  pendingInvitations,
+} from "@/lib/db/members-schema";
 
 export type PendingInvitationRow = typeof pendingInvitations.$inferSelect;
 
@@ -170,6 +174,36 @@ export async function getInviteLinkByToken(
       and(
         eq(organizationInviteLinks.token, token),
         isNull(organizationInviteLinks.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  return row ?? null;
+}
+
+export interface AssociationMemberLookup {
+  id: string;
+  status: string;
+}
+
+/**
+ * Cherche la fiche `association_members` d'un utilisateur dans une
+ * organisation (volet 4 de la 4B, checkpoint 2) : pilote à la fois l'état
+ * "déjà membre" (point A du brief) et l'idempotence de `joinViaInviteLink`
+ * (une demande déjà soumise ne doit pas être dupliquée).
+ */
+export async function findAssociationMemberByUser(
+  organizationId: string,
+  userId: string,
+): Promise<AssociationMemberLookup | null> {
+  const [row] = await db
+    .select({ id: associationMembers.id, status: associationMembers.status })
+    .from(associationMembers)
+    .where(
+      and(
+        eq(associationMembers.organizationId, organizationId),
+        eq(associationMembers.userId, userId),
+        isNull(associationMembers.deletedAt),
       ),
     )
     .limit(1);

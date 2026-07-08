@@ -157,3 +157,46 @@ export const generateInviteLinkServerSchema = buildGenerateInviteLinkSchema(
 );
 
 export type GenerateInviteLinkValues = z.output<typeof generateInviteLinkServerSchema>;
+
+/**
+ * Messages du formulaire d'inscription via lien partageable (volet 4 de la
+ * 4B, checkpoint 2). Contrairement à `RegisterInviteeFormMessages`, `email`
+ * est un champ du formulaire : aucune invitation nommée n'en fixe la valeur
+ * à l'avance.
+ */
+export interface RegisterViaLinkFormMessages {
+  nameMin: string;
+  emailInvalid: string;
+  phoneInvalid: string;
+  passwordMin: string;
+  passwordUppercase: string;
+  passwordNumber: string;
+}
+
+export function buildRegisterViaLinkSchema(m: RegisterViaLinkFormMessages) {
+  return z.object({
+    fullName: z.string().trim().min(2, m.nameMin),
+    email: z.email(m.emailInvalid),
+    phoneNumber: z.string().trim().refine(isValidPhone, m.phoneInvalid),
+    password: z
+      .string()
+      .min(8, m.passwordMin)
+      .regex(/[A-Z]/, m.passwordUppercase)
+      .regex(/[0-9]/, m.passwordNumber),
+  });
+}
+
+const RAW_REGISTER_VIA_LINK_MESSAGES: RegisterViaLinkFormMessages = {
+  nameMin: "nameMin",
+  emailInvalid: "emailInvalid",
+  phoneInvalid: "phoneInvalid",
+  passwordMin: "passwordMin",
+  passwordUppercase: "passwordUppercase",
+  passwordNumber: "passwordNumber",
+};
+
+export const registerViaLinkServerSchema = buildRegisterViaLinkSchema(
+  RAW_REGISTER_VIA_LINK_MESSAGES,
+);
+
+export type RegisterViaLinkValues = z.output<typeof registerViaLinkServerSchema>;
