@@ -233,7 +233,26 @@
       "roleLabel": "Proposed role",
       "cta": {
         "registerAndJoin": "Create my account and join",
-        "loginAndJoin": "Sign in and join"
+        "loginAndJoin": "Sign in and join",
+        "join": "Join the organization",
+        "joining": "Joining…",
+        "decline": "Decline invitation"
+      },
+      "join": {
+        "error": "An error occurred. Please try again."
+      },
+      "sessionMismatch": {
+        "description": "You're signed in as {sessionEmail}, but this invitation is addressed to {invitationEmail}.",
+        "signOut": "Sign out",
+        "signingOut": "Signing out…"
+      },
+      "decline": {
+        "title": "Decline this invitation?",
+        "description": "Are you sure you want to decline the invitation to join {orgName}?",
+        "confirm": "Decline invitation",
+        "submitting": "Declining…",
+        "back": "Cancel",
+        "error": "An error occurred. Please try again."
       },
       "footer": {
         "tagline": "The digital backbone of African organizations",
@@ -313,6 +332,10 @@
         "success": "Invitation cancelled.",
         "error": "The invitation could not be cancelled. Please try again."
       }
+    },
+    "declinedPage": {
+      "title": "Invitation declined",
+      "description": "Thanks for responding. You can close this window."
     }
   },
   "cotisations": {

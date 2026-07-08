@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { signIn } from "@/lib/auth/client";
@@ -34,14 +34,28 @@ const loginSchema = z.object({
 
 type LoginValues = z.infer<typeof loginSchema>;
 
+/**
+ * `redirect` vient de l'URL (lien "Se connecter et rejoindre" d'une
+ * invitation, volet 2 de la 4B) : on n'accepte qu'un chemin relatif interne
+ * pour écarter l'open redirect (`//evil.com`, `https://...`).
+ */
+function safeRedirect(value: string | null): string | null {
+  if (!value) return null;
+  return value.startsWith("/") && !value.startsWith("//") ? value : null;
+}
+
 export default function LoginPage() {
   const t = useTranslations();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const redirectTo = safeRedirect(searchParams.get("redirect"));
+  const prefillEmail = searchParams.get("email") ?? "";
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: prefillEmail, password: "" },
   });
 
   async function onSubmit(values: LoginValues) {
@@ -54,7 +68,7 @@ export default function LoginPage() {
       setServerError(t("auth.invalidCredentials"));
       return;
     }
-    router.push("/");
+    router.push(redirectTo ?? "/");
   }
 
   return (

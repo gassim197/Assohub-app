@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
@@ -372,4 +373,155 @@ export async function registerAndJoin(
 
   revalidatePath(`/${org.slug}`);
   redirect(`/${org.slug}?welcome=true`);
+}
+
+export type JoinExistingOrganizationResult = {
+  ok: false;
+  error: "invalidInvitation" | "sessionMismatch" | "unauthenticated" | "unknown";
+};
+
+/**
+ * Rattache un utilisateur déjà authentifié à l'organisation de l'invitation
+ * (volet 2 de la 4B, checkpoint 3a — arrivée sur `/invitations/accept/[token]`
+ * après un `/login?redirect=...&email=...`).
+ *
+ * Défense en profondeur : re-vérifie la session ET que son email correspond
+ * bien à celui de l'invitation, même si l'UI n'affiche ce bouton que dans ce
+ * cas précis (le token seul ne suffit plus à autoriser l'action une fois un
+ * compte impliqué).
+ */
+export async function joinExistingOrganization(
+  token: string,
+): Promise<JoinExistingOrganizationResult> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return { ok: false, error: "unauthenticated" };
+  }
+
+  const data = await getInvitationByToken(token);
+  const state = resolveAcceptPageState(data);
+  if (state !== "pending") {
+    return { ok: false, error: "invalidInvitation" };
+  }
+  const { invitation, organization } = data!;
+  const org = organization!;
+
+  if (session.user.email !== invitation.email) {
+    return { ok: false, error: "sessionMismatch" };
+  }
+
+  const userId = session.user.id;
+
+  // Idempotent : un double-clic ou un rechargement ne doit pas dupliquer les
+  // lignes `association_members`/`member` si l'une des deux existe déjà.
+  const [existingAssociationMember] = await db
+    .select({ id: associationMembers.id })
+    .from(associationMembers)
+    .where(
+      and(
+        eq(associationMembers.organizationId, org.id),
+        eq(associationMembers.userId, userId),
+        isNull(associationMembers.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  let createdAssociationMember = false;
+  if (!existingAssociationMember) {
+    try {
+      await db.insert(associationMembers).values({
+        id: newId(),
+        organizationId: org.id,
+        userId,
+        fullName: session.user.name,
+        // Pas de saisie de téléphone dans ce flow (compte déjà existant) :
+        // on reprend celui de l'invitation si renseigné, sinon vide — même
+        // convention que `ensureFounderMember`, à compléter via le CRUD Membres.
+        phoneNumber: invitation.phoneNumber ?? "",
+        email: invitation.email,
+        role: invitation.intendedRole,
+        status: "actif",
+      });
+      createdAssociationMember = true;
+    } catch {
+      return { ok: false, error: "unknown" };
+    }
+  }
+
+  const [existingLink] = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(and(eq(member.organizationId, org.id), eq(member.userId, userId)))
+    .limit(1);
+
+  if (!existingLink) {
+    try {
+      await db.insert(member).values({
+        id: newId(),
+        organizationId: org.id,
+        userId,
+        role: "member",
+        createdAt: new Date(),
+      });
+    } catch {
+      if (createdAssociationMember) {
+        await db
+          .delete(associationMembers)
+          .where(
+            and(
+              eq(associationMembers.organizationId, org.id),
+              eq(associationMembers.userId, userId),
+            ),
+          );
+      }
+      return { ok: false, error: "unknown" };
+    }
+  }
+
+  try {
+    await db
+      .update(pendingInvitations)
+      .set({ acceptedAt: new Date() })
+      .where(
+        and(eq(pendingInvitations.id, invitation.id), eq(pendingInvitations.token, token)),
+      );
+  } catch (error) {
+    console.error(
+      "[invitations] échec du marquage accepted_at (rejoindre - compte existant)",
+      error,
+    );
+  }
+
+  revalidatePath(`/${org.slug}`);
+  redirect(`/${org.slug}?welcome=true`);
+}
+
+export type DeclineInvitationResult = { ok: false; error: "invalidInvitation" | "unknown" };
+
+/**
+ * Refus d'invitation (volet 2 de la 4B, checkpoint 3b) : public, pas de
+ * session requise. Le token reste la seule autorité.
+ */
+export async function declineInvitation(
+  token: string,
+): Promise<DeclineInvitationResult> {
+  const data = await getInvitationByToken(token);
+  const state = resolveAcceptPageState(data);
+  if (state !== "pending") {
+    return { ok: false, error: "invalidInvitation" };
+  }
+  const { invitation } = data!;
+
+  try {
+    await db
+      .update(pendingInvitations)
+      .set({ declinedAt: new Date() })
+      .where(
+        and(eq(pendingInvitations.id, invitation.id), eq(pendingInvitations.token, token)),
+      );
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  redirect("/invitations/declined");
 }

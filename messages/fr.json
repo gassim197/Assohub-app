@@ -233,7 +233,26 @@
       "roleLabel": "Rôle proposé",
       "cta": {
         "registerAndJoin": "Créer mon compte et rejoindre",
-        "loginAndJoin": "Se connecter et rejoindre"
+        "loginAndJoin": "Se connecter et rejoindre",
+        "join": "Rejoindre l'organisation",
+        "joining": "Adhésion en cours…",
+        "decline": "Refuser l'invitation"
+      },
+      "join": {
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "sessionMismatch": {
+        "description": "Vous êtes connecté(e) en tant que {sessionEmail}, mais cette invitation est adressée à {invitationEmail}.",
+        "signOut": "Se déconnecter",
+        "signingOut": "Déconnexion…"
+      },
+      "decline": {
+        "title": "Refuser cette invitation ?",
+        "description": "Êtes-vous sûr de vouloir refuser l'invitation à rejoindre {orgName} ?",
+        "confirm": "Refuser l'invitation",
+        "submitting": "Refus…",
+        "back": "Annuler",
+        "error": "Une erreur est survenue. Veuillez réessayer."
       },
       "footer": {
         "tagline": "L'infrastructure numérique des organisations africaines",
@@ -313,6 +332,10 @@
         "success": "Invitation annulée.",
         "error": "L'invitation n'a pas pu être annulée. Veuillez réessayer."
       }
+    },
+    "declinedPage": {
+      "title": "Invitation refusée",
+      "description": "Merci d'avoir répondu. Vous pouvez fermer cette fenêtre."
     }
   },
   "cotisations": {

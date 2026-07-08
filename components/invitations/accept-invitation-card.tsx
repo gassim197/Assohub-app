@@ -1,15 +1,18 @@
-import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 /**
  * Card centrale du cas nominal de `/invitations/accept/[token]` (volet 2 de
  * la 4B) : identité de l'organisation, rôle proposé, message personnel
  * éventuel (même traitement visuel que le template email — barre latérale
- * emerald, cf. `lib/email/invitation-email.ts`), puis le CTA détecté par la
- * page (inscription ou connexion selon qu'un compte existe déjà).
+ * emerald, cf. `lib/email/invitation-email.ts`).
+ *
+ * `primaryAction`/`secondaryAction` sont des slots (pas un simple
+ * `{label,href}`) : la page décide s'il s'agit d'un lien (inscription/
+ * connexion) ou d'un bouton d'action (rejoindre, refuser) selon l'état de
+ * session détecté (checkpoint 3a/3b).
  */
 export function AcceptInvitationCard({
   organizationName,
@@ -17,14 +20,16 @@ export function AcceptInvitationCard({
   roleLabelText,
   roleLabel,
   personalMessage,
-  primaryCta,
+  primaryAction,
+  secondaryAction,
 }: {
   organizationName: string;
   organizationTypeLabel: string | null;
   roleLabelText: string;
   roleLabel: string;
   personalMessage: string | null;
-  primaryCta: { label: string; href: string };
+  primaryAction: ReactNode;
+  secondaryAction?: ReactNode;
 }) {
   return (
     <Card>
@@ -51,9 +56,10 @@ export function AcceptInvitationCard({
           </p>
         )}
 
-        <Button className="w-full" render={<Link href={primaryCta.href} />}>
-          {primaryCta.label}
-        </Button>
+        <div className="flex w-full flex-col gap-2">
+          {primaryAction}
+          {secondaryAction}
+        </div>
       </CardContent>
     </Card>
   );
