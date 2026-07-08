@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { WhatsappShareButton } from "./whatsapp-share-button";
 
 export interface ActiveInviteLink {
   id: string;
@@ -39,9 +40,11 @@ export interface ActiveInviteLink {
  */
 export function InviteLinkCard({
   orgSlug,
+  organizationName,
   link,
 }: {
   orgSlug: string;
+  organizationName: string;
   link: ActiveInviteLink;
 }) {
   const t = useTranslations("invitations.inviteLink");
@@ -110,6 +113,8 @@ export function InviteLinkCard({
             {t("card.copy")}
           </Button>
         </div>
+
+        <WhatsappShareButton url={link.url} organizationName={organizationName} />
 
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
           <Button

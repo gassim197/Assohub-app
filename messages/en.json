@@ -356,8 +356,10 @@
         "modeAuto": "Automatic membership",
         "modeManual": "Manual review",
         "revoke": "Revoke link",
-        "generateNew": "Generate a new link"
+        "generateNew": "Generate a new link",
+        "whatsappShare": "Share on WhatsApp"
       },
+      "whatsappMessage": "Hi! I'm inviting you to join *{orgName}* on AssoHub — the platform that helps us manage our organization easily.\n\nClick here to join: {link}",
       "revokeConfirm": {
         "title": "Revoke this link?",
         "description": "People who have this link will no longer be able to use it to join the organization.",

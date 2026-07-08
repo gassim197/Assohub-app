@@ -13,9 +13,11 @@ import { InviteLinkEmptyState } from "./invite-link-empty-state";
  */
 export async function InviteLinkTab({
   orgSlug,
+  organizationName,
   activeLink,
 }: {
   orgSlug: string;
+  organizationName: string;
   activeLink: OrganizationInviteLinkRow | null;
 }) {
   if (!activeLink) {
@@ -28,6 +30,7 @@ export async function InviteLinkTab({
   return (
     <InviteLinkCard
       orgSlug={orgSlug}
+      organizationName={organizationName}
       link={{
         id: activeLink.id,
         url: `${getAppUrl()}/join/${activeLink.token}`,

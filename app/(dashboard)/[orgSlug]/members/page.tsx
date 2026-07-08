@@ -60,7 +60,7 @@ export default async function MembersPage({
 }) {
   const { orgSlug } = await params;
   const sp = await searchParams;
-  const { organizationId } = await requireOrgAccess(orgSlug);
+  const { organizationId, organization } = await requireOrgAccess(orgSlug);
 
   const [t, tc, locale] = await Promise.all([
     getTranslations("members"),
@@ -283,7 +283,11 @@ export default async function MembersPage({
         </TabsContent>
 
         <TabsContent value="inviteLink" className="pt-4">
-          <InviteLinkTab orgSlug={orgSlug} activeLink={activeInviteLink} />
+          <InviteLinkTab
+            orgSlug={orgSlug}
+            organizationName={organization.name}
+            activeLink={activeInviteLink}
+          />
         </TabsContent>
       </Tabs>
 
