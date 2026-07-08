@@ -88,3 +88,41 @@ export function resolveInviteLinkExpiresAt(
   date.setDate(date.getDate() + days);
   return date;
 }
+
+/**
+ * États affichables sur la page publique `/join/[token]` (volet 4 de la 4B) —
+ * pendant d'`AcceptPageState` pour le lien partageable. Pas d'équivalent
+ * "accepted"/"declined" : un lien reste utilisable par plusieurs personnes
+ * tant qu'il n'est pas révoqué/expiré/épuisé, contrairement à l'invitation
+ * nominative à usage unique.
+ */
+export type InviteLinkPageState =
+  | "notFound"
+  | "orgDeleted"
+  | "revoked"
+  | "expired"
+  | "exhausted"
+  | "active";
+
+export function resolveInviteLinkPageState(
+  data: {
+    link: {
+      revokedAt: Date | null;
+      expiresAt: Date | null;
+      maxUses: number | null;
+      usesCount: number;
+    };
+    organization: unknown;
+  } | null,
+): InviteLinkPageState {
+  if (!data) return "notFound";
+  if (!data.organization) return "orgDeleted";
+  if (data.link.revokedAt) return "revoked";
+  if (data.link.expiresAt && data.link.expiresAt.getTime() < Date.now()) {
+    return "expired";
+  }
+  if (data.link.maxUses !== null && data.link.usesCount >= data.link.maxUses) {
+    return "exhausted";
+  }
+  return "active";
+}

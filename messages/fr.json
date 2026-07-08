@@ -338,6 +338,37 @@
       "title": "Invitation refusée",
       "description": "Merci d'avoir répondu. Vous pouvez fermer cette fenêtre."
     },
+    "join": {
+      "title": "Rejoignez {orgName} sur AssoHub",
+      "subtitle": "Vous avez été invité(e) à rejoindre cette organisation via un lien de partage.",
+      "roleLabel": "Rôle",
+      "modeNote": {
+        "auto": "Vous deviendrez membre actif dès votre inscription.",
+        "manual": "Votre inscription sera soumise à la validation d'un administrateur avant de devenir active."
+      },
+      "errors": {
+        "notFound": {
+          "title": "Lien invalide",
+          "description": "Ce lien d'invitation est invalide. Contactez l'organisation pour obtenir un nouveau lien."
+        },
+        "orgDeleted": {
+          "title": "Organisation introuvable",
+          "description": "L'organisation à laquelle ce lien donnait accès n'existe plus."
+        },
+        "revoked": {
+          "title": "Lien révoqué",
+          "description": "Ce lien d'invitation a été révoqué par l'organisation. Contactez-la pour en obtenir un nouveau."
+        },
+        "expired": {
+          "title": "Lien expiré",
+          "description": "Ce lien d'invitation a expiré le {date}. Contactez l'organisation pour en obtenir un nouveau."
+        },
+        "exhausted": {
+          "title": "Lien épuisé",
+          "description": "Ce lien d'invitation a atteint son nombre maximum d'utilisations. Contactez l'organisation pour en obtenir un nouveau."
+        }
+      }
+    },
     "inviteLink": {
       "tabLabel": "Lien d'invitation",
       "empty": {

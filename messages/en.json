@@ -338,6 +338,37 @@
       "title": "Invitation declined",
       "description": "Thanks for responding. You can close this window."
     },
+    "join": {
+      "title": "Join {orgName} on AssoHub",
+      "subtitle": "You've been invited to join this organization via a shared link.",
+      "roleLabel": "Role",
+      "modeNote": {
+        "auto": "You'll become an active member as soon as you sign up.",
+        "manual": "Your sign-up will be reviewed by an administrator before becoming active."
+      },
+      "errors": {
+        "notFound": {
+          "title": "Invalid link",
+          "description": "This invite link is invalid. Contact the organization to get a new one."
+        },
+        "orgDeleted": {
+          "title": "Organization not found",
+          "description": "The organization this link gave access to no longer exists."
+        },
+        "revoked": {
+          "title": "Link revoked",
+          "description": "This invite link has been revoked by the organization. Contact them to get a new one."
+        },
+        "expired": {
+          "title": "Link expired",
+          "description": "This invite link expired on {date}. Contact the organization to get a new one."
+        },
+        "exhausted": {
+          "title": "Link exhausted",
+          "description": "This invite link has reached its maximum number of uses. Contact the organization to get a new one."
+        }
+      }
+    },
     "inviteLink": {
       "tabLabel": "Invite link",
       "empty": {

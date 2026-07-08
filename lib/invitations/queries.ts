@@ -133,3 +133,46 @@ export async function getActiveOrganizationInviteLink(
   if (row.maxUses !== null && row.usesCount >= row.maxUses) return null;
   return row;
 }
+
+export interface InviteLinkWithContext {
+  link: OrganizationInviteLinkRow;
+  organization: { id: string; name: string; slug: string; metadata: string | null } | null;
+}
+
+/**
+ * Résout un token public de lien partageable (route `/join/[token]`, volet 4
+ * de la 4B) : le token est la SEULE clé d'autorisation, aucun `requireOrgAccess`
+ * ici — même convention que `getInvitationByToken`. Contrairement à
+ * `getActiveOrganizationInviteLink` (usage admin, ne renvoie que les liens
+ * utilisables), cette fonction renvoie le lien quel que soit son état pour que
+ * la page publique puisse afficher le bon message d'erreur (révoqué, expiré,
+ * épuisé) plutôt qu'un simple "introuvable".
+ */
+export async function getInviteLinkByToken(
+  token: string,
+): Promise<InviteLinkWithContext | null> {
+  const [row] = await db
+    .select({
+      link: organizationInviteLinks,
+      organization: {
+        id: organization.id,
+        name: organization.name,
+        slug: organization.slug,
+        metadata: organization.metadata,
+      },
+    })
+    .from(organizationInviteLinks)
+    .leftJoin(
+      organization,
+      eq(organizationInviteLinks.organizationId, organization.id),
+    )
+    .where(
+      and(
+        eq(organizationInviteLinks.token, token),
+        isNull(organizationInviteLinks.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  return row ?? null;
+}
