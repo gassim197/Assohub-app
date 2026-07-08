@@ -69,7 +69,8 @@
     "tabs": {
       "directory": "Annuaire",
       "invitations": "Invitations",
-      "invitationsWithCount": "Invitations ({count} en attente)"
+      "invitationsWithCount": "Invitations ({count} en attente)",
+      "inviteLink": "Lien d'invitation"
     },
     "kpis": {
       "total": "Total des membres",
@@ -336,6 +337,79 @@
     "declinedPage": {
       "title": "Invitation refusée",
       "description": "Merci d'avoir répondu. Vous pouvez fermer cette fenêtre."
+    },
+    "inviteLink": {
+      "tabLabel": "Lien d'invitation",
+      "empty": {
+        "title": "Aucun lien actif",
+        "description": "Partagez ce lien sur WhatsApp ou par email pour permettre à vos membres de rejoindre en un clic.",
+        "cta": "Générer un lien d'invitation partageable"
+      },
+      "card": {
+        "copy": "Copier",
+        "copySuccess": "Lien copié dans le presse-papier.",
+        "copyError": "La copie a échoué. Sélectionnez et copiez le lien manuellement.",
+        "usesLabel": "{count} / {max} utilisations",
+        "usesUnlimitedLabel": "{count} utilisations",
+        "expiresLabel": "Expire le {date}",
+        "neverExpires": "Sans expiration",
+        "modeAuto": "Adhésion automatique",
+        "modeManual": "Validation manuelle",
+        "revoke": "Révoquer le lien",
+        "generateNew": "Générer un nouveau lien"
+      },
+      "revokeConfirm": {
+        "title": "Révoquer ce lien ?",
+        "description": "Les personnes qui ont ce lien ne pourront plus l'utiliser pour rejoindre l'organisation.",
+        "confirm": "Révoquer",
+        "submitting": "Révocation…",
+        "back": "Annuler",
+        "success": "Lien révoqué.",
+        "error": "Le lien n'a pas pu être révoqué. Veuillez réessayer."
+      },
+      "regenerateConfirm": {
+        "title": "Générer un nouveau lien ?",
+        "description": "Cela révoquera votre lien actuel. Les personnes qui ont déjà ce lien ne pourront plus l'utiliser. Voulez-vous continuer ?",
+        "confirm": "Continuer",
+        "back": "Annuler"
+      },
+      "dialog": {
+        "title": "Générer un lien d'invitation partageable",
+        "description": "Configurez comment les personnes qui utilisent ce lien rejoindront votre organisation.",
+        "role": "Rôle par défaut",
+        "acceptanceMode": "Mode d'acceptation",
+        "acceptanceModeOptions": {
+          "auto": "Automatique",
+          "autoDescription": "Les personnes qui s'inscrivent sont directement membres actifs.",
+          "manual": "Validation manuelle requise",
+          "manualDescription": "Les inscriptions sont mises en attente, vous devrez les valider."
+        },
+        "recommended": "(recommandé)",
+        "expiry": "Expiration",
+        "expiryOptions": {
+          "never": "Jamais",
+          "7d": "7 jours",
+          "30d": "30 jours",
+          "custom": "Date personnalisée"
+        },
+        "customExpiresAtLabel": "Choisir une date",
+        "customExpiresAtPlaceholder": "Sélectionner une date",
+        "maxUses": "Nombre maximum d'utilisations",
+        "maxUsesOptions": {
+          "unlimited": "Illimité",
+          "limited": "Limité à"
+        },
+        "maxUsesValuePlaceholder": "Nombre d'utilisations",
+        "submit": "Générer le lien",
+        "submitting": "Génération…",
+        "cancel": "Annuler",
+        "success": "Lien d'invitation généré.",
+        "errors": {
+          "customExpiresAtRequired": "Choisissez une date valide dans le futur.",
+          "maxUsesValueRequired": "Indiquez un nombre d'utilisations.",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
+      }
     }
   },
   "cotisations": {

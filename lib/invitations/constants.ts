@@ -51,3 +51,40 @@ export function resolveAcceptPageState(
   if (!data.organization) return "orgDeleted";
   return invitationStatus(data.invitation);
 }
+
+// ─── Lien d'invitation partageable (volet 3 de la 4B) ──────────────────────────
+// `organization_invite_links.default_role` n'a pas non plus de colonne
+// `custom_role` : mêmes rôles proposables que l'invitation nominative.
+
+export const INVITE_LINK_ACCEPTANCE_MODES = ["auto", "manual"] as const;
+export type InviteLinkAcceptanceMode = (typeof INVITE_LINK_ACCEPTANCE_MODES)[number];
+
+export function isInviteLinkAcceptanceMode(
+  value: string,
+): value is InviteLinkAcceptanceMode {
+  return (INVITE_LINK_ACCEPTANCE_MODES as readonly string[]).includes(value);
+}
+
+export const INVITE_LINK_EXPIRY_OPTIONS = ["never", "7d", "30d", "custom"] as const;
+export type InviteLinkExpiryOption = (typeof INVITE_LINK_EXPIRY_OPTIONS)[number];
+
+export const INVITE_LINK_MAX_USES_OPTIONS = ["unlimited", "limited"] as const;
+export type InviteLinkMaxUsesOption = (typeof INVITE_LINK_MAX_USES_OPTIONS)[number];
+
+/**
+ * Résout `expires_at` à partir du choix du formulaire de génération. `custom`
+ * exige une date déjà validée (future) par le schéma Zod — `customDate` n'est
+ * lu que dans ce cas.
+ */
+export function resolveInviteLinkExpiresAt(
+  option: InviteLinkExpiryOption,
+  customDate: Date | null,
+): Date | null {
+  if (option === "never") return null;
+  if (option === "custom") return customDate;
+
+  const days = option === "7d" ? 7 : 30;
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+}

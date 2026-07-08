@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 import { isValidPhone } from "@/lib/phone";
-import { INVITATION_ROLES } from "./constants";
+import {
+  INVITATION_ROLES,
+  INVITE_LINK_ACCEPTANCE_MODES,
+  INVITE_LINK_EXPIRY_OPTIONS,
+  INVITE_LINK_MAX_USES_OPTIONS,
+} from "./constants";
 
 /**
  * Messages d'erreur de validation, injectés depuis l'appelant (client/serveur),
@@ -92,3 +97,63 @@ export const registerInviteeServerSchema = buildRegisterInviteeSchema(
 );
 
 export type RegisterInviteeValues = z.output<typeof registerInviteeServerSchema>;
+
+/**
+ * Messages du formulaire de génération de lien partageable (volet 3 de la 4B,
+ * checkpoint 1).
+ */
+export interface GenerateInviteLinkFormMessages {
+  customExpiresAtRequired: string;
+  maxUsesValueRequired: string;
+}
+
+/**
+ * `customExpiresAt`/`maxUsesValue` sont conditionnels à `expiryOption`/
+ * `maxUsesOption` (radios) : validés via `superRefine` plutôt que des champs
+ * toujours requis, pour ne pas bloquer les combinaisons "jamais"/"illimité".
+ */
+export function buildGenerateInviteLinkSchema(m: GenerateInviteLinkFormMessages) {
+  return z
+    .object({
+      defaultRole: z.enum(INVITATION_ROLES),
+      acceptanceMode: z.enum(INVITE_LINK_ACCEPTANCE_MODES),
+      expiryOption: z.enum(INVITE_LINK_EXPIRY_OPTIONS),
+      customExpiresAt: z.string().optional(),
+      maxUsesOption: z.enum(INVITE_LINK_MAX_USES_OPTIONS),
+      maxUsesValue: z.preprocess(
+        (v) => (v === "" || v === undefined || v === null ? undefined : Number(v)),
+        z.number().int().positive().optional(),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      if (data.expiryOption === "custom") {
+        const parsed = data.customExpiresAt ? new Date(data.customExpiresAt) : null;
+        if (!parsed || Number.isNaN(parsed.getTime()) || parsed.getTime() <= Date.now()) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["customExpiresAt"],
+            message: m.customExpiresAtRequired,
+          });
+        }
+      }
+
+      if (data.maxUsesOption === "limited" && !data.maxUsesValue) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["maxUsesValue"],
+          message: m.maxUsesValueRequired,
+        });
+      }
+    });
+}
+
+const RAW_GENERATE_INVITE_LINK_MESSAGES: GenerateInviteLinkFormMessages = {
+  customExpiresAtRequired: "customExpiresAtRequired",
+  maxUsesValueRequired: "maxUsesValueRequired",
+};
+
+export const generateInviteLinkServerSchema = buildGenerateInviteLinkSchema(
+  RAW_GENERATE_INVITE_LINK_MESSAGES,
+);
+
+export type GenerateInviteLinkValues = z.output<typeof generateInviteLinkServerSchema>;

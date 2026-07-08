@@ -69,7 +69,8 @@
     "tabs": {
       "directory": "Directory",
       "invitations": "Invitations",
-      "invitationsWithCount": "Invitations ({count} pending)"
+      "invitationsWithCount": "Invitations ({count} pending)",
+      "inviteLink": "Invite link"
     },
     "kpis": {
       "total": "Total members",
@@ -336,6 +337,79 @@
     "declinedPage": {
       "title": "Invitation declined",
       "description": "Thanks for responding. You can close this window."
+    },
+    "inviteLink": {
+      "tabLabel": "Invite link",
+      "empty": {
+        "title": "No active link",
+        "description": "Share this link on WhatsApp or by email so your members can join in one click.",
+        "cta": "Generate a shareable invite link"
+      },
+      "card": {
+        "copy": "Copy",
+        "copySuccess": "Link copied to clipboard.",
+        "copyError": "Copy failed. Select and copy the link manually.",
+        "usesLabel": "{count} / {max} uses",
+        "usesUnlimitedLabel": "{count} uses",
+        "expiresLabel": "Expires on {date}",
+        "neverExpires": "No expiration",
+        "modeAuto": "Automatic membership",
+        "modeManual": "Manual review",
+        "revoke": "Revoke link",
+        "generateNew": "Generate a new link"
+      },
+      "revokeConfirm": {
+        "title": "Revoke this link?",
+        "description": "People who have this link will no longer be able to use it to join the organization.",
+        "confirm": "Revoke",
+        "submitting": "Revoking…",
+        "back": "Cancel",
+        "success": "Link revoked.",
+        "error": "The link could not be revoked. Please try again."
+      },
+      "regenerateConfirm": {
+        "title": "Generate a new link?",
+        "description": "This will revoke your current link. People who already have it will no longer be able to use it. Do you want to continue?",
+        "confirm": "Continue",
+        "back": "Cancel"
+      },
+      "dialog": {
+        "title": "Generate a shareable invite link",
+        "description": "Configure how people who use this link will join your organization.",
+        "role": "Default role",
+        "acceptanceMode": "Acceptance mode",
+        "acceptanceModeOptions": {
+          "auto": "Automatic",
+          "autoDescription": "People who sign up become active members right away.",
+          "manual": "Manual review required",
+          "manualDescription": "Sign-ups are put on hold, you'll need to review them."
+        },
+        "recommended": "(recommended)",
+        "expiry": "Expiration",
+        "expiryOptions": {
+          "never": "Never",
+          "7d": "7 days",
+          "30d": "30 days",
+          "custom": "Custom date"
+        },
+        "customExpiresAtLabel": "Choose a date",
+        "customExpiresAtPlaceholder": "Select a date",
+        "maxUses": "Maximum number of uses",
+        "maxUsesOptions": {
+          "unlimited": "Unlimited",
+          "limited": "Limited to"
+        },
+        "maxUsesValuePlaceholder": "Number of uses",
+        "submit": "Generate link",
+        "submitting": "Generating…",
+        "cancel": "Cancel",
+        "success": "Invite link generated.",
+        "errors": {
+          "customExpiresAtRequired": "Choose a valid future date.",
+          "maxUsesValueRequired": "Enter a number of uses.",
+          "generic": "An error occurred. Please try again."
+        }
+      }
     }
   },
   "cotisations": {

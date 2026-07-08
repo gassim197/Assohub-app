@@ -2,7 +2,7 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { organization, user } from "@/lib/db/auth-schema";
-import { pendingInvitations } from "@/lib/db/members-schema";
+import { organizationInviteLinks, pendingInvitations } from "@/lib/db/members-schema";
 
 export type PendingInvitationRow = typeof pendingInvitations.$inferSelect;
 
@@ -101,4 +101,35 @@ export async function findUserIdByEmail(email: string): Promise<string | null> {
     .where(eq(user.email, email))
     .limit(1);
   return row?.id ?? null;
+}
+
+export type OrganizationInviteLinkRow = typeof organizationInviteLinks.$inferSelect;
+
+/**
+ * Lien d'invitation partageable actif d'une organisation (volet 3 de la 4B,
+ * checkpoint 1) : au plus un à la fois (garanti côté écriture par
+ * `generateOrganizationInviteLink`, qui révoque l'ancien avant d'insérer le
+ * nouveau). Un lien expiré ou épuisé (quota atteint) mais pas encore révoqué
+ * est traité comme "aucun lien actif" — l'UI propose alors d'en régénérer un.
+ */
+export async function getActiveOrganizationInviteLink(
+  organizationId: string,
+): Promise<OrganizationInviteLinkRow | null> {
+  const [row] = await db
+    .select()
+    .from(organizationInviteLinks)
+    .where(
+      and(
+        eq(organizationInviteLinks.organizationId, organizationId),
+        isNull(organizationInviteLinks.revokedAt),
+        isNull(organizationInviteLinks.deletedAt),
+      ),
+    )
+    .orderBy(desc(organizationInviteLinks.createdAt))
+    .limit(1);
+
+  if (!row) return null;
+  if (row.expiresAt && row.expiresAt.getTime() < Date.now()) return null;
+  if (row.maxUses !== null && row.usesCount >= row.maxUses) return null;
+  return row;
 }

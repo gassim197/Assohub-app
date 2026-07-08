@@ -14,6 +14,7 @@ import {
 import { formatPhone } from "@/lib/phone";
 import {
   countActuallyPending,
+  getActiveOrganizationInviteLink,
   listPendingInvitations,
 } from "@/lib/invitations/queries";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +35,8 @@ import { MemberFormDialog } from "@/components/members/member-form-dialog";
 import { MemberRowActions } from "@/components/members/member-row-actions";
 import { InviteMemberDialog } from "@/components/invitations/invite-member-dialog";
 import { PendingInvitationsTab } from "@/components/invitations/pending-invitations-tab";
+import { InviteLinkTab } from "@/components/invitations/invite-link-tab";
+import { GenerateInviteLinkDialog } from "@/components/invitations/generate-invite-link-dialog";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -69,10 +72,11 @@ export default async function MembersPage({
   const status = parseStatus(readParam(sp.status));
   const page = Math.max(1, Number(readParam(sp.page)) || 1);
 
-  const [kpis, list, invitations] = await Promise.all([
+  const [kpis, list, invitations, activeInviteLink] = await Promise.all([
     getMemberKpis(organizationId),
     listMembers({ organizationId, status, search, page }),
     listPendingInvitations(organizationId),
+    getActiveOrganizationInviteLink(organizationId),
   ]);
   const pendingInvitationsCount = countActuallyPending(invitations);
 
@@ -145,6 +149,7 @@ export default async function MembersPage({
               ? t("tabs.invitationsWithCount", { count: pendingInvitationsCount })
               : t("tabs.invitations")}
           </TabsTrigger>
+          <TabsTrigger value="inviteLink">{t("tabs.inviteLink")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="directory" className="space-y-6 pt-4">
@@ -276,6 +281,10 @@ export default async function MembersPage({
         <TabsContent value="invitations" className="pt-4">
           <PendingInvitationsTab orgSlug={orgSlug} invitations={invitations} />
         </TabsContent>
+
+        <TabsContent value="inviteLink" className="pt-4">
+          <InviteLinkTab orgSlug={orgSlug} activeLink={activeInviteLink} />
+        </TabsContent>
       </Tabs>
 
       <MemberFormDialog orgSlug={orgSlug} />
@@ -283,6 +292,7 @@ export default async function MembersPage({
         <MemberFormDialog orgSlug={orgSlug} member={editMember} />
       ) : null}
       <InviteMemberDialog orgSlug={orgSlug} />
+      <GenerateInviteLinkDialog orgSlug={orgSlug} />
     </div>
   );
 }

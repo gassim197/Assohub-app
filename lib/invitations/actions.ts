@@ -11,13 +11,21 @@ import { requireOrgAccess } from "@/lib/auth/org";
 import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
 import { member, user } from "@/lib/db/auth-schema";
-import { associationMembers, pendingInvitations } from "@/lib/db/members-schema";
+import {
+  associationMembers,
+  organizationInviteLinks,
+  pendingInvitations,
+} from "@/lib/db/members-schema";
 import { toE164 } from "@/lib/phone";
 import { getAppUrl } from "@/lib/url";
 import { sendInvitationEmail } from "@/lib/email/invitation-email";
-import { INVITATION_EXPIRY_DAYS, resolveAcceptPageState } from "./constants";
+import { INVITATION_EXPIRY_DAYS, resolveAcceptPageState, resolveInviteLinkExpiresAt } from "./constants";
 import { findUserIdByEmail, getInvitationByToken } from "./queries";
-import { inviteMemberServerSchema, registerInviteeServerSchema } from "./schema";
+import {
+  generateInviteLinkServerSchema,
+  inviteMemberServerSchema,
+  registerInviteeServerSchema,
+} from "./schema";
 import { generateInvitationToken } from "./tokens";
 
 export type InviteMemberResult =
@@ -524,4 +532,104 @@ export async function declineInvitation(
   }
 
   redirect("/invitations/declined");
+}
+
+export type GenerateInviteLinkResult =
+  | { ok: true }
+  | { ok: false; error: "validation" | "unknown" };
+
+/**
+ * Génère le lien d'invitation partageable d'une organisation (volet 3 de la
+ * 4B, checkpoint 1). Un seul lien actif à la fois : révoque explicitement
+ * tout lien non révoqué/non supprimé avant d'insérer le nouveau — neon-http
+ * ne permet pas de vraie transaction SQL (même contrainte que
+ * `registerAndJoin`), donc ces deux écritures ne sont pas atomiques, mais
+ * l'ordre choisi ne laisse jamais deux liens actifs simultanément en cas de
+ * succès partiel (au pire, un état transitoire sans aucun lien actif).
+ *
+ * Le client confirme déjà côté UI qu'il révoque bien un lien existant
+ * (AlertDialog "Générer un nouveau lien") avant d'ouvrir ce formulaire.
+ */
+export async function generateOrganizationInviteLink(
+  orgSlug: string,
+  raw: unknown,
+): Promise<GenerateInviteLinkResult> {
+  const { organizationId, userId } = await requireOrgAccess(orgSlug);
+
+  const parsed = generateInviteLinkServerSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "validation" };
+  }
+  const data = parsed.data;
+
+  const expiresAt = resolveInviteLinkExpiresAt(
+    data.expiryOption,
+    data.customExpiresAt ? new Date(data.customExpiresAt) : null,
+  );
+  const maxUses = data.maxUsesOption === "limited" ? data.maxUsesValue ?? null : null;
+
+  try {
+    await db
+      .update(organizationInviteLinks)
+      .set({ revokedAt: new Date() })
+      .where(
+        and(
+          eq(organizationInviteLinks.organizationId, organizationId),
+          isNull(organizationInviteLinks.revokedAt),
+          isNull(organizationInviteLinks.deletedAt),
+        ),
+      );
+
+    await db.insert(organizationInviteLinks).values({
+      id: newId(),
+      organizationId,
+      token: generateInvitationToken(),
+      createdByUserId: userId,
+      acceptanceMode: data.acceptanceMode,
+      defaultRole: data.defaultRole,
+      expiresAt,
+      maxUses,
+    });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  revalidatePath(`/${orgSlug}/members`);
+  return { ok: true };
+}
+
+export type RevokeInviteLinkResult =
+  | { ok: true }
+  | { ok: false; error: "notFound" | "unknown" };
+
+/** Révoque le lien d'invitation actif (bouton "Révoquer le lien", destructif et explicite). */
+export async function revokeOrganizationInviteLink(
+  orgSlug: string,
+  linkId: string,
+): Promise<RevokeInviteLinkResult> {
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  let updated: { id: string } | undefined;
+  try {
+    [updated] = await db
+      .update(organizationInviteLinks)
+      .set({ revokedAt: new Date() })
+      .where(
+        and(
+          eq(organizationInviteLinks.id, linkId),
+          eq(organizationInviteLinks.organizationId, organizationId),
+          isNull(organizationInviteLinks.revokedAt),
+        ),
+      )
+      .returning({ id: organizationInviteLinks.id });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  if (!updated) {
+    return { ok: false, error: "notFound" };
+  }
+
+  revalidatePath(`/${orgSlug}/members`);
+  return { ok: true };
 }
