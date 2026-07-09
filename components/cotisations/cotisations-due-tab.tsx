@@ -139,7 +139,6 @@ export async function CotisationsDueTab({
                         <CotisationsDueRowActions
                           orgSlug={orgSlug}
                           cotisationId={row.id}
-                          memberId={row.memberId}
                           remaining={row.dueAmount - row.paidAmount}
                         />
                       </TableCell>

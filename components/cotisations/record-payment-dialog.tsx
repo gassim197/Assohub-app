@@ -6,17 +6,18 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 
-import { recordPayment } from "@/lib/cotisations/payment-actions";
+import { recordPayment, updatePayment } from "@/lib/cotisations/payment-actions";
 import { buildPaymentSchema } from "@/lib/cotisations/payment-schema";
 import {
   DEFAULT_PAYMENT_METHOD,
   PAYMENT_METHODS,
+  isPaymentMethod,
   requiresPaymentReference,
   type PaymentMethod,
 } from "@/lib/cotisations/payment-constants";
 import { isCotisationFrequency } from "@/lib/cotisations/constants";
 import { formatPeriodLabel, todayISO } from "@/lib/cotisations/period";
-import type { CotisationSummary } from "@/lib/cotisations/payment-queries";
+import type { CotisationSummary, PaymentRow } from "@/lib/cotisations/payment-queries";
 import { centimesToGnf, formatCurrency, gnfToCentimes } from "@/lib/currency";
 import { toast } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
@@ -54,20 +55,54 @@ interface PaymentFormValues {
   note: string;
 }
 
+/** Valeurs vierges (création, défaut = restant) ou pré-remplies (édition). */
+function buildDefaults(
+  remainingGnf: number,
+  payment?: PaymentRow,
+): PaymentFormValues {
+  if (!payment) {
+    return {
+      amount: remainingGnf,
+      paymentMethod: DEFAULT_PAYMENT_METHOD,
+      paymentReference: "",
+      paidAt: todayISO(),
+      note: "",
+    };
+  }
+
+  return {
+    amount: centimesToGnf(payment.amount),
+    paymentMethod: isPaymentMethod(payment.paymentMethod)
+      ? payment.paymentMethod
+      : DEFAULT_PAYMENT_METHOD,
+    paymentReference: payment.paymentReference ?? "",
+    paidAt: payment.paidAt,
+    note: payment.note ?? "",
+  };
+}
+
 /**
- * Modal d'encaissement (session 5B, checkpoint 1).
+ * Modal d'encaissement (session 5B, checkpoint 1) et de correction d'un
+ * paiement existant (checkpoint 2).
  *
- * Pilotée par l'URL (`?recordPayment=true&cotisationId=X`), montée par la
- * page uniquement quand le résumé de la cotisation a pu être résolu côté
- * serveur (multi-tenant, cf. `getCotisationSummary`) — pas de vérification
- * supplémentaire de `cotisationId` ici.
+ * En création : pilotée par `?recordPayment=true&cotisationId=X`, montée par
+ * la page uniquement quand le résumé de la cotisation a pu être résolu côté
+ * serveur (multi-tenant, cf. `getCotisationSummary`). En édition (`payment`
+ * fourni) : `?editPayment=true&paymentId=X`, même patron que
+ * `MemberFormDialog`/`CotisationTypeFormDialog`.
+ *
+ * Le plafond du montant exclut le paiement en cours d'édition de son propre
+ * calcul de "restant" — sinon corriger un paiement de 5 000 GNF sur une
+ * cotisation déjà entièrement couverte serait bloqué par son propre montant.
  */
 export function RecordPaymentDialog({
   orgSlug,
   cotisation,
+  payment,
 }: {
   orgSlug: string;
   cotisation: CotisationSummary;
+  payment?: PaymentRow;
 }) {
   const t = useTranslations("cotisations.payments");
   const tMethod = useTranslations("cotisations.paymentMethod");
@@ -77,9 +112,15 @@ export function RecordPaymentDialog({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  const open = searchParams.get("recordPayment") === "true";
+  const isEdit = Boolean(payment);
+  const param = isEdit ? "editPayment" : "recordPayment";
+  const open = searchParams.get(param) === "true";
 
-  const remainingCentimes = Math.max(0, cotisation.dueAmount - cotisation.paidAmount);
+  const excludedAmount = payment?.amount ?? 0;
+  const remainingCentimes = Math.max(
+    0,
+    cotisation.dueAmount - cotisation.paidAmount + excludedAmount,
+  );
   const remainingGnf = centimesToGnf(remainingCentimes);
 
   const schema = useMemo(
@@ -102,34 +143,21 @@ export function RecordPaymentDialog({
   const form = useForm<PaymentFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema as any),
-    defaultValues: {
-      amount: remainingGnf,
-      paymentMethod: DEFAULT_PAYMENT_METHOD,
-      paymentReference: "",
-      paidAt: todayISO(),
-      note: "",
-    },
+    defaultValues: buildDefaults(remainingGnf, payment),
   });
 
   const paymentMethod = useWatch({ control: form.control, name: "paymentMethod" });
 
   useEffect(() => {
-    if (open) {
-      form.reset({
-        amount: remainingGnf,
-        paymentMethod: DEFAULT_PAYMENT_METHOD,
-        paymentReference: "",
-        paidAt: todayISO(),
-        note: "",
-      });
-    }
+    if (open) form.reset(buildDefaults(remainingGnf, payment));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function closeDialog() {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("recordPayment");
+    params.delete(param);
     params.delete("cotisationId");
+    params.delete("paymentId");
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,
@@ -138,14 +166,19 @@ export function RecordPaymentDialog({
 
   function onSubmit(values: PaymentFormValues) {
     startTransition(async () => {
-      const result = await recordPayment(orgSlug, cotisation.id, values);
+      const result =
+        isEdit && payment
+          ? await updatePayment(orgSlug, payment.id, values)
+          : await recordPayment(orgSlug, cotisation.id, values);
 
       if (result.ok) {
         toast.success(
-          t("form.success", {
-            amount: formatCurrency(gnfToCentimes(values.amount), locale),
-            member: cotisation.memberFullName,
-          }),
+          isEdit
+            ? t("editDialog.success")
+            : t("form.success", {
+                amount: formatCurrency(gnfToCentimes(values.amount), locale),
+                member: cotisation.memberFullName,
+              }),
         );
         closeDialog();
         router.refresh();
@@ -179,13 +212,17 @@ export function RecordPaymentDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("dialog.title", {
-              member: cotisation.memberFullName,
-              type: cotisation.typeName,
-              period: periodLabel,
-            })}
+            {isEdit
+              ? t("editDialog.title")
+              : t("dialog.title", {
+                  member: cotisation.memberFullName,
+                  type: cotisation.typeName,
+                  period: periodLabel,
+                })}
           </DialogTitle>
-          <DialogDescription>{t("dialog.description")}</DialogDescription>
+          <DialogDescription>
+            {isEdit ? t("editDialog.description") : t("dialog.description")}
+          </DialogDescription>
         </DialogHeader>
 
         <dl className="grid grid-cols-3 gap-2 rounded-md border border-foreground/10 bg-muted/30 p-3 text-sm">
@@ -318,7 +355,13 @@ export function RecordPaymentDialog({
                 {t("form.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? t("form.submitting") : t("form.submit")}
+                {isPending
+                  ? isEdit
+                    ? t("editDialog.submitting")
+                    : t("form.submitting")
+                  : isEdit
+                    ? t("editDialog.submit")
+                    : t("form.submit")}
               </Button>
             </DialogFooter>
           </form>

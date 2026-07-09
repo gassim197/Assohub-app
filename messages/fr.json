@@ -606,7 +606,51 @@
           "exceedsRemaining": "Ce montant dépasse le restant dû ({remaining}).",
           "generic": "Une erreur est survenue. Veuillez réessayer."
         }
+      },
+      "editDialog": {
+        "title": "Corriger le paiement",
+        "description": "La cotisation liée sera recalculée automatiquement.",
+        "submitting": "Enregistrement...",
+        "submit": "Enregistrer",
+        "success": "Paiement mis à jour."
+      },
+      "detailDialog": {
+        "title": "Détails du paiement",
+        "description": "Vue en lecture seule.",
+        "amount": "Montant",
+        "recordedBy": "Enregistré par"
+      },
+      "deleteDialog": {
+        "title": "Annuler ce paiement ?",
+        "description": "Cette action annule le paiement de {amount} du {date}. La cotisation redeviendra « {status} ». Confirmer ?",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "submitting": "Suppression...",
+        "success": "Paiement annulé.",
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "rowActions": {
+        "label": "Actions",
+        "viewDetails": "Voir les détails",
+        "edit": "Corriger",
+        "delete": "Supprimer"
+      },
+      "history": {
+        "empty": "Aucun paiement enregistré pour cette cotisation.",
+        "table": {
+          "date": "Date",
+          "amount": "Montant",
+          "method": "Méthode",
+          "reference": "Référence",
+          "recordedBy": "Enregistré par",
+          "note": "Note"
+        }
       }
+    },
+    "detail": {
+      "backToList": "Retour aux cotisations",
+      "newPayment": "Nouveau paiement",
+      "historyTitle": "Historique des paiements"
     },
     "types": {
       "new": "Nouveau type de cotisation",

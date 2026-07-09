@@ -21,19 +21,17 @@ import {
  * il ne reste rien à percevoir (`remaining <= 0`, cotisation déjà `paye`,
  * visible seulement via le toggle "Inclure les cotisations soldées").
  *
- * « Voir les détails » navigue encore vers la fiche du membre concerné en
- * checkpoint 1 — sera redirigé vers la nouvelle fiche cotisation
- * (`/[orgSlug]/cotisations/[cotisationId]`) au checkpoint 2 quand elle existera.
+ * « Voir les détails » navigue vers la fiche cotisation
+ * (`/[orgSlug]/cotisations/[cotisationId]`, checkpoint 2 5B) — remplace le
+ * renvoi temporaire vers la fiche membre du checkpoint 1.
  */
 export function CotisationsDueRowActions({
   orgSlug,
   cotisationId,
-  memberId,
   remaining,
 }: {
   orgSlug: string;
   cotisationId: string;
-  memberId: string;
   remaining: number;
 }) {
   const t = useTranslations("cotisations.due.rowActions");
@@ -59,7 +57,7 @@ export function CotisationsDueRowActions({
       />
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem
-          render={<Link href={`/${orgSlug}/members/${memberId}`} />}
+          render={<Link href={`/${orgSlug}/cotisations/${cotisationId}`} />}
         >
           {t("viewDetails")}
         </DropdownMenuItem>

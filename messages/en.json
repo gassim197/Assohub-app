@@ -606,7 +606,51 @@
           "exceedsRemaining": "This amount exceeds the remaining balance ({remaining}).",
           "generic": "Something went wrong. Please try again."
         }
+      },
+      "editDialog": {
+        "title": "Correct payment",
+        "description": "The linked contribution will be recalculated automatically.",
+        "submitting": "Saving...",
+        "submit": "Save",
+        "success": "Payment updated."
+      },
+      "detailDialog": {
+        "title": "Payment details",
+        "description": "Read-only view.",
+        "amount": "Amount",
+        "recordedBy": "Recorded by"
+      },
+      "deleteDialog": {
+        "title": "Cancel this payment?",
+        "description": "This will cancel the {amount} payment from {date}. The contribution will become \"{status}\" again. Confirm?",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "submitting": "Cancelling...",
+        "success": "Payment cancelled.",
+        "error": "Something went wrong. Please try again."
+      },
+      "rowActions": {
+        "label": "Actions",
+        "viewDetails": "View details",
+        "edit": "Correct",
+        "delete": "Delete"
+      },
+      "history": {
+        "empty": "No payment recorded for this contribution.",
+        "table": {
+          "date": "Date",
+          "amount": "Amount",
+          "method": "Method",
+          "reference": "Reference",
+          "recordedBy": "Recorded by",
+          "note": "Note"
+        }
       }
+    },
+    "detail": {
+      "backToList": "Back to contributions",
+      "newPayment": "New payment",
+      "historyTitle": "Payment history"
     },
     "types": {
       "new": "New contribution type",
