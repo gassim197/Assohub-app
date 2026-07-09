@@ -4,12 +4,14 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import type { CotisationTypeRow } from "@/lib/cotisations/queries";
 import type { CotisationKpis, CotisationWithRelationsRow } from "@/lib/cotisations/queries";
+import type { RecentPaymentRow } from "@/lib/cotisations/payment-queries";
 import {
   STATUS_BADGE_VARIANT,
   STATUS_I18N_KEY,
   isCotisationFrequency,
   isCotisationStatus,
 } from "@/lib/cotisations/constants";
+import { isPaymentMethod } from "@/lib/cotisations/payment-constants";
 import { formatPeriodLabel } from "@/lib/cotisations/period";
 import { formatCurrency } from "@/lib/currency";
 import { Badge } from "@/components/ui/badge";
@@ -34,16 +36,20 @@ export async function CotisationsOverview({
   types,
   kpis,
   recent,
+  recentPayments,
 }: {
   orgSlug: string;
   types: CotisationTypeRow[];
   kpis: CotisationKpis;
   recent: CotisationWithRelationsRow[];
+  recentPayments: RecentPaymentRow[];
 }) {
-  const [t, locale] = await Promise.all([
+  const [t, tMethod, locale] = await Promise.all([
     getTranslations("cotisations"),
+    getTranslations("cotisations.paymentMethod"),
     getLocale(),
   ]);
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
 
   // Aucun type défini : empty state engageant, porte d'entrée vers la création.
   if (types.length === 0) {
@@ -148,6 +154,51 @@ export async function CotisationsOverview({
                     </TableRow>
                   );
                 })}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-3 text-sm font-medium text-foreground">
+          {t("dashboard.recentPayments.title")}
+        </h2>
+
+        {recentPayments.length === 0 ? (
+          <Card className="px-6 py-16 text-center text-sm text-muted-foreground">
+            {t("dashboard.recentPayments.empty")}
+          </Card>
+        ) : (
+          <Card className="py-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("due.table.member")}</TableHead>
+                  <TableHead>{t("payments.detailDialog.amount")}</TableHead>
+                  <TableHead>{t("payments.form.paymentMethod")}</TableHead>
+                  <TableHead>{t("payments.form.paidAt")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentPayments.map((payment) => (
+                  <TableRow key={payment.id}>
+                    <TableCell className="font-medium text-foreground">
+                      {payment.memberFullName}
+                    </TableCell>
+                    <TableCell className="tabular-nums">
+                      {formatCurrency(payment.amount, locale)}
+                    </TableCell>
+                    <TableCell>
+                      {isPaymentMethod(payment.paymentMethod)
+                        ? tMethod(payment.paymentMethod)
+                        : payment.paymentMethod}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground tabular-nums">
+                      {dateFormatter.format(new Date(payment.paidAt))}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Card>

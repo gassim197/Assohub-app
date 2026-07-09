@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gte, ilike, inArray, isNull, lte, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { cotisationTypes, cotisations } from "@/lib/db/cotisations-schema";
+import { cotisationTypes, cotisations, payments } from "@/lib/db/cotisations-schema";
 import { associationMembers } from "@/lib/db/members-schema";
 import { COTISATIONS_PAGE_SIZE } from "./constants";
 import { getMonthRange } from "./period";
@@ -53,9 +53,9 @@ export async function getCotisationTypeById(
 // ─── Dashboard (checkpoint 3) ────────────────────────────────────────────────
 
 export interface CotisationKpis {
-  /** Toujours 0 en 5A : aucun paiement possible avant la 5B. */
+  /** Somme des paiements dont `paid_at` tombe dans le mois courant (5B §6). */
   collectedThisMonth: number;
-  /** Somme (due_amount - paid_amount) des cotisations en_attente + en_retard. */
+  /** Somme (due_amount - paid_amount) des cotisations en_attente + partiel + en_retard. */
   outstanding: number;
   lateCount: number;
   upToDateCount: number;
@@ -75,15 +75,32 @@ export async function getCotisationKpis(
       lateCount: sql<string>`COUNT(*) FILTER (WHERE ${cotisations.status} = 'en_retard')`,
     })
     .from(cotisations)
-    .where(and(base, inArray(cotisations.status, ["en_attente", "en_retard"])));
+    .where(
+      and(base, inArray(cotisations.status, ["en_attente", "partiel", "en_retard"])),
+    );
 
   const [paidResult] = await db
     .select({ value: count() })
     .from(cotisations)
     .where(and(base, eq(cotisations.status, "paye")));
 
+  const currentMonth = getMonthRange(new Date(), 0);
+  const [collectedRow] = await db
+    .select({
+      collected: sql<string>`COALESCE(SUM(${payments.amount}), 0)`,
+    })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.organizationId, organizationId),
+        isNull(payments.deletedAt),
+        gte(payments.paidAt, currentMonth.from),
+        lte(payments.paidAt, currentMonth.to),
+      ),
+    );
+
   return {
-    collectedThisMonth: 0,
+    collectedThisMonth: Number(collectedRow?.collected ?? 0),
     outstanding: Number(outstandingRow?.outstanding ?? 0),
     lateCount: Number(outstandingRow?.lateCount ?? 0),
     upToDateCount: Number(paidResult?.value ?? 0),

@@ -524,6 +524,10 @@
         "title": "Cotisations récentes",
         "empty": "Aucune cotisation générée pour le moment. Elles apparaîtront ici automatiquement selon vos types configurés."
       },
+      "recentPayments": {
+        "title": "Paiements récents",
+        "empty": "Aucun paiement enregistré pour le moment."
+      },
       "noTypes": {
         "title": "Aucun type de cotisation",
         "description": "Créez votre premier type de cotisation pour commencer à suivre les cotisations de vos membres.",

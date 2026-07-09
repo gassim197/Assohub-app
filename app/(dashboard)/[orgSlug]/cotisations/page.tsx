@@ -11,7 +11,7 @@ import {
   type DueStatusFilter,
 } from "@/lib/cotisations/queries";
 import type { DuePeriodFilter } from "@/lib/cotisations/queries";
-import { getCotisationSummary } from "@/lib/cotisations/payment-queries";
+import { getCotisationSummary, listRecentPayments } from "@/lib/cotisations/payment-queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CotisationTypesTab } from "@/components/cotisations/cotisation-types-tab";
 import { CotisationTypeFormDialog } from "@/components/cotisations/cotisation-type-form-dialog";
@@ -74,10 +74,11 @@ export default async function CotisationsPage({
     page: Math.max(1, Number(readParam(sp.page)) || 1),
   };
 
-  const [types, kpis, recent, dueResult] = await Promise.all([
+  const [types, kpis, recent, recentPayments, dueResult] = await Promise.all([
     getCotisationTypes(organizationId),
     getCotisationKpis(organizationId),
     listRecentCotisations(organizationId),
+    listRecentPayments(organizationId),
     listCotisationsDue(dueParams),
   ]);
 
@@ -116,6 +117,7 @@ export default async function CotisationsPage({
             types={types}
             kpis={kpis}
             recent={recent}
+            recentPayments={recentPayments}
           />
         </TabsContent>
 

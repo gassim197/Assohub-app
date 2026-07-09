@@ -131,3 +131,44 @@ export async function getPaymentById(
 
   return row ?? null;
 }
+
+// ─── Dashboard (checkpoint 3) ─────────────────────────────────────────────────
+
+export interface RecentPaymentRow {
+  id: string;
+  cotisationId: string;
+  amount: number;
+  paidAt: string;
+  paymentMethod: string;
+  memberFullName: string;
+}
+
+/**
+ * Les 10 derniers paiements enregistrés (dashboard, "Paiements récents",
+ * session 5B §6). `payments.member_id` est direct (pas besoin de passer par
+ * `cotisations`). Multi-tenant strict.
+ */
+export async function listRecentPayments(
+  organizationId: string,
+  limit = 10,
+): Promise<RecentPaymentRow[]> {
+  return db
+    .select({
+      id: payments.id,
+      cotisationId: payments.cotisationId,
+      amount: payments.amount,
+      paidAt: payments.paidAt,
+      paymentMethod: payments.paymentMethod,
+      memberFullName: associationMembers.fullName,
+    })
+    .from(payments)
+    .innerJoin(associationMembers, eq(payments.memberId, associationMembers.id))
+    .where(
+      and(
+        eq(payments.organizationId, organizationId),
+        isNull(payments.deletedAt),
+      ),
+    )
+    .orderBy(desc(payments.paidAt), desc(payments.createdAt))
+    .limit(limit);
+}

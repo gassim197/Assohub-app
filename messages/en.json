@@ -524,6 +524,10 @@
         "title": "Recent contributions",
         "empty": "No contribution generated yet. They will appear here automatically based on your configured types."
       },
+      "recentPayments": {
+        "title": "Recent payments",
+        "empty": "No payment recorded yet."
+      },
       "noTypes": {
         "title": "No contribution type",
         "description": "Create your first contribution type to start tracking your members' contributions.",
