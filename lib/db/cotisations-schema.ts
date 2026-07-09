@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { organization, user } from "./auth-schema";
 import { associationMembers } from "./members-schema";
@@ -62,7 +63,10 @@ export const cotisations = pgTable(
       .notNull()
       .references(() => associationMembers.id),
     dueAmount: bigint("due_amount", { mode: "number" }).notNull(), // centimes GNF
-    periodLabel: text("period_label").notNull(), // ex: "Janvier 2026", "T1 2026", "2026"
+    // Forme canonique neutre ("2026-07", "2026-Q3", "2026"), pas de libellé figé
+    // dans une langue : NEXT_LOCALE est par navigateur, pas par organisation.
+    // L'affichage localisé est calculé à la lecture (lib/cotisations/generation.ts).
+    periodLabel: text("period_label").notNull(),
     periodStart: date("period_start").notNull(),
     periodEnd: date("period_end").notNull(),
     dueDate: date("due_date").notNull(),
@@ -84,6 +88,14 @@ export const cotisations = pgTable(
       .where(sql`deleted_at IS NULL`),
     index("cotisations_due_date_idx")
       .on(table.organizationId, table.dueDate)
+      .where(sql`deleted_at IS NULL`),
+    // Garde-fou d'idempotence au niveau DB : neon-http ne supporte pas les
+    // transactions interactives (cf. ADR-0002), donc pas de verrou applicatif
+    // possible contre une course entre deux générations concurrentes. Le
+    // NOT EXISTS applicatif protège les appels séquentiels ; cet index protège
+    // le cas concurrent (INSERT ... ON CONFLICT DO NOTHING).
+    uniqueIndex("cotisations_type_period_member_unique_idx")
+      .on(table.cotisationTypeId, table.periodStart, table.memberId)
       .where(sql`deleted_at IS NULL`),
   ]
 );

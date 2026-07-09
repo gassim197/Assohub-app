@@ -453,7 +453,22 @@ CREATE INDEX idx_cotisations_member
 CREATE INDEX idx_cotisations_due_date
   ON cotisations (organization_id, due_date)
   WHERE deleted_at IS NULL;
+
+-- Garde-fou d'idempotence de la génération lazy (session 5A) : le driver
+-- neon-http ne supporte pas les transactions interactives, donc pas de verrou
+-- applicatif possible contre une course entre deux générations concurrentes.
+CREATE UNIQUE INDEX idx_cotisations_type_period_member
+  ON cotisations (cotisation_type_id, period_start, member_id)
+  WHERE deleted_at IS NULL;
 ```
+
+> **Implémentation (juillet 2026, session 5A)** — `period_label` stocke une forme
+> canonique neutre ("2026-07" mensuel, "2026-Q3" trimestriel, "2026" annuel),
+> pas le libellé français des exemples ci-dessus : `NEXT_LOCALE` est un cookie
+> par navigateur, pas un réglage par organisation, donc un libellé figé en
+> français serait faux pour un lecteur en anglais. L'affichage localisé
+> ("Juillet 2026" / "July 2026") est calculé à la lecture par
+> `lib/cotisations/generation.ts`.
 
 **Enum `status` (calculé) :**
 

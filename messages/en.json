@@ -505,11 +505,93 @@
   },
   "cotisations": {
     "title": "Contributions",
+    "subtitle": "Track dues and configure your contribution types.",
     "collect": "Collect",
     "empty": "No contributions recorded yet.",
+    "tabs": {
+      "overview": "Overview",
+      "due": "Contributions due",
+      "types": "Contribution types"
+    },
+    "dashboard": {
+      "comingSoon": "The dashboard is coming in a later step of this session."
+    },
+    "due": {
+      "comingSoon": "The list of contributions due is coming in a later step of this session."
+    },
+    "types": {
+      "new": "New contribution type",
+      "empty": {
+        "title": "No contribution type",
+        "description": "Create your first contribution type to get started.",
+        "cta": "Create my first contribution type"
+      },
+      "table": {
+        "name": "Name",
+        "defaultAmount": "Default amount",
+        "frequency": "Frequency",
+        "autoGenerate": "Auto-generation",
+        "status": "Status"
+      },
+      "autoGenerateOn": "Enabled",
+      "autoGenerateOff": "Disabled",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "frequency": {
+        "one_time": "One-time",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "annually": "Annually"
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "archive": "Archive"
+      },
+      "form": {
+        "title": "New contribution type",
+        "dialogDescription": "Define a new contribution type for your organization.",
+        "name": "Name",
+        "descriptionLabel": "Description",
+        "optional": "(optional)",
+        "defaultAmount": "Default amount (GNF)",
+        "defaultAmountHint": "Entered in GNF, converted automatically for storage.",
+        "frequency": "Frequency",
+        "autoGenerate": "Automatic generation",
+        "autoGenerateHint": "Automatically generates contributions every period (monthly, quarterly, annually).",
+        "isActive": "Active status",
+        "isActiveHint": "Disable to suspend this type without deleting it.",
+        "cancel": "Cancel",
+        "submitting": "Creating...",
+        "submit": "Create type",
+        "success": "Contribution type created.",
+        "errors": {
+          "nameMin": "Name must be at least 2 characters.",
+          "amountPositive": "Amount must be greater than 0.",
+          "generic": "Something went wrong. Please try again."
+        }
+      },
+      "editForm": {
+        "title": "Edit contribution type",
+        "dialogDescription": "Contributions already generated are not affected by this change.",
+        "submitting": "Saving...",
+        "submit": "Save",
+        "success": "Contribution type updated."
+      },
+      "archiveDialog": {
+        "title": "Archive this contribution type?",
+        "description": "\"{name}\" will disappear from the list and stop generating new contributions. Contributions already created with this type stay unchanged.",
+        "cancel": "Cancel",
+        "confirm": "Archive",
+        "submitting": "Archiving...",
+        "success": "Contribution type archived.",
+        "error": "Something went wrong. Please try again."
+      }
+    },
     "status": {
-      "paid": "Paid",
       "pending": "Pending",
+      "partial": "Partial",
+      "paid": "Paid",
       "late": "Late"
     },
     "paymentMethod": {

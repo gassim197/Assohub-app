@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "cotisations_type_period_member_unique_idx" ON "cotisations" USING btree ("cotisation_type_id","period_start","member_id") WHERE deleted_at IS NULL;

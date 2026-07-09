@@ -505,11 +505,93 @@
   },
   "cotisations": {
     "title": "Cotisations",
+    "subtitle": "Suivez les cotisations dues et configurez vos types de cotisations.",
     "collect": "Encaisser",
     "empty": "Aucune cotisation enregistrée pour le moment.",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "due": "Cotisations dues",
+      "types": "Types de cotisations"
+    },
+    "dashboard": {
+      "comingSoon": "Le tableau de bord arrive dans une prochaine étape de cette session."
+    },
+    "due": {
+      "comingSoon": "La liste des cotisations dues arrive dans une prochaine étape de cette session."
+    },
+    "types": {
+      "new": "Nouveau type de cotisation",
+      "empty": {
+        "title": "Aucun type de cotisation",
+        "description": "Créez votre premier type de cotisation pour commencer.",
+        "cta": "Créer mon premier type de cotisation"
+      },
+      "table": {
+        "name": "Nom",
+        "defaultAmount": "Montant par défaut",
+        "frequency": "Fréquence",
+        "autoGenerate": "Génération auto",
+        "status": "Statut"
+      },
+      "autoGenerateOn": "Activée",
+      "autoGenerateOff": "Désactivée",
+      "statusActive": "Actif",
+      "statusInactive": "Inactif",
+      "frequency": {
+        "one_time": "Ponctuelle",
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle",
+        "annually": "Annuelle"
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Modifier",
+        "archive": "Archiver"
+      },
+      "form": {
+        "title": "Nouveau type de cotisation",
+        "dialogDescription": "Définissez un nouveau type de cotisation pour votre organisation.",
+        "name": "Nom",
+        "descriptionLabel": "Description",
+        "optional": "(optionnel)",
+        "defaultAmount": "Montant par défaut (GNF)",
+        "defaultAmountHint": "Saisi en GNF, converti automatiquement pour le stockage.",
+        "frequency": "Fréquence",
+        "autoGenerate": "Génération automatique",
+        "autoGenerateHint": "Génère automatiquement les cotisations à chaque période (mensuelle, trimestrielle, annuelle).",
+        "isActive": "Statut actif",
+        "isActiveHint": "Désactivez pour suspendre ce type sans le supprimer.",
+        "cancel": "Annuler",
+        "submitting": "Création...",
+        "submit": "Créer le type",
+        "success": "Type de cotisation créé.",
+        "errors": {
+          "nameMin": "Le nom doit contenir au moins 2 caractères.",
+          "amountPositive": "Le montant doit être supérieur à 0.",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
+      },
+      "editForm": {
+        "title": "Modifier le type de cotisation",
+        "dialogDescription": "Les cotisations déjà générées ne sont pas affectées par ce changement.",
+        "submitting": "Enregistrement...",
+        "submit": "Enregistrer",
+        "success": "Type de cotisation mis à jour."
+      },
+      "archiveDialog": {
+        "title": "Archiver ce type de cotisation ?",
+        "description": "« {name} » disparaîtra de la liste et ne générera plus de nouvelles cotisations. Les cotisations déjà créées avec ce type restent inchangées.",
+        "cancel": "Annuler",
+        "confirm": "Archiver",
+        "submitting": "Archivage...",
+        "success": "Type de cotisation archivé.",
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
     "status": {
-      "paid": "Payé",
       "pending": "En attente",
+      "partial": "Partiel",
+      "paid": "Payé",
       "late": "En retard"
     },
     "paymentMethod": {
