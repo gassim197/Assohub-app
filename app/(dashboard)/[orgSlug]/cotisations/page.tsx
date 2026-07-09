@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
+import { ensureCotisationsGenerated } from "@/lib/cotisations/generation";
 import { getCotisationTypeById, getCotisationTypes } from "@/lib/cotisations/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CotisationTypesTab } from "@/components/cotisations/cotisation-types-tab";
@@ -22,6 +23,10 @@ export default async function CotisationsPage({
   const { orgSlug } = await params;
   const sp = await searchParams;
   const { organizationId } = await requireOrgAccess(orgSlug);
+
+  // Génération lazy : crée les cotisations manquantes de la période courante
+  // pour les types récurrents actifs, avant tout fetch (5A §2).
+  await ensureCotisationsGenerated(organizationId);
 
   const t = await getTranslations("cotisations");
 

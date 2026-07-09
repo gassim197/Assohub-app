@@ -17,16 +17,24 @@ export type CotisationFrequency = (typeof COTISATION_FREQUENCIES)[number];
 export const DEFAULT_COTISATION_FREQUENCY: CotisationFrequency = "monthly";
 
 /** Fréquences éligibles à la génération automatique lazy (5A §2). */
-export const RECURRING_FREQUENCIES: readonly CotisationFrequency[] = [
+export const RECURRING_FREQUENCIES = [
   "monthly",
   "quarterly",
   "annually",
-];
+] as const;
+
+export type RecurringFrequency = (typeof RECURRING_FREQUENCIES)[number];
 
 export function isCotisationFrequency(
   value: string,
 ): value is CotisationFrequency {
   return (COTISATION_FREQUENCIES as readonly string[]).includes(value);
+}
+
+export function isRecurringFrequency(
+  value: string,
+): value is RecurringFrequency {
+  return (RECURRING_FREQUENCIES as readonly string[]).includes(value);
 }
 
 // ─── Statut d'une cotisation (schema-design §5.2) ────────────────────────────
