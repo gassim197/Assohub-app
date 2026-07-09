@@ -2,15 +2,40 @@ import { getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
 import { ensureCotisationsGenerated } from "@/lib/cotisations/generation";
-import { getCotisationTypeById, getCotisationTypes } from "@/lib/cotisations/queries";
+import {
+  getCotisationKpis,
+  getCotisationTypeById,
+  getCotisationTypes,
+  listCotisationsDue,
+  listRecentCotisations,
+  type DueStatusFilter,
+} from "@/lib/cotisations/queries";
+import type { DuePeriodFilter } from "@/lib/cotisations/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CotisationTypesTab } from "@/components/cotisations/cotisation-types-tab";
 import { CotisationTypeFormDialog } from "@/components/cotisations/cotisation-type-form-dialog";
+import { CotisationsOverview } from "@/components/cotisations/cotisations-overview";
+import { CotisationsDueTab } from "@/components/cotisations/cotisations-due-tab";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
 function readParam(value: string | string[] | undefined): string | undefined {
   return typeof value === "string" ? value : undefined;
+}
+
+const DUE_STATUS_VALUES: readonly DueStatusFilter[] = ["all", "en_attente", "en_retard"];
+const DUE_PERIOD_VALUES: readonly DuePeriodFilter[] = ["current", "last", "custom"];
+
+function parseDueStatus(value: string | undefined): DueStatusFilter {
+  return DUE_STATUS_VALUES.includes(value as DueStatusFilter)
+    ? (value as DueStatusFilter)
+    : "all";
+}
+
+function parseDuePeriod(value: string | undefined): DuePeriodFilter | undefined {
+  return DUE_PERIOD_VALUES.includes(value as DuePeriodFilter)
+    ? (value as DuePeriodFilter)
+    : undefined;
 }
 
 export default async function CotisationsPage({
@@ -30,7 +55,23 @@ export default async function CotisationsPage({
 
   const t = await getTranslations("cotisations");
 
-  const types = await getCotisationTypes(organizationId);
+  const dueParams = {
+    organizationId,
+    status: parseDueStatus(readParam(sp.status)),
+    period: parseDuePeriod(readParam(sp.period)),
+    periodFrom: readParam(sp.periodFrom),
+    periodTo: readParam(sp.periodTo),
+    search: readParam(sp.search),
+    typeId: readParam(sp.typeId),
+    page: Math.max(1, Number(readParam(sp.page)) || 1),
+  };
+
+  const [types, kpis, recent, dueResult] = await Promise.all([
+    getCotisationTypes(organizationId),
+    getCotisationKpis(organizationId),
+    listRecentCotisations(organizationId),
+    listCotisationsDue(dueParams),
+  ]);
 
   // Édition en place : `?editType=true&typeId=X` monte la modal pré-remplie.
   const editTypeId = sp.editType === "true" ? readParam(sp.typeId) : undefined;
@@ -53,15 +94,16 @@ export default async function CotisationsPage({
         </TabsList>
 
         <TabsContent value="overview" className="pt-4">
-          <p className="text-sm text-muted-foreground">
-            {t("dashboard.comingSoon")}
-          </p>
+          <CotisationsOverview
+            orgSlug={orgSlug}
+            types={types}
+            kpis={kpis}
+            recent={recent}
+          />
         </TabsContent>
 
         <TabsContent value="due" className="pt-4">
-          <p className="text-sm text-muted-foreground">
-            {t("due.comingSoon")}
-          </p>
+          <CotisationsDueTab orgSlug={orgSlug} types={types} result={dueResult} />
         </TabsContent>
 
         <TabsContent value="types" className="pt-4">

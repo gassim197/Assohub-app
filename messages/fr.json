@@ -514,10 +514,58 @@
       "types": "Types de cotisations"
     },
     "dashboard": {
-      "comingSoon": "Le tableau de bord arrive dans une prochaine étape de cette session."
+      "kpis": {
+        "collected": "Total collecté ce mois",
+        "outstanding": "Restant à percevoir",
+        "late": "Cotisations en retard",
+        "upToDate": "Cotisations à jour"
+      },
+      "recent": {
+        "title": "Cotisations récentes",
+        "empty": "Aucune cotisation générée pour le moment. Elles apparaîtront ici automatiquement selon vos types configurés."
+      },
+      "noTypes": {
+        "title": "Aucun type de cotisation",
+        "description": "Créez votre premier type de cotisation pour commencer à suivre les cotisations de vos membres.",
+        "cta": "Créer mon premier type de cotisation"
+      }
     },
     "due": {
-      "comingSoon": "La liste des cotisations dues arrive dans une prochaine étape de cette session."
+      "searchPlaceholder": "Rechercher un membre...",
+      "noResults": "Aucune cotisation due ne correspond à ces critères.",
+      "table": {
+        "member": "Membre",
+        "type": "Type",
+        "period": "Période",
+        "dueAmount": "Montant dû",
+        "status": "Statut",
+        "dueDate": "Date d'échéance"
+      },
+      "rowActions": {
+        "label": "Actions",
+        "viewDetails": "Voir les détails",
+        "recordPayment": "Enregistrer un paiement"
+      },
+      "filters": {
+        "statusLabel": "Filtrer par statut",
+        "status": {
+          "all": "Toutes actives",
+          "en_attente": "En attente",
+          "en_retard": "En retard"
+        },
+        "periodLabel": "Filtrer par période",
+        "period": {
+          "all": "Toutes les périodes",
+          "current": "Mois courant",
+          "last": "Dernier mois",
+          "custom": "Personnalisé"
+        },
+        "type": "Filtrer par type",
+        "allTypes": "Tous les types",
+        "periodFrom": "Du",
+        "periodTo": "Au",
+        "periodRangeSeparator": "à"
+      }
     },
     "types": {
       "new": "Nouveau type de cotisation",

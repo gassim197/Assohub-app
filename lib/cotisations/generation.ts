@@ -23,12 +23,32 @@ function lastDayOfMonth(year: number, monthIndex: number): number {
 }
 
 /** Date du jour au format `YYYY-MM-DD`, en UTC (= Africa/Conakry, GMT+0 sans DST). */
-function todayISO(referenceDate: Date = new Date()): string {
+export function todayISO(referenceDate: Date = new Date()): string {
   return toDateString(
     referenceDate.getUTCFullYear(),
     referenceDate.getUTCMonth(),
     referenceDate.getUTCDate(),
   );
+}
+
+/**
+ * Bornes calendaires d'un mois, indépendamment de toute fréquence de
+ * cotisation — utilisé par le filtre "période" de l'onglet Cotisations dues
+ * (`monthOffset = 0` mois courant, `-1` mois dernier).
+ */
+export function getMonthRange(
+  referenceDate: Date,
+  monthOffset = 0,
+): { from: string; to: string } {
+  const base = new Date(
+    Date.UTC(referenceDate.getUTCFullYear(), referenceDate.getUTCMonth() + monthOffset, 1),
+  );
+  const year = base.getUTCFullYear();
+  const month = base.getUTCMonth();
+  return {
+    from: toDateString(year, month, 1),
+    to: toDateString(year, month, lastDayOfMonth(year, month)),
+  };
 }
 
 export interface Period {

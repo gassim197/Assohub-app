@@ -514,10 +514,58 @@
       "types": "Contribution types"
     },
     "dashboard": {
-      "comingSoon": "The dashboard is coming in a later step of this session."
+      "kpis": {
+        "collected": "Total collected this month",
+        "outstanding": "Outstanding balance",
+        "late": "Late contributions",
+        "upToDate": "Up-to-date contributions"
+      },
+      "recent": {
+        "title": "Recent contributions",
+        "empty": "No contribution generated yet. They will appear here automatically based on your configured types."
+      },
+      "noTypes": {
+        "title": "No contribution type",
+        "description": "Create your first contribution type to start tracking your members' contributions.",
+        "cta": "Create my first contribution type"
+      }
     },
     "due": {
-      "comingSoon": "The list of contributions due is coming in a later step of this session."
+      "searchPlaceholder": "Search a member...",
+      "noResults": "No contribution due matches these criteria.",
+      "table": {
+        "member": "Member",
+        "type": "Type",
+        "period": "Period",
+        "dueAmount": "Amount due",
+        "status": "Status",
+        "dueDate": "Due date"
+      },
+      "rowActions": {
+        "label": "Actions",
+        "viewDetails": "View details",
+        "recordPayment": "Record a payment"
+      },
+      "filters": {
+        "statusLabel": "Filter by status",
+        "status": {
+          "all": "All active",
+          "en_attente": "Pending",
+          "en_retard": "Late"
+        },
+        "periodLabel": "Filter by period",
+        "period": {
+          "all": "All periods",
+          "current": "Current month",
+          "last": "Last month",
+          "custom": "Custom"
+        },
+        "type": "Filter by type",
+        "allTypes": "All types",
+        "periodFrom": "From",
+        "periodTo": "To",
+        "periodRangeSeparator": "to"
+      }
     },
     "types": {
       "new": "New contribution type",
