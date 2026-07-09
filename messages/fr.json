@@ -533,11 +533,12 @@
     "due": {
       "searchPlaceholder": "Rechercher un membre...",
       "noResults": "Aucune cotisation due ne correspond à ces critères.",
+      "overduePartialHint": "Paiement partiel en retard",
       "table": {
         "member": "Membre",
         "type": "Type",
         "period": "Période",
-        "dueAmount": "Montant dû",
+        "dueAmount": "Montant",
         "status": "Statut",
         "dueDate": "Date d'échéance"
       },
@@ -551,6 +552,7 @@
         "status": {
           "all": "Toutes actives",
           "en_attente": "En attente",
+          "partiel": "Partiel",
           "en_retard": "En retard"
         },
         "periodLabel": "Filtrer par période",
@@ -564,7 +566,46 @@
         "allTypes": "Tous les types",
         "periodFrom": "Du",
         "periodTo": "Au",
-        "periodRangeSeparator": "à"
+        "periodRangeSeparator": "à",
+        "showPaid": "Inclure les cotisations soldées"
+      }
+    },
+    "payments": {
+      "dialog": {
+        "title": "Enregistrer un paiement pour {member} — {type} {period}",
+        "description": "Le montant sera automatiquement rattaché à la cotisation et enregistré en comptabilité.",
+        "dueAmount": "Montant dû",
+        "paidAmount": "Déjà payé",
+        "remaining": "Restant"
+      },
+      "form": {
+        "amount": "Montant à encaisser (GNF)",
+        "paymentMethod": "Méthode de paiement",
+        "referenceLabel": {
+          "orange_money": "ID Orange Money",
+          "wave": "Référence Wave",
+          "mtn_momo": "ID transaction MTN MoMo",
+          "paycard": "Référence Paycard",
+          "soutra_money": "Référence SoutraMoney"
+        },
+        "paidAt": "Date de paiement",
+        "note": "Note",
+        "optional": "(optionnel)",
+        "cancel": "Annuler",
+        "submitting": "Enregistrement...",
+        "submit": "Enregistrer le paiement",
+        "success": "Paiement de {amount} enregistré pour {member}.",
+        "errors": {
+          "amountInteger": "Le montant doit être un nombre entier.",
+          "amountMin": "Le montant doit être d'au moins 1 GNF.",
+          "amountMax": "Ce montant dépasse le montant restant dû.",
+          "referenceRequired": "La référence de transaction est obligatoire pour cette méthode.",
+          "dateInvalid": "Date invalide.",
+          "dateNotFuture": "La date de paiement ne peut pas être dans le futur.",
+          "noteMax": "La note est limitée à 500 caractères.",
+          "exceedsRemaining": "Ce montant dépasse le restant dû ({remaining}).",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
       }
     },
     "types": {
@@ -643,12 +684,15 @@
       "late": "En retard"
     },
     "paymentMethod": {
-      "cash": "Espèces",
-      "orangeMoney": "Orange Money",
+      "especes": "Espèces",
+      "orange_money": "Orange Money",
       "wave": "Wave",
-      "mtnMomo": "MTN MoMo",
-      "transfer": "Virement",
-      "other": "Autre"
+      "mtn_momo": "MTN Mobile Money",
+      "paycard": "Paycard",
+      "soutra_money": "SoutraMoney",
+      "virement_bancaire": "Virement bancaire",
+      "cheque": "Chèque",
+      "autre": "Autre"
     }
   },
   "meetings": {

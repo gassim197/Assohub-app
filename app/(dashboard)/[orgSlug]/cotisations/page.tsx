@@ -11,11 +11,13 @@ import {
   type DueStatusFilter,
 } from "@/lib/cotisations/queries";
 import type { DuePeriodFilter } from "@/lib/cotisations/queries";
+import { getCotisationSummary } from "@/lib/cotisations/payment-queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CotisationTypesTab } from "@/components/cotisations/cotisation-types-tab";
 import { CotisationTypeFormDialog } from "@/components/cotisations/cotisation-type-form-dialog";
 import { CotisationsOverview } from "@/components/cotisations/cotisations-overview";
 import { CotisationsDueTab } from "@/components/cotisations/cotisations-due-tab";
+import { RecordPaymentDialog } from "@/components/cotisations/record-payment-dialog";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -23,7 +25,12 @@ function readParam(value: string | string[] | undefined): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
 
-const DUE_STATUS_VALUES: readonly DueStatusFilter[] = ["all", "en_attente", "en_retard"];
+const DUE_STATUS_VALUES: readonly DueStatusFilter[] = [
+  "all",
+  "en_attente",
+  "partiel",
+  "en_retard",
+];
 const DUE_PERIOD_VALUES: readonly DuePeriodFilter[] = ["current", "last", "custom"];
 
 function parseDueStatus(value: string | undefined): DueStatusFilter {
@@ -63,6 +70,7 @@ export default async function CotisationsPage({
     periodTo: readParam(sp.periodTo),
     search: readParam(sp.search),
     typeId: readParam(sp.typeId),
+    showPaid: sp.showPaid === "true",
     page: Math.max(1, Number(readParam(sp.page)) || 1),
   };
 
@@ -77,6 +85,15 @@ export default async function CotisationsPage({
   const editTypeId = sp.editType === "true" ? readParam(sp.typeId) : undefined;
   const editType = editTypeId
     ? await getCotisationTypeById(organizationId, editTypeId)
+    : null;
+
+  // Encaissement : `?recordPayment=true&cotisationId=X` monte la modal
+  // (session 5B checkpoint 1). Résolution par id, indépendante des filtres
+  // courants de l'onglet "Cotisations dues" (même patron que `editType`).
+  const recordPaymentCotisationId =
+    sp.recordPayment === "true" ? readParam(sp.cotisationId) : undefined;
+  const recordPaymentCotisation = recordPaymentCotisationId
+    ? await getCotisationSummary(organizationId, recordPaymentCotisationId)
     : null;
 
   return (
@@ -114,6 +131,9 @@ export default async function CotisationsPage({
       <CotisationTypeFormDialog orgSlug={orgSlug} />
       {editType ? (
         <CotisationTypeFormDialog orgSlug={orgSlug} type={editType} />
+      ) : null}
+      {recordPaymentCotisation ? (
+        <RecordPaymentDialog orgSlug={orgSlug} cotisation={recordPaymentCotisation} />
       ) : null}
     </div>
   );

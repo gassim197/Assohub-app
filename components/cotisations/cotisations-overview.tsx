@@ -10,7 +10,7 @@ import {
   isCotisationFrequency,
   isCotisationStatus,
 } from "@/lib/cotisations/constants";
-import { formatPeriodLabel } from "@/lib/cotisations/generation";
+import { formatPeriodLabel } from "@/lib/cotisations/period";
 import { formatCurrency } from "@/lib/currency";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

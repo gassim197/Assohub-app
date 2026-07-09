@@ -13,19 +13,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import type { CotisationTypeRow } from "@/lib/cotisations/queries";
 
 const ALL = "all";
 const SEARCH_DEBOUNCE_MS = 300;
 
-const STATUS_OPTIONS = ["all", "en_attente", "en_retard"] as const;
+const STATUS_OPTIONS = ["all", "en_attente", "partiel", "en_retard"] as const;
 const PERIOD_OPTIONS = ["all", "current", "last", "custom"] as const;
 
 /**
- * Barre d'outils de l'onglet "Cotisations dues" (checkpoint 3, session 5A) :
- * recherche par nom de membre (debouncée), statut, période, type. État dans
- * l'URL (`?search=`, `?status=`, `?period=`, `?periodFrom=`, `?periodTo=`,
- * `?typeId=`) ; tout changement de filtre ramène à la première page.
+ * Barre d'outils de l'onglet "Cotisations dues" (checkpoint 3, session 5A ;
+ * étendue en 5B checkpoint 1) : recherche par nom de membre (debouncée),
+ * statut (en_attente/partiel/en_retard), période, type, et un toggle séparé
+ * "Inclure les cotisations soldées" (5B point B — volontairement PAS une
+ * 4e valeur du filtre statut, pour ne pas mélanger "quel sous-ensemble
+ * d'actives" et "inclure les soldées"). État dans l'URL (`?search=`,
+ * `?status=`, `?period=`, `?periodFrom=`, `?periodTo=`, `?typeId=`,
+ * `?showPaid=`) ; tout changement de filtre ramène à la première page.
  */
 export function CotisationsDueToolbar({ types }: { types: CotisationTypeRow[] }) {
   const t = useTranslations("cotisations.due");
@@ -37,6 +43,7 @@ export function CotisationsDueToolbar({ types }: { types: CotisationTypeRow[] })
   const currentStatus = searchParams.get("status") ?? ALL;
   const currentPeriod = searchParams.get("period") ?? ALL;
   const currentTypeId = searchParams.get("typeId") ?? ALL;
+  const showPaid = searchParams.get("showPaid") === "true";
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [periodFrom, setPeriodFrom] = useState(searchParams.get("periodFrom") ?? "");
   const [periodTo, setPeriodTo] = useState(searchParams.get("periodTo") ?? "");
@@ -149,6 +156,16 @@ export function CotisationsDueToolbar({ types }: { types: CotisationTypeRow[] })
           </SelectContent>
         </Select>
       </div>
+
+      <Label className="flex w-fit items-center gap-2 text-sm font-normal">
+        <Switch
+          checked={showPaid}
+          onCheckedChange={(checked) =>
+            commit({ showPaid: checked ? "true" : undefined })
+          }
+        />
+        {t("filters.showPaid")}
+      </Label>
 
       {currentPeriod === "custom" ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

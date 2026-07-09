@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { cotisationTypes, cotisations } from "@/lib/db/cotisations-schema";
 import { associationMembers } from "@/lib/db/members-schema";
 import { COTISATIONS_PAGE_SIZE } from "./constants";
-import { getMonthRange } from "./generation";
+import { getMonthRange } from "./period";
 
 export type CotisationTypeRow = typeof cotisationTypes.$inferSelect;
 
@@ -150,8 +150,15 @@ export async function listRecentCotisations(
 
 export type DuePeriodFilter = "current" | "last" | "custom";
 
-/** Seuls les deux statuts jamais payés sont sélectionnables dans cet onglet. */
-export type DueStatusFilter = "en_attente" | "en_retard" | "all";
+/**
+ * "all" = les 3 statuts jamais soldés (en_attente + partiel + en_retard).
+ * "paye" n'est PAS sélectionnable ici : son inclusion passe par `showPaid`,
+ * un toggle séparé (5B point B) — pas une valeur de plus dans ce filtre, pour
+ * ne pas mélanger "quel sous-ensemble d'actives" et "inclure les soldées".
+ */
+export type DueStatusFilter = "en_attente" | "partiel" | "en_retard" | "all";
+
+const ACTIVE_DUE_STATUSES = ["en_attente", "partiel", "en_retard"] as const;
 
 export interface ListCotisationsDueParams {
   organizationId: string;
@@ -161,6 +168,8 @@ export interface ListCotisationsDueParams {
   periodTo?: string;
   search?: string;
   typeId?: string;
+  /** Inclut aussi les cotisations `paye` (décision 5B, point B). Défaut : false. */
+  showPaid?: boolean;
   page?: number;
 }
 
@@ -192,8 +201,9 @@ function resolvePeriodRange(
 }
 
 /**
- * Liste paginée des cotisations "dues" (en_attente + en_retard, jamais payé)
- * d'une organisation, avec filtres. Multi-tenant strict.
+ * Liste paginée des cotisations "dues" d'une organisation, avec filtres.
+ * Par défaut : en_attente + partiel + en_retard, jamais `paye` (5B point B —
+ * `showPaid` les inclut explicitement). Multi-tenant strict.
  */
 export async function listCotisationsDue({
   organizationId,
@@ -203,14 +213,17 @@ export async function listCotisationsDue({
   periodTo,
   search,
   typeId,
+  showPaid = false,
   page = 1,
 }: ListCotisationsDueParams): Promise<ListCotisationsDueResult> {
+  const visibleStatuses: string[] = showPaid
+    ? [...ACTIVE_DUE_STATUSES, "paye"]
+    : [...ACTIVE_DUE_STATUSES];
+
   const conditions = [
     eq(cotisations.organizationId, organizationId),
     isNull(cotisations.deletedAt),
-    // L'onglet "dues" n'affiche jamais les cotisations payées/partielles
-    // (spec 5A §5) : seuls en_attente et en_retard y apparaissent.
-    inArray(cotisations.status, ["en_attente", "en_retard"]),
+    inArray(cotisations.status, visibleStatuses),
   ];
 
   if (status !== "all") {
