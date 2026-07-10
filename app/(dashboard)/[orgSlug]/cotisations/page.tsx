@@ -54,7 +54,7 @@ export default async function CotisationsPage({
 }) {
   const { orgSlug } = await params;
   const sp = await searchParams;
-  const { organizationId } = await requireOrgAccess(orgSlug);
+  const { organizationId, organization } = await requireOrgAccess(orgSlug);
 
   // Génération lazy : crée les cotisations manquantes de la période courante
   // pour les types récurrents actifs, avant tout fetch (5A §2).
@@ -122,7 +122,12 @@ export default async function CotisationsPage({
         </TabsContent>
 
         <TabsContent value="due" className="pt-4">
-          <CotisationsDueTab orgSlug={orgSlug} types={types} result={dueResult} />
+          <CotisationsDueTab
+            orgSlug={orgSlug}
+            organizationName={organization.name}
+            types={types}
+            result={dueResult}
+          />
         </TabsContent>
 
         <TabsContent value="types" className="pt-4">

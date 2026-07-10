@@ -553,7 +553,8 @@
       "rowActions": {
         "label": "Actions",
         "viewDetails": "View details",
-        "recordPayment": "Record a payment"
+        "recordPayment": "Record a payment",
+        "sendReminder": "Send a reminder"
       },
       "filters": {
         "statusLabel": "Filter by status",
@@ -576,6 +577,30 @@
         "periodTo": "To",
         "periodRangeSeparator": "to",
         "showPaid": "Include fully paid contributions"
+      }
+    },
+    "reminders": {
+      "whatsappMessage": "Hello {name},\n\nThis is a reminder that your *{type}* contribution for *{period}*, amounting to *{amount}*, is still outstanding.\n\nThank you for your commitment to {orgName}.",
+      "dialog": {
+        "title": "Send a reminder",
+        "confirmQuestion": "Send a reminder to {member} for their {type} {period} contribution of {amount}?",
+        "messagePreviewLabel": "Message preview",
+        "messagePreviewText": "Hello {firstName},\n\nThis is a reminder that your {type} contribution for {period}, amounting to {amount}, is still outstanding.\n\nThank you for your commitment to {orgName}.",
+        "cancel": "Cancel",
+        "submit": "Send reminder",
+        "submitting": "Sending...",
+        "success": "Reminder sent to {member}.",
+        "errors": {
+          "notRemindable": "This contribution is no longer eligible for a reminder.",
+          "noEmail": "This member has no email address on file.",
+          "generic": "Something went wrong. Please try again."
+        }
+      },
+      "noEmailDialog": {
+        "title": "No email address",
+        "description": "{name} has no email address on file. You can contact them by phone at {phone} or via WhatsApp.",
+        "close": "Close",
+        "whatsappButton": "Contact on WhatsApp"
       }
     },
     "payments": {

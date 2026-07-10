@@ -94,10 +94,12 @@ function lastReminderCell(
  */
 export async function CotisationsDueTab({
   orgSlug,
+  organizationName,
   types,
   result,
 }: {
   orgSlug: string;
+  organizationName: string;
   types: CotisationTypeRow[];
   result: ListCotisationsDueResult;
 }) {
@@ -156,8 +158,8 @@ export async function CotisationsDueTab({
                       <TableCell className="text-right">
                         <CotisationsDueRowActions
                           orgSlug={orgSlug}
-                          cotisationId={row.id}
-                          remaining={row.dueAmount - row.paidAmount}
+                          organizationName={organizationName}
+                          row={row}
                         />
                       </TableCell>
                     </TableRow>

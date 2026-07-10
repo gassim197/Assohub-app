@@ -553,7 +553,8 @@
       "rowActions": {
         "label": "Actions",
         "viewDetails": "Voir les détails",
-        "recordPayment": "Enregistrer un paiement"
+        "recordPayment": "Enregistrer un paiement",
+        "sendReminder": "Envoyer un rappel"
       },
       "filters": {
         "statusLabel": "Filtrer par statut",
@@ -576,6 +577,30 @@
         "periodTo": "Au",
         "periodRangeSeparator": "à",
         "showPaid": "Inclure les cotisations soldées"
+      }
+    },
+    "reminders": {
+      "whatsappMessage": "Bonjour {name},\n\nNous vous rappelons que votre cotisation *{type}* pour *{period}* d'un montant de *{amount}* reste à régler.\n\nMerci de votre engagement envers {orgName}.",
+      "dialog": {
+        "title": "Envoyer un rappel",
+        "confirmQuestion": "Envoyer un rappel à {member} pour sa cotisation {type} {period} de {amount} ?",
+        "messagePreviewLabel": "Aperçu du message",
+        "messagePreviewText": "Bonjour {firstName},\n\nNous vous rappelons que votre cotisation {type} pour {period} d'un montant de {amount} reste à régler.\n\nMerci de votre engagement envers {orgName}.",
+        "cancel": "Annuler",
+        "submit": "Envoyer le rappel",
+        "submitting": "Envoi...",
+        "success": "Rappel envoyé à {member}.",
+        "errors": {
+          "notRemindable": "Cette cotisation n'est plus éligible à une relance.",
+          "noEmail": "Ce membre n'a pas d'adresse email enregistrée.",
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
+      },
+      "noEmailDialog": {
+        "title": "Aucune adresse email",
+        "description": "{name} n'a pas d'adresse email enregistrée. Vous pouvez le contacter par téléphone au {phone} ou via WhatsApp.",
+        "close": "Fermer",
+        "whatsappButton": "Contacter sur WhatsApp"
       }
     },
     "payments": {
