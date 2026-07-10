@@ -13,7 +13,7 @@ import {
   isCotisationStatus,
 } from "@/lib/cotisations/constants";
 import { isOverduePartial } from "@/lib/cotisations/status";
-import { formatPeriodLabel } from "@/lib/cotisations/period";
+import { formatPeriodLabel, formatRelativeReminderDate } from "@/lib/cotisations/period";
 import { formatCurrency } from "@/lib/currency";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -70,8 +70,24 @@ function amountCell(row: CotisationWithRelationsRow, locale: string) {
   );
 }
 
+/** Colonne "Dernier rappel" (session 5C §2) : "Aucun" en gris discret, sinon date relative/absolue. */
+function lastReminderCell(
+  row: CotisationWithRelationsRow,
+  locale: string,
+  t: Awaited<ReturnType<typeof getTranslations>>,
+) {
+  if (!row.lastReminderSentAt) {
+    return <span className="text-muted-foreground">{t("due.lastReminder.none")}</span>;
+  }
+  return (
+    <span className="text-muted-foreground">
+      {formatRelativeReminderDate(row.lastReminderSentAt, locale)}
+    </span>
+  );
+}
+
 /**
- * Onglet "Cotisations dues" (checkpoint 3 5A, étendu checkpoint 1 5B) :
+ * Onglet "Cotisations dues" (checkpoint 3 5A, étendu 5B et 5C) :
  * en_attente + partiel + en_retard par défaut (paye via `showPaid`),
  * filtrables, paginées 20/page. Server Component : la liste est déjà chargée
  * par la page parente selon les filtres résolus depuis l'URL.
@@ -111,6 +127,7 @@ export async function CotisationsDueTab({
                   <TableHead>{t("due.table.dueAmount")}</TableHead>
                   <TableHead>{t("due.table.status")}</TableHead>
                   <TableHead>{t("due.table.dueDate")}</TableHead>
+                  <TableHead>{t("due.table.lastReminder")}</TableHead>
                   <TableHead className="w-12 text-right">
                     <span className="sr-only">{t("due.rowActions.label")}</span>
                   </TableHead>
@@ -135,6 +152,7 @@ export async function CotisationsDueTab({
                       <TableCell className="text-muted-foreground tabular-nums">
                         {dateFormatter.format(new Date(row.dueDate))}
                       </TableCell>
+                      <TableCell>{lastReminderCell(row, locale, t)}</TableCell>
                       <TableCell className="text-right">
                         <CotisationsDueRowActions
                           orgSlug={orgSlug}

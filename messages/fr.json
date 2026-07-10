@@ -544,7 +544,11 @@
         "period": "Période",
         "dueAmount": "Montant",
         "status": "Statut",
-        "dueDate": "Date d'échéance"
+        "dueDate": "Date d'échéance",
+        "lastReminder": "Dernier rappel"
+      },
+      "lastReminder": {
+        "none": "Aucun"
       },
       "rowActions": {
         "label": "Actions",

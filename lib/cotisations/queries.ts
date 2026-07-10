@@ -1,10 +1,45 @@
 import { and, asc, count, desc, eq, gte, ilike, inArray, isNull, lte, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { cotisationTypes, cotisations, payments } from "@/lib/db/cotisations-schema";
+import { cotisationTypes, cotisations, paymentReminders, payments } from "@/lib/db/cotisations-schema";
 import { associationMembers } from "@/lib/db/members-schema";
 import { COTISATIONS_PAGE_SIZE } from "./constants";
 import { getMonthRange } from "./period";
+
+/**
+ * Sous-requête du dernier rappel envoyé par cotisation (session 5C §2).
+ * Une instance fraîche par appel (jamais réutilisée entre plusieurs requêtes)
+ * pour éviter toute collision d'alias Drizzle.
+ *
+ * Typé `sql<string>` et non `sql<Date>` : contrairement à un `select()` de
+ * colonne `timestamp` normale (que Drizzle convertit automatiquement), un
+ * agrégat `MAX()` construit via `sql\`...\`` traverse le driver Neon sans
+ * conversion — la valeur revient en texte brut au runtime, quelle que soit
+ * l'annotation TypeScript. `normalizeLastReminder` fait la conversion réelle.
+ */
+function lastReminderSubquery() {
+  return db
+    .select({
+      cotisationId: paymentReminders.cotisationId,
+      lastSentAt: sql<string>`MAX(${paymentReminders.sentAt})`.as("last_sent_at"),
+    })
+    .from(paymentReminders)
+    .where(isNull(paymentReminders.deletedAt))
+    .groupBy(paymentReminders.cotisationId)
+    .as("last_reminder");
+}
+
+/** Convertit `lastReminderSentAt` (texte brut renvoyé par le driver) en vrai `Date`. */
+function normalizeLastReminder<T extends { lastReminderSentAt: unknown }>(
+  rows: T[],
+): (Omit<T, "lastReminderSentAt"> & { lastReminderSentAt: Date | null })[] {
+  return rows.map((row) => ({
+    ...row,
+    lastReminderSentAt: row.lastReminderSentAt
+      ? new Date(row.lastReminderSentAt as string)
+      : null,
+  }));
+}
 
 export type CotisationTypeRow = typeof cotisationTypes.$inferSelect;
 
@@ -111,6 +146,8 @@ export interface CotisationWithRelationsRow {
   id: string;
   memberId: string;
   memberFullName: string;
+  memberEmail: string | null;
+  memberPhone: string;
   typeId: string;
   typeName: string;
   frequency: string;
@@ -121,12 +158,16 @@ export interface CotisationWithRelationsRow {
   status: string;
   dueDate: string;
   updatedAt: Date;
+  /** Dernier rappel envoyé pour cette cotisation, `null` si aucun (5C §2). */
+  lastReminderSentAt: Date | null;
 }
 
-const cotisationWithRelationsSelection = {
+const cotisationWithRelationsSelection = (reminder: ReturnType<typeof lastReminderSubquery>) => ({
   id: cotisations.id,
   memberId: cotisations.memberId,
   memberFullName: associationMembers.fullName,
+  memberEmail: associationMembers.email,
+  memberPhone: associationMembers.phoneNumber,
   typeId: cotisations.cotisationTypeId,
   typeName: cotisationTypes.name,
   frequency: cotisationTypes.frequency,
@@ -137,7 +178,8 @@ const cotisationWithRelationsSelection = {
   status: cotisations.status,
   dueDate: cotisations.dueDate,
   updatedAt: cotisations.updatedAt,
-};
+  lastReminderSentAt: reminder.lastSentAt,
+});
 
 /**
  * Les 10 dernières cotisations créées ou modifiées (dashboard, "Cotisations
@@ -148,11 +190,13 @@ export async function listRecentCotisations(
   organizationId: string,
   limit = 10,
 ): Promise<CotisationWithRelationsRow[]> {
-  return db
-    .select(cotisationWithRelationsSelection)
+  const reminder = lastReminderSubquery();
+  const rows = await db
+    .select(cotisationWithRelationsSelection(reminder))
     .from(cotisations)
     .innerJoin(associationMembers, eq(cotisations.memberId, associationMembers.id))
     .innerJoin(cotisationTypes, eq(cotisations.cotisationTypeId, cotisationTypes.id))
+    .leftJoin(reminder, eq(reminder.cotisationId, cotisations.id))
     .where(
       and(
         eq(cotisations.organizationId, organizationId),
@@ -161,6 +205,8 @@ export async function listRecentCotisations(
     )
     .orderBy(desc(cotisations.updatedAt))
     .limit(limit);
+
+  return normalizeLastReminder(rows);
 }
 
 // ─── Onglet "Cotisations dues" (checkpoint 3) ────────────────────────────────
@@ -265,13 +311,15 @@ export async function listCotisationsDue({
   const where = and(...conditions);
   const safePage = Math.max(1, page);
   const offset = (safePage - 1) * COTISATIONS_PAGE_SIZE;
+  const reminder = lastReminderSubquery();
 
   const [rows, totalResult] = await Promise.all([
     db
-      .select(cotisationWithRelationsSelection)
+      .select(cotisationWithRelationsSelection(reminder))
       .from(cotisations)
       .innerJoin(associationMembers, eq(cotisations.memberId, associationMembers.id))
       .innerJoin(cotisationTypes, eq(cotisations.cotisationTypeId, cotisationTypes.id))
+      .leftJoin(reminder, eq(reminder.cotisationId, cotisations.id))
       .where(where)
       .orderBy(asc(cotisations.dueDate))
       .limit(COTISATIONS_PAGE_SIZE)
@@ -286,7 +334,7 @@ export async function listCotisationsDue({
   const total = Number(totalResult[0]?.value ?? 0);
 
   return {
-    rows,
+    rows: normalizeLastReminder(rows),
     total,
     page: safePage,
     pageSize: COTISATIONS_PAGE_SIZE,

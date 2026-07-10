@@ -143,3 +143,25 @@ export function formatPeriodLabel(
     timeZone: "UTC",
   }).format(date);
 }
+
+/** Nombre de jours entiers écoulés au-delà desquels on bascule sur une date absolue. */
+const RELATIVE_REMINDER_THRESHOLD_DAYS = 30;
+
+/**
+ * Formate la date du dernier rappel envoyé (session 5C §2) : relatif
+ * ("Il y a 3 jours", "Aujourd'hui", "Hier") en deçà de 30 jours via
+ * `Intl.RelativeTimeFormat` — nativement localisé, pas de dépendance
+ * supplémentaire — puis date absolue localisée au-delà.
+ */
+export function formatRelativeReminderDate(date: Date, locale: string): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays >= 0 && diffDays <= RELATIVE_REMINDER_THRESHOLD_DAYS) {
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+    return rtf.format(-diffDays, "day");
+  }
+
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(date);
+}

@@ -1,5 +1,6 @@
 import { getAppUrl } from "@/lib/url";
 import { EMAIL_FROM, resend } from "./client";
+import { escapeHtml } from "./escape-html";
 
 const FONT_STACK =
   "'Geist Sans', 'Segoe UI', system-ui, -apple-system, sans-serif";
@@ -11,18 +12,6 @@ export interface InvitationEmailParams {
   roleLabel: string;
   personalMessage: string | null;
   acceptUrl: string;
-}
-
-// Les valeurs interpolées (nom de l'org, de l'inviteur, message perso) viennent
-// de saisies utilisateur : on échappe avant de les injecter dans le HTML de
-// l'email pour éviter toute casse de structure ou injection de balises.
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }
 
 /**

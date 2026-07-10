@@ -544,7 +544,11 @@
         "period": "Period",
         "dueAmount": "Amount",
         "status": "Status",
-        "dueDate": "Due date"
+        "dueDate": "Due date",
+        "lastReminder": "Last reminder"
+      },
+      "lastReminder": {
+        "none": "None"
       },
       "rowActions": {
         "label": "Actions",
