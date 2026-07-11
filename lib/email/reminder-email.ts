@@ -221,6 +221,20 @@ function sleep(ms: number): Promise<void> {
  *
  * Si plus de 100 destinataires (improbable pour une association), on
  * découpe en lots avec une courte pause entre chaque appel.
+ *
+ * Limite vérifiée en conditions réelles (session 5C) : `errors[]` ne couvre
+ * que les échecs de **validation de payload** (champ manquant, email mal
+ * formé — cf. doc Resend), pas les rejets de **restriction de compte**. En
+ * mode test (domaine non vérifié), un envoi vers une adresse autre que celle
+ * vérifiée du compte est accepté par l'API batch (aucune entrée dans
+ * `errors[]`, un `id` renvoyé comme pour un succès) puis échoue silencieusement
+ * à la livraison — visible seulement dans le dashboard Resend, jamais dans
+ * cette réponse synchrone. `sentCount` signifie donc « accepté par l'API »,
+ * pas « confirmé délivré » : cohérent avec `payment_reminders.delivered_at`
+ * qui reste `NULL` en V1 (réservé à une future intégration webhook, jamais
+ * renseigné aujourd'hui). Cette restriction disparaît en production dès
+ * qu'un domaine d'envoi est vérifié — un vrai destinataire y est toujours
+ * livrable, seule la vérification de payload s'applique alors.
  */
 export async function sendBulkPaymentReminderEmails(
   recipients: BulkReminderRecipient[],
