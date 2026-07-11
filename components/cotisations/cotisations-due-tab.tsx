@@ -14,6 +14,7 @@ import {
 } from "@/lib/cotisations/constants";
 import { isOverduePartial } from "@/lib/cotisations/status";
 import { formatPeriodLabel, formatRelativeReminderDate } from "@/lib/cotisations/period";
+import type { RemindableCotisationRow } from "@/lib/cotisations/reminder-queries";
 import { formatCurrency } from "@/lib/currency";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -29,6 +30,7 @@ import {
 import { CotisationsDueToolbar } from "./cotisations-due-toolbar";
 import { CotisationsDueRowActions } from "./cotisations-due-row-actions";
 import { CotisationsPagination } from "./cotisations-pagination";
+import { BulkReminderTrigger } from "./bulk-reminder-dialog";
 
 function statusBadge(
   row: CotisationWithRelationsRow,
@@ -97,11 +99,13 @@ export async function CotisationsDueTab({
   organizationName,
   types,
   result,
+  remindable,
 }: {
   orgSlug: string;
   organizationName: string;
   types: CotisationTypeRow[];
   result: ListCotisationsDueResult;
+  remindable: RemindableCotisationRow[];
 }) {
   const [t, locale] = await Promise.all([
     getTranslations("cotisations"),
@@ -111,6 +115,14 @@ export async function CotisationsDueTab({
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <BulkReminderTrigger
+          orgSlug={orgSlug}
+          organizationName={organizationName}
+          remindable={remindable}
+        />
+      </div>
+
       <CotisationsDueToolbar types={types} />
 
       {result.rows.length === 0 ? (

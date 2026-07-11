@@ -8,16 +8,29 @@ import { newId } from "@/lib/db/id";
 import { paymentReminders } from "@/lib/db/cotisations-schema";
 import { formatCurrency } from "@/lib/currency";
 import {
+  sendBulkPaymentReminderEmails,
   sendPaymentReminderEmail,
+  type BulkReminderRecipient,
   type PaymentReminderEmailParams,
 } from "@/lib/email/reminder-email";
 import { isCotisationFrequency } from "./constants";
 import { formatPeriodLabel } from "./period";
-import { getRemindableCotisationById, type RemindableCotisationRow } from "./reminder-queries";
+import {
+  getRemindableCotisationById,
+  getRemindableCotisations,
+  type RemindableCotisationRow,
+} from "./reminder-queries";
 
 export type ReminderActionResult =
   | { ok: true }
   | { ok: false; error: "notRemindable" | "noEmail" | "sendFailed" | "unknown" };
+
+export interface BulkReminderResult {
+  ok: true;
+  sentCount: number;
+  failedCount: number;
+  noEmailCount: number;
+}
 
 /**
  * Construit les paramètres de l'email de relance à partir d'une cotisation
@@ -92,4 +105,81 @@ export async function sendPaymentReminder(
 
   revalidatePath(`/${orgSlug}/cotisations`);
   return { ok: true };
+}
+
+/**
+ * Envoie un rappel à toutes les cotisations relançables ayant un email
+ * (session 5C §4, checkpoint 2). Récupère systématiquement l'état frais des
+ * cotisations relançables (jamais une liste fournie par le client) : aucun
+ * paramètre autre que `orgSlug`, par construction.
+ *
+ * N'écrit une ligne `payment_reminders` que pour les envois confirmés
+ * réussis (cf. `sendBulkPaymentReminderEmails` pour la logique de lot/échecs
+ * partiels) — un seul `INSERT` multi-lignes, atomique nativement en Postgres
+ * pour ce lot de succès.
+ */
+export async function sendBulkPaymentReminders(
+  orgSlug: string,
+): Promise<BulkReminderResult | { ok: false; error: "unknown" }> {
+  const { organizationId, userId, organization } = await requireOrgAccess(orgSlug);
+
+  let remindable: RemindableCotisationRow[];
+  try {
+    remindable = await getRemindableCotisations(organizationId);
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  const withEmail = remindable.filter((row) => row.memberEmail);
+  const noEmailCount = remindable.length - withEmail.length;
+
+  if (withEmail.length === 0) {
+    return { ok: true, sentCount: 0, failedCount: 0, noEmailCount };
+  }
+
+  const recipients: BulkReminderRecipient[] = withEmail.map((row) => ({
+    ...buildReminderParams(row, organization.name),
+    cotisationId: row.id,
+  }));
+
+  let outcomes;
+  try {
+    outcomes = await sendBulkPaymentReminderEmails(recipients);
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  const succeeded = outcomes.filter((o) => o.ok);
+  const failedCount = outcomes.length - succeeded.length;
+
+  if (succeeded.length > 0) {
+    const byId = new Map(withEmail.map((row) => [row.id, row]));
+    try {
+      await db.insert(paymentReminders).values(
+        succeeded
+          .map((outcome) => byId.get(outcome.cotisationId))
+          .filter((row): row is RemindableCotisationRow => Boolean(row))
+          .map((row) => ({
+            id: newId(),
+            organizationId,
+            cotisationId: row.id,
+            memberId: row.memberId,
+            sentByUserId: userId,
+            channel: "email" as const,
+          })),
+      );
+    } catch {
+      // Les emails sont partis (Resend a confirmé), seule la trace groupée
+      // échoue à s'écrire — même tolérance résiduelle que ci-dessus.
+    }
+  }
+
+  revalidatePath(`/${orgSlug}/cotisations`);
+
+  return {
+    ok: true,
+    sentCount: succeeded.length,
+    failedCount,
+    noEmailCount,
+  };
 }

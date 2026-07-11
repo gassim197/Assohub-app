@@ -601,6 +601,24 @@
         "description": "{name} n'a pas d'adresse email enregistrée. Vous pouvez le contacter par téléphone au {phone} ou via WhatsApp.",
         "close": "Fermer",
         "whatsappButton": "Contacter sur WhatsApp"
+      },
+      "bulk": {
+        "trigger": "Relancer tous les retardataires ({count})",
+        "dialog": {
+          "title": "Relance groupée",
+          "intro": "Vous êtes sur le point d'envoyer {count} rappels par email.",
+          "willReceiveTitle": "Recevront un rappel par email ({count})",
+          "noEmailTitle": "{count} membres n'ont pas d'adresse email et ne peuvent pas être relancés par ce moyen. Contactez-les par WhatsApp ou téléphone :",
+          "whatsappMessage": "Bonjour {name},\n\nNous vous rappelons que votre cotisation *{type}* pour *{period}* d'un montant de *{amount}* reste à régler.\n\nMerci de votre engagement envers {orgName}.",
+          "whatsappButton": "WhatsApp",
+          "cancel": "Annuler",
+          "submit": "Envoyer les {count} rappels",
+          "submitting": "Envoi en cours..."
+        },
+        "success": "{sent} rappels envoyés, {failed} échecs, {noEmail} membres sans email.",
+        "errors": {
+          "generic": "Une erreur est survenue. Veuillez réessayer."
+        }
       }
     },
     "payments": {

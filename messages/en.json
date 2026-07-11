@@ -601,6 +601,24 @@
         "description": "{name} has no email address on file. You can contact them by phone at {phone} or via WhatsApp.",
         "close": "Close",
         "whatsappButton": "Contact on WhatsApp"
+      },
+      "bulk": {
+        "trigger": "Remind all overdue members ({count})",
+        "dialog": {
+          "title": "Bulk reminder",
+          "intro": "You are about to send {count} email reminders.",
+          "willReceiveTitle": "Will receive an email reminder ({count})",
+          "noEmailTitle": "{count} members have no email address and cannot be reminded this way. Contact them via WhatsApp or phone:",
+          "whatsappMessage": "Hello {name},\n\nThis is a reminder that your *{type}* contribution for *{period}*, amounting to *{amount}*, is still outstanding.\n\nThank you for your commitment to {orgName}.",
+          "whatsappButton": "WhatsApp",
+          "cancel": "Cancel",
+          "submit": "Send {count} reminders",
+          "submitting": "Sending..."
+        },
+        "success": "{sent} reminders sent, {failed} failed, {noEmail} members without email.",
+        "errors": {
+          "generic": "Something went wrong. Please try again."
+        }
       }
     },
     "payments": {

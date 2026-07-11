@@ -12,6 +12,7 @@ import {
 } from "@/lib/cotisations/queries";
 import type { DuePeriodFilter } from "@/lib/cotisations/queries";
 import { getCotisationSummary, listRecentPayments } from "@/lib/cotisations/payment-queries";
+import { getRemindableCotisations } from "@/lib/cotisations/reminder-queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CotisationTypesTab } from "@/components/cotisations/cotisation-types-tab";
 import { CotisationTypeFormDialog } from "@/components/cotisations/cotisation-type-form-dialog";
@@ -74,12 +75,13 @@ export default async function CotisationsPage({
     page: Math.max(1, Number(readParam(sp.page)) || 1),
   };
 
-  const [types, kpis, recent, recentPayments, dueResult] = await Promise.all([
+  const [types, kpis, recent, recentPayments, dueResult, remindable] = await Promise.all([
     getCotisationTypes(organizationId),
     getCotisationKpis(organizationId),
     listRecentCotisations(organizationId),
     listRecentPayments(organizationId),
     listCotisationsDue(dueParams),
+    getRemindableCotisations(organizationId),
   ]);
 
   // Édition en place : `?editType=true&typeId=X` monte la modal pré-remplie.
@@ -127,6 +129,7 @@ export default async function CotisationsPage({
             organizationName={organization.name}
             types={types}
             result={dueResult}
+            remindable={remindable}
           />
         </TabsContent>
 

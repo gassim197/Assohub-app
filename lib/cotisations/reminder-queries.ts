@@ -57,9 +57,25 @@ function remindableConditions(organizationId: string) {
 }
 
 /**
- * Une cotisation relançable par son id — revérifiée côté serveur par
- * `sendPaymentReminder` au moment de l'envoi (jamais de confiance dans un
- * état affiché côté client, potentiellement périmé).
+ * Toutes les cotisations relançables d'une organisation, avec les infos du
+ * membre nécessaires à l'envoi (email, téléphone). Multi-tenant strict.
+ */
+export async function getRemindableCotisations(
+  organizationId: string,
+): Promise<RemindableCotisationRow[]> {
+  return db
+    .select(remindableSelection)
+    .from(cotisations)
+    .innerJoin(associationMembers, eq(cotisations.memberId, associationMembers.id))
+    .innerJoin(cotisationTypes, eq(cotisations.cotisationTypeId, cotisationTypes.id))
+    .where(remindableConditions(organizationId));
+}
+
+/**
+ * Une cotisation relançable par son id — même filtre que
+ * `getRemindableCotisations`, utilisé par `sendPaymentReminder` pour
+ * revérifier la relançabilité côté serveur au moment de l'envoi (jamais de
+ * confiance dans un état affiché côté client, potentiellement périmé).
  */
 export async function getRemindableCotisationById(
   organizationId: string,

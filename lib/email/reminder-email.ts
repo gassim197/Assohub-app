@@ -176,3 +176,105 @@ export async function sendPaymentReminderEmail(
     throw new Error(`Resend error: ${error.name} — ${error.message}`);
   }
 }
+
+export interface BulkReminderRecipient extends PaymentReminderEmailParams {
+  /** Sert à faire correspondre le succès/échec de chaque envoi à son destinataire d'origine. */
+  cotisationId: string;
+}
+
+export interface BulkSendOutcome {
+  cotisationId: string;
+  ok: boolean;
+}
+
+/**
+ * Limite documentée de l'API batch Resend (jusqu'à 100 emails par appel).
+ * @link https://resend.com/docs/dashboard/emails/batch-sending#limitations
+ */
+const RESEND_BATCH_MAX = 100;
+/** Pause entre deux lots, uniquement utile si >100 destinataires (rare pour une association). */
+const RESEND_BATCH_DELAY_MS = 600;
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size));
+  }
+  return chunks;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Envoie des rappels en masse via l'API batch de Resend (session 5C §4,
+ * checkpoint 2) — un seul aller-retour HTTP pour jusqu'à 100 destinataires,
+ * plutôt qu'une boucle d'envois individuels qui se ferait throttler.
+ *
+ * `batchValidation: 'permissive'` : un destinataire invalide ne fait pas
+ * échouer les autres — Resend renvoie les échecs par index dans `errors[]`.
+ * On détermine le succès de chaque destinataire par son **absence** de
+ * `errors[]`, plutôt que par sa présence dans `data[]` dont la forme exacte
+ * sous validation permissive n'est pas garantie de correspondre 1:1 à
+ * l'ordre d'entrée — cette approche reste correcte quelle que soit cette forme.
+ *
+ * Si plus de 100 destinataires (improbable pour une association), on
+ * découpe en lots avec une courte pause entre chaque appel.
+ */
+export async function sendBulkPaymentReminderEmails(
+  recipients: BulkReminderRecipient[],
+  locale: ReminderLocale = "fr",
+): Promise<BulkSendOutcome[]> {
+  const outcomes: BulkSendOutcome[] = [];
+  const batches = chunk(recipients, RESEND_BATCH_MAX);
+
+  for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+    const batch = batches[batchIndex]!;
+
+    try {
+      const { data, error } = await resend.batch.send(
+        batch.map((recipient) => ({
+          from: EMAIL_FROM,
+          to: recipient.to,
+          subject: STRINGS[locale].subject(recipient.organizationName),
+          html: reminderEmailHtml(recipient, locale),
+        })),
+        { batchValidation: "permissive" },
+      );
+      console.log("[reminders] Resend batch response", {
+        batchIndex,
+        size: batch.length,
+        dataCount: data?.data?.length,
+        errors: data?.errors,
+        error,
+      });
+
+      if (error) {
+        // Échec du lot entier (ex. clé API invalide) : tous les destinataires
+        // de ce lot sont marqués en échec, les autres lots continuent.
+        for (const recipient of batch) {
+          outcomes.push({ cotisationId: recipient.cotisationId, ok: false });
+        }
+      } else {
+        const failedIndexes = new Set((data?.errors ?? []).map((e) => e.index));
+        batch.forEach((recipient, index) => {
+          outcomes.push({
+            cotisationId: recipient.cotisationId,
+            ok: !failedIndexes.has(index),
+          });
+        });
+      }
+    } catch {
+      for (const recipient of batch) {
+        outcomes.push({ cotisationId: recipient.cotisationId, ok: false });
+      }
+    }
+
+    if (batchIndex < batches.length - 1) {
+      await sleep(RESEND_BATCH_DELAY_MS);
+    }
+  }
+
+  return outcomes;
+}
