@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { MeetingAttendanceSection } from "@/components/meetings/meeting-attendance-section";
 import { MeetingDetailActions } from "@/components/meetings/meeting-detail-actions";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
+import { MeetingMinutesSection } from "@/components/meetings/meeting-minutes-section";
 
 /** Ligne libellé / valeur d'une section de la fiche. */
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -196,9 +197,14 @@ export default async function MeetingDetailPage({
               {t("detail.minutesTitle")}
             </h2>
             <Separator className="mt-2" />
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("detail.minutesComingSoon")}
-            </p>
+            <div className="mt-2">
+              <MeetingMinutesSection
+                orgSlug={orgSlug}
+                organizationId={organizationId}
+                meetingId={meeting.id}
+                meetingDescription={meeting.description}
+              />
+            </div>
           </section>
         </CardContent>
       </Card>

@@ -867,8 +867,7 @@
       "videoLink": "Lien de visioconférence",
       "descriptionEmpty": "Aucune description",
       "attendanceTitle": "Présence",
-      "minutesTitle": "Procès-verbal",
-      "minutesComingSoon": "Bientôt disponible (session 6C)."
+      "minutesTitle": "Procès-verbal"
     },
     "attendance": {
       "manage": "Gérer la présence",
@@ -898,6 +897,41 @@
       "summary": {
         "presentCount": "{present} présents sur {total} membres actifs ({percent}%)",
         "rsvpBreakdown": "{yes} ont confirmé, {no} ont décliné, {maybe} peut-être, {noResponse} sans réponse"
+      }
+    },
+    "minutes": {
+      "empty": "Aucun procès-verbal pour cette réunion.",
+      "create": "Créer le PV",
+      "edit": "Modifier le PV",
+      "optional": "(optionnel)",
+      "status": {
+        "brouillon": "Brouillon",
+        "publie": "Publié",
+        "archive": "Archivé"
+      },
+      "fields": {
+        "agenda": "Ordre du jour",
+        "decisionsSummary": "Résumé des décisions",
+        "actionsToFollow": "Actions à mener",
+        "bodyMarkdown": "Contenu détaillé"
+      },
+      "form": {
+        "createTitle": "Nouveau procès-verbal",
+        "createDescription": "Rédigez le procès-verbal de cette réunion.",
+        "editTitle": "Modifier le procès-verbal",
+        "editDescription": "Mettez à jour le contenu du procès-verbal.",
+        "cancel": "Annuler",
+        "submitCreate": "Créer le PV",
+        "submittingCreate": "Création…",
+        "submitEdit": "Enregistrer",
+        "submittingEdit": "Enregistrement…",
+        "successCreate": "Procès-verbal créé.",
+        "successEdit": "Procès-verbal mis à jour.",
+        "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+        "errorConflict": "Un procès-verbal existe déjà pour cette réunion.",
+        "errors": {
+          "bodyMarkdownMin": "Le contenu du PV est requis."
+        }
       }
     },
     "form": {
@@ -930,11 +964,6 @@
       "submitting": "Enregistrement...",
       "submit": "Enregistrer",
       "success": "Réunion mise à jour."
-    },
-    "minutes": {
-      "draft": "Brouillon",
-      "published": "Publié",
-      "validated": "Validé"
     }
   },
   "reports": {

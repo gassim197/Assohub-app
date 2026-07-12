@@ -867,8 +867,7 @@
       "videoLink": "Video conference link",
       "descriptionEmpty": "No description",
       "attendanceTitle": "Attendance",
-      "minutesTitle": "Minutes",
-      "minutesComingSoon": "Coming soon (session 6C)."
+      "minutesTitle": "Minutes"
     },
     "attendance": {
       "manage": "Manage attendance",
@@ -898,6 +897,41 @@
       "summary": {
         "presentCount": "{present} present out of {total} active members ({percent}%)",
         "rsvpBreakdown": "{yes} confirmed, {no} declined, {maybe} maybe, {noResponse} no response"
+      }
+    },
+    "minutes": {
+      "empty": "No minutes for this meeting.",
+      "create": "Create minutes",
+      "edit": "Edit minutes",
+      "optional": "(optional)",
+      "status": {
+        "brouillon": "Draft",
+        "publie": "Published",
+        "archive": "Archived"
+      },
+      "fields": {
+        "agenda": "Agenda",
+        "decisionsSummary": "Decisions summary",
+        "actionsToFollow": "Follow-up actions",
+        "bodyMarkdown": "Detailed content"
+      },
+      "form": {
+        "createTitle": "New minutes",
+        "createDescription": "Write the minutes for this meeting.",
+        "editTitle": "Edit minutes",
+        "editDescription": "Update the minutes content.",
+        "cancel": "Cancel",
+        "submitCreate": "Create minutes",
+        "submittingCreate": "Creating…",
+        "submitEdit": "Save",
+        "submittingEdit": "Saving…",
+        "successCreate": "Minutes created.",
+        "successEdit": "Minutes updated.",
+        "errorGeneric": "Something went wrong. Please try again.",
+        "errorConflict": "Minutes already exist for this meeting.",
+        "errors": {
+          "bodyMarkdownMin": "Minutes content is required."
+        }
       }
     },
     "form": {
@@ -930,11 +964,6 @@
       "submitting": "Saving...",
       "submit": "Save",
       "success": "Meeting updated."
-    },
-    "minutes": {
-      "draft": "Draft",
-      "published": "Published",
-      "validated": "Validated"
     }
   },
   "reports": {
