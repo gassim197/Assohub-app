@@ -67,3 +67,28 @@ export async function listPastMeetings({
     .where(and(...conditions))
     .orderBy(desc(meetings.scheduledAt));
 }
+
+/**
+ * Récupère une réunion par son id, borné à l'organisation et hors archivées.
+ * Une réunion `annulee` reste accessible ici (page détail, lien direct) même
+ * si elle n'apparaît dans aucune des deux listes principales. Un `meetingId`
+ * d'une autre organisation renvoie `null`.
+ */
+export async function getMeetingById(
+  organizationId: string,
+  meetingId: string,
+): Promise<MeetingRow | null> {
+  const [row] = await db
+    .select()
+    .from(meetings)
+    .where(
+      and(
+        eq(meetings.id, meetingId),
+        eq(meetings.organizationId, organizationId),
+        isNull(meetings.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  return row ?? null;
+}

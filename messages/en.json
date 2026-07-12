@@ -793,6 +793,7 @@
   "meetings": {
     "title": "Meetings",
     "subtitle": "Organize and track your organization's meetings.",
+    "schedule": "New meeting",
     "upcoming": "Upcoming meetings",
     "past": "Past meetings",
     "join": "Join",
@@ -801,7 +802,8 @@
       "upcomingTitle": "No upcoming meeting",
       "upcomingDescription": "No meeting scheduled. Create your first meeting to organize your team.",
       "pastTitle": "No past meeting",
-      "pastDescription": "No meeting held yet."
+      "pastDescription": "No meeting held yet.",
+      "cta": "Create my first meeting"
     },
     "types": {
       "ag": "General Assembly",
@@ -818,6 +820,41 @@
       "tenue": "Held",
       "annulee": "Cancelled",
       "reportee": "Postponed"
+    },
+    "rowActions": {
+      "label": "Actions",
+      "edit": "Edit"
+    },
+    "form": {
+      "title": "New meeting",
+      "description": "Schedule a new meeting for your organization.",
+      "fieldTitle": "Title",
+      "type": "Type",
+      "status": "Status",
+      "fieldDescription": "Description",
+      "optional": "(optional)",
+      "scheduledAt": "Date and time",
+      "durationMinutes": "Expected duration (minutes)",
+      "location": "Location",
+      "videoLink": "Video conference link",
+      "cancel": "Cancel",
+      "submitting": "Creating...",
+      "submit": "Create meeting",
+      "success": "Meeting created.",
+      "errors": {
+        "titleMin": "Title must be at least 2 characters.",
+        "scheduledAtInvalid": "Invalid date and time.",
+        "durationPositive": "Duration must be a positive number.",
+        "videoLinkInvalid": "Link must be a valid URL.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "editForm": {
+      "title": "Edit meeting",
+      "description": "Changes are visible immediately to all members.",
+      "submitting": "Saving...",
+      "submit": "Save",
+      "success": "Meeting updated."
     },
     "minutes": {
       "draft": "Draft",

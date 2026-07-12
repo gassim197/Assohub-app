@@ -1,9 +1,17 @@
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
-import { listPastMeetings, listUpcomingMeetings } from "@/lib/meetings/queries";
+import {
+  getMeetingById,
+  listPastMeetings,
+  listUpcomingMeetings,
+} from "@/lib/meetings/queries";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MeetingsListTab } from "@/components/meetings/meetings-list-tab";
+import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -31,11 +39,27 @@ export default async function MeetingsPage({
     listPastMeetings({ organizationId, day }),
   ]);
 
+  // Édition en place : `?editMeeting=true&meetingId=X` monte la modale pré-remplie.
+  const editMeetingId =
+    sp.editMeeting === "true" ? readParam(sp.meetingId) : undefined;
+  const editMeeting = editMeetingId
+    ? await getMeetingById(organizationId, editMeetingId)
+    : null;
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <Button
+          size="sm"
+          render={<Link href={`/${orgSlug}/meetings?newMeeting=true`} />}
+        >
+          <Plus />
+          {t("schedule")}
+        </Button>
       </div>
 
       <Tabs defaultValue="upcoming">
@@ -46,20 +70,28 @@ export default async function MeetingsPage({
 
         <TabsContent value="upcoming" className="pt-4">
           <MeetingsListTab
+            orgSlug={orgSlug}
             meetings={upcoming}
             emptyTitle={t("empty.upcomingTitle")}
             emptyDescription={t("empty.upcomingDescription")}
+            showCreateCta
           />
         </TabsContent>
 
         <TabsContent value="past" className="pt-4">
           <MeetingsListTab
+            orgSlug={orgSlug}
             meetings={past}
             emptyTitle={t("empty.pastTitle")}
             emptyDescription={t("empty.pastDescription")}
           />
         </TabsContent>
       </Tabs>
+
+      <MeetingFormDialog orgSlug={orgSlug} />
+      {editMeeting ? (
+        <MeetingFormDialog orgSlug={orgSlug} meeting={editMeeting} />
+      ) : null}
     </div>
   );
 }

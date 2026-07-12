@@ -1,4 +1,5 @@
-import { CalendarDays, Video } from "lucide-react";
+import Link from "next/link";
+import { CalendarDays, Plus, Video } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import {
@@ -12,6 +13,7 @@ import type { MeetingRow } from "@/lib/meetings/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { MeetingRowActions } from "./meeting-row-actions";
 
 /** Une réunion, en carte (décision 6A : carte plutôt que ligne de table — contenu trop riche pour un tableau). */
 function MeetingCard({
@@ -73,6 +75,7 @@ function MeetingCard({
               {t("join")}
             </Button>
           ) : null}
+          <MeetingRowActions meetingId={meeting.id} />
         </div>
       </CardContent>
     </Card>
@@ -86,13 +89,17 @@ function MeetingCard({
  * règle stricte correspondante.
  */
 export async function MeetingsListTab({
+  orgSlug,
   meetings,
   emptyTitle,
   emptyDescription,
+  showCreateCta,
 }: {
+  orgSlug: string;
   meetings: MeetingRow[];
   emptyTitle: string;
   emptyDescription: string;
+  showCreateCta?: boolean;
 }) {
   const [t, locale] = await Promise.all([
     getTranslations("meetings"),
@@ -110,6 +117,15 @@ export async function MeetingsListTab({
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
             {emptyDescription}
           </p>
+          {showCreateCta ? (
+            <Button
+              className="mt-6"
+              render={<Link href={`/${orgSlug}/meetings?newMeeting=true`} />}
+            >
+              <Plus />
+              {t("empty.cta")}
+            </Button>
+          ) : null}
         </CardContent>
       </Card>
     );

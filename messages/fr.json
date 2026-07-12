@@ -793,6 +793,7 @@
   "meetings": {
     "title": "Réunions",
     "subtitle": "Organisez et suivez les réunions de votre organisation.",
+    "schedule": "Nouvelle réunion",
     "upcoming": "Prochaines réunions",
     "past": "Réunions passées",
     "join": "Rejoindre",
@@ -801,7 +802,8 @@
       "upcomingTitle": "Aucune réunion planifiée",
       "upcomingDescription": "Aucune réunion planifiée. Créez votre première réunion pour organiser votre équipe.",
       "pastTitle": "Aucune réunion tenue",
-      "pastDescription": "Aucune réunion tenue pour le moment."
+      "pastDescription": "Aucune réunion tenue pour le moment.",
+      "cta": "Créer ma première réunion"
     },
     "types": {
       "ag": "Assemblée Générale",
@@ -818,6 +820,41 @@
       "tenue": "Tenue",
       "annulee": "Annulée",
       "reportee": "Reportée"
+    },
+    "rowActions": {
+      "label": "Actions",
+      "edit": "Modifier"
+    },
+    "form": {
+      "title": "Nouvelle réunion",
+      "description": "Planifiez une nouvelle réunion pour votre organisation.",
+      "fieldTitle": "Titre",
+      "type": "Type",
+      "status": "Statut",
+      "fieldDescription": "Description",
+      "optional": "(optionnel)",
+      "scheduledAt": "Date et heure",
+      "durationMinutes": "Durée prévue (minutes)",
+      "location": "Lieu",
+      "videoLink": "Lien de visioconférence",
+      "cancel": "Annuler",
+      "submitting": "Création...",
+      "submit": "Créer la réunion",
+      "success": "Réunion créée.",
+      "errors": {
+        "titleMin": "Le titre doit contenir au moins 2 caractères.",
+        "scheduledAtInvalid": "Date et heure invalides.",
+        "durationPositive": "La durée doit être un nombre positif.",
+        "videoLinkInvalid": "Le lien doit être une URL valide.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "editForm": {
+      "title": "Modifier la réunion",
+      "description": "Les changements sont visibles immédiatement par tous les membres.",
+      "submitting": "Enregistrement...",
+      "submit": "Enregistrer",
+      "success": "Réunion mise à jour."
     },
     "minutes": {
       "draft": "Brouillon",
