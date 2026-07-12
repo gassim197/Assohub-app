@@ -867,9 +867,29 @@
       "videoLink": "Lien de visioconférence",
       "descriptionEmpty": "Aucune description",
       "attendanceTitle": "Présence",
-      "attendanceComingSoon": "Bientôt disponible (session 6B).",
       "minutesTitle": "Procès-verbal",
       "minutesComingSoon": "Bientôt disponible (session 6C)."
+    },
+    "attendance": {
+      "searchPlaceholder": "Rechercher un membre…",
+      "empty": "Aucun membre ne correspond à votre recherche.",
+      "noActiveMembers": "Aucun membre actif dans cette organisation.",
+      "archivedBadge": "Ancien membre",
+      "columnRsvp": "RSVP",
+      "columnPresent": "Présent",
+      "presentFutureHint": "La présence ne peut être saisie qu'après la réunion.",
+      "cancelledHint": "Cette réunion a été annulée : aucune présence à saisir.",
+      "saveErrorRsvp": "Le RSVP de {name} n'a pas pu être enregistré. Réessayez.",
+      "saveErrorAttendance": "La présence de {name} n'a pas pu être enregistrée. Réessayez.",
+      "attendedYes": "Présent",
+      "attendedNo": "Absent",
+      "attendedUnknown": "Non renseigné",
+      "rsvp": {
+        "yes": "Confirmé",
+        "no": "Décliné",
+        "maybe": "Peut-être",
+        "no_response": "Sans réponse"
+      }
     },
     "form": {
       "title": "Nouvelle réunion",

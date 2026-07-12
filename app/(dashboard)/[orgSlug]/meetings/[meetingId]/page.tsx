@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { MeetingAttendanceSection } from "@/components/meetings/meeting-attendance-section";
 import { MeetingDetailActions } from "@/components/meetings/meeting-detail-actions";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
 
@@ -179,9 +180,15 @@ export default async function MeetingDetailPage({
               {t("detail.attendanceTitle")}
             </h2>
             <Separator className="mt-2" />
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("detail.attendanceComingSoon")}
-            </p>
+            <div className="mt-2">
+              <MeetingAttendanceSection
+                orgSlug={orgSlug}
+                organizationId={organizationId}
+                meetingId={meeting.id}
+                meetingStatus={meeting.status}
+                meetingScheduledAt={meeting.scheduledAt}
+              />
+            </div>
           </section>
 
           <section>

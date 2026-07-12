@@ -867,9 +867,29 @@
       "videoLink": "Video conference link",
       "descriptionEmpty": "No description",
       "attendanceTitle": "Attendance",
-      "attendanceComingSoon": "Coming soon (session 6B).",
       "minutesTitle": "Minutes",
       "minutesComingSoon": "Coming soon (session 6C)."
+    },
+    "attendance": {
+      "searchPlaceholder": "Search a member…",
+      "empty": "No member matches your search.",
+      "noActiveMembers": "No active member in this organization.",
+      "archivedBadge": "Former member",
+      "columnRsvp": "RSVP",
+      "columnPresent": "Present",
+      "presentFutureHint": "Attendance can only be recorded after the meeting.",
+      "cancelledHint": "This meeting was cancelled: no attendance to record.",
+      "saveErrorRsvp": "{name}'s RSVP could not be saved. Please try again.",
+      "saveErrorAttendance": "{name}'s attendance could not be saved. Please try again.",
+      "attendedYes": "Present",
+      "attendedNo": "Absent",
+      "attendedUnknown": "Not recorded",
+      "rsvp": {
+        "yes": "Confirmed",
+        "no": "Declined",
+        "maybe": "Maybe",
+        "no_response": "No response"
+      }
     },
     "form": {
       "title": "New meeting",
