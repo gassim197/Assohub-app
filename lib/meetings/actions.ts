@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
 import { meetings } from "@/lib/db/meetings-schema";
 import { parseDatetimeLocalAsUtc } from "./date";
-import { meetingServerSchema } from "./schema";
+import { changeMeetingStatusServerSchema, meetingServerSchema } from "./schema";
 
 /**
  * Résultat des Server Actions de réunion (patron `MemberActionResult` /
@@ -17,6 +17,11 @@ import { meetingServerSchema } from "./schema";
  */
 export type MeetingActionResult =
   | { ok: true; meetingId: string }
+  | { ok: false; error: "validation" | "notFound" | "unknown" };
+
+/** Résultat des actions ciblées (statut, suppression) sans champ de formulaire. */
+export type MeetingStatusActionResult =
+  | { ok: true }
   | { ok: false; error: "validation" | "notFound" | "unknown" };
 
 /**
@@ -111,4 +116,83 @@ export async function updateMeeting(
   revalidatePath(`/${orgSlug}/meetings`);
   revalidatePath(`/${orgSlug}/meetings/${meetingId}`);
   return { ok: true, meetingId };
+}
+
+/**
+ * Change le statut d'une réunion (action ciblée, checkpoint 3). Séparée de
+ * `updateMeeting` pour porter la seule logique de statut — la confirmation
+ * pour un passage à « annulée » vit côté UI (`MeetingStatusDialog`). Multi-tenant
+ * strict, validation Zod du statut.
+ */
+export async function changeMeetingStatus(
+  orgSlug: string,
+  meetingId: string,
+  raw: unknown,
+): Promise<MeetingStatusActionResult> {
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  const parsed = changeMeetingStatusServerSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "validation" };
+  }
+  const { status } = parsed.data;
+
+  try {
+    const [updated] = await db
+      .update(meetings)
+      .set({ status })
+      .where(
+        and(
+          eq(meetings.id, meetingId),
+          eq(meetings.organizationId, organizationId),
+          isNull(meetings.deletedAt),
+        ),
+      )
+      .returning({ id: meetings.id });
+
+    if (!updated) {
+      return { ok: false, error: "notFound" };
+    }
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  revalidatePath(`/${orgSlug}/meetings`);
+  revalidatePath(`/${orgSlug}/meetings/${meetingId}`);
+  return { ok: true };
+}
+
+/**
+ * Supprime (soft delete) une réunion. Aucun hard delete : on pose
+ * `deleted_at = NOW()`, la ligne reste en base. Multi-tenant strict.
+ */
+export async function softDeleteMeeting(
+  orgSlug: string,
+  meetingId: string,
+): Promise<MeetingStatusActionResult> {
+  const { organizationId } = await requireOrgAccess(orgSlug);
+
+  let updated: { id: string } | undefined;
+  try {
+    [updated] = await db
+      .update(meetings)
+      .set({ deletedAt: new Date() })
+      .where(
+        and(
+          eq(meetings.id, meetingId),
+          eq(meetings.organizationId, organizationId),
+          isNull(meetings.deletedAt),
+        ),
+      )
+      .returning({ id: meetings.id });
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  if (!updated) {
+    return { ok: false, error: "notFound" };
+  }
+
+  revalidatePath(`/${orgSlug}/meetings`);
+  return { ok: true };
 }

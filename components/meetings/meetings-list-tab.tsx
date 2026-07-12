@@ -17,10 +17,12 @@ import { MeetingRowActions } from "./meeting-row-actions";
 
 /** Une réunion, en carte (décision 6A : carte plutôt que ligne de table — contenu trop riche pour un tableau). */
 function MeetingCard({
+  orgSlug,
   meeting,
   locale,
   t,
 }: {
+  orgSlug: string;
   meeting: MeetingRow;
   locale: string;
   t: Awaited<ReturnType<typeof getTranslations>>;
@@ -75,7 +77,10 @@ function MeetingCard({
               {t("join")}
             </Button>
           ) : null}
-          <MeetingRowActions meetingId={meeting.id} />
+          <MeetingRowActions
+            orgSlug={orgSlug}
+            meeting={{ id: meeting.id, title: meeting.title, status: meeting.status }}
+          />
         </div>
       </CardContent>
     </Card>
@@ -134,7 +139,13 @@ export async function MeetingsListTab({
   return (
     <div className="space-y-3">
       {meetings.map((meeting) => (
-        <MeetingCard key={meeting.id} meeting={meeting} locale={locale} t={t} />
+        <MeetingCard
+          key={meeting.id}
+          orgSlug={orgSlug}
+          meeting={meeting}
+          locale={locale}
+          t={t}
+        />
       ))}
     </div>
   );

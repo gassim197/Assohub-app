@@ -67,3 +67,11 @@ const RAW_MESSAGES: MeetingFormMessages = {
 export const meetingServerSchema = buildMeetingSchema(RAW_MESSAGES);
 
 export type MeetingFormValues = z.output<typeof meetingServerSchema>;
+
+/**
+ * Schéma de changement de statut (action ciblée `changeMeetingStatus`,
+ * checkpoint 3). Garde-fou serveur : on n'accepte qu'un statut métier connu.
+ */
+export const changeMeetingStatusServerSchema = z.object({
+  status: z.enum(MEETING_STATUSES),
+});

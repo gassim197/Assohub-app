@@ -821,9 +821,55 @@
       "annulee": "Annulée",
       "reportee": "Reportée"
     },
+    "calendar": {
+      "showAll": "Voir tout"
+    },
     "rowActions": {
       "label": "Actions",
-      "edit": "Modifier"
+      "view": "Voir les détails",
+      "edit": "Modifier",
+      "changeStatus": "Changer le statut",
+      "delete": "Supprimer"
+    },
+    "statusDialog": {
+      "title": "Changer le statut",
+      "description": "Définissez le nouveau statut de « {title} ».",
+      "label": "Nouveau statut",
+      "confirm": "Mettre à jour le statut",
+      "submitting": "Mise à jour…",
+      "cancel": "Annuler",
+      "success": "Statut mis à jour.",
+      "error": "Le statut n'a pas pu être mis à jour. Veuillez réessayer.",
+      "criticalTitle": "Confirmer l'annulation ?",
+      "criticalDescription": "« {title} » n'apparaîtra plus dans les prochaines réunions ni dans les réunions passées. Elle restera accessible via sa page détail.",
+      "criticalConfirm": "Confirmer l'annulation"
+    },
+    "deleteDialog": {
+      "title": "Supprimer cette réunion ?",
+      "description": "Cette action supprime « {title} ». Vous pourrez restaurer cette suppression plus tard si nécessaire.",
+      "confirm": "Supprimer la réunion",
+      "submitting": "Suppression…",
+      "cancel": "Annuler",
+      "success": "Réunion supprimée.",
+      "error": "La réunion n'a pas pu être supprimée. Veuillez réessayer."
+    },
+    "detail": {
+      "backToList": "Retour aux réunions",
+      "edit": "Modifier",
+      "moreActions": "Plus d'actions",
+      "changeStatus": "Changer le statut",
+      "delete": "Supprimer",
+      "notProvided": "—",
+      "sectionSchedule": "Détails pratiques",
+      "sectionDescription": "Description",
+      "duration": "Durée",
+      "location": "Lieu",
+      "videoLink": "Lien de visioconférence",
+      "descriptionEmpty": "Aucune description",
+      "attendanceTitle": "Présence",
+      "attendanceComingSoon": "Bientôt disponible (session 6B).",
+      "minutesTitle": "Procès-verbal",
+      "minutesComingSoon": "Bientôt disponible (session 6C)."
     },
     "form": {
       "title": "Nouvelle réunion",

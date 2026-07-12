@@ -2,6 +2,7 @@ import { and, asc, desc, eq, gte, isNull, lt, ne, or, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { meetings } from "@/lib/db/meetings-schema";
+import { toDateKey } from "./date";
 
 export type MeetingRow = typeof meetings.$inferSelect;
 
@@ -91,4 +92,28 @@ export async function getMeetingById(
     .limit(1);
 
   return row ?? null;
+}
+
+/**
+ * Dates ("YYYY-MM-DD", jour Conakry/UTC) portant au moins une réunion visible
+ * (checkpoint 2, calendrier) — exclut `annulee` : une réunion annulée
+ * n'apparaissant dans aucune des deux listes, marquer son jour induirait en
+ * erreur (clic sur le jour → liste vide). Pas de pagination : volume attendu
+ * faible pour une association (décision confirmée session 6A).
+ */
+export async function listMeetingDatesForCalendar(
+  organizationId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select({ scheduledAt: meetings.scheduledAt })
+    .from(meetings)
+    .where(
+      and(
+        eq(meetings.organizationId, organizationId),
+        isNull(meetings.deletedAt),
+        ne(meetings.status, "annulee"),
+      ),
+    );
+
+  return rows.map((row) => toDateKey(row.scheduledAt));
 }

@@ -47,9 +47,37 @@ export function formatDatetimeLocalFromUtc(date: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
-/** Clé de jour ("2026-07-22") en UTC — utilisée pour le filtre `?day=` et le calendrier. */
+/** Clé de jour ("2026-07-22") en UTC — utilisée côté serveur (le jour "Conakry" d'une réunion stockée). */
 export function toDateKey(date: Date): string {
   return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+}
+
+/**
+ * Clé de jour ("2026-07-22") en heure **locale du navigateur** — utilisée
+ * uniquement par le widget calendrier (checkpoint 2), qui affiche des jours
+ * calendaires locaux (react-day-picker n'a pas de notion de fuseau global).
+ * Simplification assumée : pour une association basée à Conakry consultant
+ * l'app depuis Conakry (l'écrasante majorité des cas réels), fuseau local du
+ * navigateur = Africa/Conakry = UTC, donc `toDateKey` et `toLocalDateKey`
+ * coïncident. Un lecteur consultant depuis un tout autre fuseau pourrait voir
+ * un décalage d'un jour sur le calendrier — non traité en V1.
+ */
+export function toLocalDateKey(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+/**
+ * Construit un objet `Date` en heure locale à partir d'une clé "YYYY-MM-DD"
+ * (calendrier), pour le marquage des jours dans le widget — `new
+ * Date("2026-07-22")` serait interprété en UTC et pourrait glisser d'un jour
+ * une fois affiché en local.
+ */
+export function parseLocalDateKey(key: string): Date {
+  const parts = key.split("-").map(Number);
+  const year = parts[0] ?? 0;
+  const month = parts[1] ?? 1;
+  const day = parts[2] ?? 1;
+  return new Date(year, month - 1, day);
 }
 
 /**

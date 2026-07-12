@@ -821,9 +821,55 @@
       "annulee": "Cancelled",
       "reportee": "Postponed"
     },
+    "calendar": {
+      "showAll": "Show all"
+    },
     "rowActions": {
       "label": "Actions",
-      "edit": "Edit"
+      "view": "View details",
+      "edit": "Edit",
+      "changeStatus": "Change status",
+      "delete": "Delete"
+    },
+    "statusDialog": {
+      "title": "Change status",
+      "description": "Set the new status for \"{title}\".",
+      "label": "New status",
+      "confirm": "Update status",
+      "submitting": "Updating…",
+      "cancel": "Cancel",
+      "success": "Status updated.",
+      "error": "The status could not be updated. Please try again.",
+      "criticalTitle": "Confirm cancellation?",
+      "criticalDescription": "\"{title}\" will no longer appear in upcoming or past meetings. It will remain accessible via its detail page.",
+      "criticalConfirm": "Confirm cancellation"
+    },
+    "deleteDialog": {
+      "title": "Delete this meeting?",
+      "description": "This deletes \"{title}\". You will be able to restore this deletion later if needed.",
+      "confirm": "Delete meeting",
+      "submitting": "Deleting…",
+      "cancel": "Cancel",
+      "success": "Meeting deleted.",
+      "error": "The meeting could not be deleted. Please try again."
+    },
+    "detail": {
+      "backToList": "Back to meetings",
+      "edit": "Edit",
+      "moreActions": "More actions",
+      "changeStatus": "Change status",
+      "delete": "Delete",
+      "notProvided": "—",
+      "sectionSchedule": "Practical details",
+      "sectionDescription": "Description",
+      "duration": "Duration",
+      "location": "Location",
+      "videoLink": "Video conference link",
+      "descriptionEmpty": "No description",
+      "attendanceTitle": "Attendance",
+      "attendanceComingSoon": "Coming soon (session 6B).",
+      "minutesTitle": "Minutes",
+      "minutesComingSoon": "Coming soon (session 6C)."
     },
     "form": {
       "title": "New meeting",

@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { requireOrgAccess } from "@/lib/auth/org";
 import {
   getMeetingById,
+  listMeetingDatesForCalendar,
   listPastMeetings,
   listUpcomingMeetings,
 } from "@/lib/meetings/queries";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MeetingsListTab } from "@/components/meetings/meetings-list-tab";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
+import { MeetingsCalendar } from "@/components/meetings/meetings-calendar";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -34,9 +36,10 @@ export default async function MeetingsPage({
 
   const day = readParam(sp.day);
 
-  const [upcoming, past] = await Promise.all([
+  const [upcoming, past, calendarDates] = await Promise.all([
     listUpcomingMeetings({ organizationId, day }),
     listPastMeetings({ organizationId, day }),
+    listMeetingDatesForCalendar(organizationId),
   ]);
 
   // Édition en place : `?editMeeting=true&meetingId=X` monte la modale pré-remplie.
@@ -62,31 +65,35 @@ export default async function MeetingsPage({
         </Button>
       </div>
 
-      <Tabs defaultValue="upcoming">
-        <TabsList>
-          <TabsTrigger value="upcoming">{t("upcoming")}</TabsTrigger>
-          <TabsTrigger value="past">{t("past")}</TabsTrigger>
-        </TabsList>
+      <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-start">
+        <Tabs defaultValue="upcoming">
+          <TabsList>
+            <TabsTrigger value="upcoming">{t("upcoming")}</TabsTrigger>
+            <TabsTrigger value="past">{t("past")}</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="upcoming" className="pt-4">
-          <MeetingsListTab
-            orgSlug={orgSlug}
-            meetings={upcoming}
-            emptyTitle={t("empty.upcomingTitle")}
-            emptyDescription={t("empty.upcomingDescription")}
-            showCreateCta
-          />
-        </TabsContent>
+          <TabsContent value="upcoming" className="pt-4">
+            <MeetingsListTab
+              orgSlug={orgSlug}
+              meetings={upcoming}
+              emptyTitle={t("empty.upcomingTitle")}
+              emptyDescription={t("empty.upcomingDescription")}
+              showCreateCta
+            />
+          </TabsContent>
 
-        <TabsContent value="past" className="pt-4">
-          <MeetingsListTab
-            orgSlug={orgSlug}
-            meetings={past}
-            emptyTitle={t("empty.pastTitle")}
-            emptyDescription={t("empty.pastDescription")}
-          />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="past" className="pt-4">
+            <MeetingsListTab
+              orgSlug={orgSlug}
+              meetings={past}
+              emptyTitle={t("empty.pastTitle")}
+              emptyDescription={t("empty.pastDescription")}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <MeetingsCalendar dates={calendarDates} />
+      </div>
 
       <MeetingFormDialog orgSlug={orgSlug} />
       {editMeeting ? (
