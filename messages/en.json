@@ -871,16 +871,21 @@
       "minutesComingSoon": "Coming soon (session 6C)."
     },
     "attendance": {
+      "manage": "Manage attendance",
+      "hide": "Hide",
       "searchPlaceholder": "Search a member…",
       "empty": "No member matches your search.",
       "noActiveMembers": "No active member in this organization.",
       "archivedBadge": "Former member",
       "columnRsvp": "RSVP",
       "columnPresent": "Present",
+      "markAllPresent": "Mark all present",
+      "unmarkAll": "Unmark all",
       "presentFutureHint": "Attendance can only be recorded after the meeting.",
       "cancelledHint": "This meeting was cancelled: no attendance to record.",
       "saveErrorRsvp": "{name}'s RSVP could not be saved. Please try again.",
       "saveErrorAttendance": "{name}'s attendance could not be saved. Please try again.",
+      "bulkSaveError": "The bulk attendance update could not be saved. Please try again.",
       "attendedYes": "Present",
       "attendedNo": "Absent",
       "attendedUnknown": "Not recorded",
@@ -889,6 +894,10 @@
         "no": "Declined",
         "maybe": "Maybe",
         "no_response": "No response"
+      },
+      "summary": {
+        "presentCount": "{present} present out of {total} active members ({percent}%)",
+        "rsvpBreakdown": "{yes} confirmed, {no} declined, {maybe} maybe, {noResponse} no response"
       }
     },
     "form": {

@@ -12,6 +12,7 @@ import type { MemberAttendanceRow } from "@/lib/meetings/attendance-queries";
 import { RSVP_STATUSES, type RsvpStatus } from "@/lib/meetings/constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -39,14 +40,17 @@ interface AttendanceRowProps {
   member: MemberAttendanceRow;
   rsvpDisabled: boolean;
   attendanceDisabled: boolean;
+  onChange: (patch: Partial<MemberAttendanceRow>) => void;
 }
 
 /**
  * Ligne d'un membre actif : RSVP + présence, auto-save optimiste par champ.
- * En cas d'échec, l'état local revient visiblement à sa valeur précédente
- * (le contrôle "se dé-coche" / le select reprend son ancienne valeur) et un
- * toast nomme le membre concerné — le secrétaire ne doit jamais croire
- * qu'une saisie a été enregistrée alors qu'elle a échoué (décision 6B).
+ * La valeur affichée vient de `member` (état possédé par `MeetingAttendanceView`,
+ * seule source de vérité — c'est ce qui permet au compteur synthétique de se
+ * mettre à jour en temps réel). En cas d'échec, `onChange` est rappelé avec la
+ * valeur précédente : le contrôle revient visiblement en arrière et un toast
+ * nomme le membre concerné (décision 6B) — le secrétaire ne doit jamais
+ * croire qu'une saisie a été enregistrée alors qu'elle a échoué.
  */
 function AttendanceRow({
   orgSlug,
@@ -54,38 +58,37 @@ function AttendanceRow({
   member,
   rsvpDisabled,
   attendanceDisabled,
+  onChange,
 }: AttendanceRowProps) {
   const t = useTranslations("meetings.attendance");
-  const [rsvpStatus, setRsvpStatus] = useState<RsvpStatus>(member.rsvpStatus);
-  const [attended, setAttended] = useState<boolean | null>(member.attended);
   const [isRsvpPending, startRsvpTransition] = useTransition();
   const [isAttendancePending, startAttendanceTransition] = useTransition();
 
   function handleRsvpChange(value: RsvpStatus) {
-    const previous = rsvpStatus;
-    setRsvpStatus(value);
+    const previous = member.rsvpStatus;
+    onChange({ rsvpStatus: value });
     startRsvpTransition(async () => {
       const result = await updateMemberRsvp(orgSlug, meetingId, {
         memberId: member.memberId,
         rsvpStatus: value,
       });
       if (!result.ok) {
-        setRsvpStatus(previous);
+        onChange({ rsvpStatus: previous });
         toast.error(t("saveErrorRsvp", { name: member.fullName }));
       }
     });
   }
 
   function handleAttendanceChange(checked: boolean) {
-    const previous = attended;
-    setAttended(checked);
+    const previous = member.attended;
+    onChange({ attended: checked });
     startAttendanceTransition(async () => {
       const result = await updateMemberAttendance(orgSlug, meetingId, {
         memberId: member.memberId,
         attended: checked,
       });
       if (!result.ok) {
-        setAttended(previous);
+        onChange({ attended: previous });
         toast.error(t("saveErrorAttendance", { name: member.fullName }));
       }
     });
@@ -103,7 +106,7 @@ function AttendanceRow({
       <div className="flex items-center gap-4 sm:gap-6">
         <div className="flex items-center gap-1.5">
           <Select
-            value={rsvpStatus}
+            value={member.rsvpStatus}
             onValueChange={(value) => handleRsvpChange(value as RsvpStatus)}
             disabled={rsvpDisabled || isRsvpPending}
           >
@@ -130,7 +133,7 @@ function AttendanceRow({
           title={attendanceDisabled ? t("presentFutureHint") : undefined}
         >
           <Switch
-            checked={attended === true}
+            checked={member.attended === true}
             onCheckedChange={handleAttendanceChange}
             disabled={attendanceDisabled || isAttendancePending}
             aria-label={t("columnPresent")}
@@ -180,14 +183,21 @@ export interface MeetingAttendanceListProps {
   rsvpDisabled: boolean;
   attendanceDisabled: boolean;
   attendanceDisabledReason: "cancelled" | "future" | null;
+  onMemberChange: (memberId: string, patch: Partial<MemberAttendanceRow>) => void;
+  onBulkAttendance: (attended: boolean) => void;
+  isBulkPending: boolean;
 }
 
 /**
- * Liste éditable de présence (checkpoint 1) : tous les membres actifs de
- * l'organisation, plus les membres archivés ayant une présence historique
- * pour cette réunion (lecture seule, en bas de liste). Recherche
- * client-side — volume attendu faible pour une association (même décision
- * que le calendrier en 6A, cf. `listMeetingDatesForCalendar`).
+ * Liste éditable de présence : tous les membres actifs de l'organisation,
+ * plus les membres archivés ayant une présence historique pour cette réunion
+ * (lecture seule, en bas de liste). Recherche client-side — volume attendu
+ * faible pour une association (même décision que le calendrier en 6A).
+ *
+ * Les actions groupées (checkpoint 2) s'appliquent à TOUS les membres actifs,
+ * pas seulement ceux visibles après filtrage par la recherche : la recherche
+ * sert à localiser quelqu'un, pas à restreindre la portée d'une action de
+ * masse (cas d'usage visé : « presque tout le monde est là »).
  */
 export function MeetingAttendanceList({
   orgSlug,
@@ -196,6 +206,9 @@ export function MeetingAttendanceList({
   rsvpDisabled,
   attendanceDisabled,
   attendanceDisabledReason,
+  onMemberChange,
+  onBulkAttendance,
+  isBulkPending,
 }: MeetingAttendanceListProps) {
   const t = useTranslations("meetings.attendance");
   const [search, setSearch] = useState("");
@@ -214,15 +227,38 @@ export function MeetingAttendanceList({
 
   return (
     <div className="space-y-3">
-      <div className="relative">
-        <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={t("searchPlaceholder")}
-          aria-label={t("searchPlaceholder")}
-          className="pl-8 sm:max-w-xs"
-        />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative sm:max-w-xs sm:flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t("searchPlaceholder")}
+            aria-label={t("searchPlaceholder")}
+            className="pl-8"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={attendanceDisabled || isBulkPending}
+            onClick={() => onBulkAttendance(true)}
+          >
+            {t("markAllPresent")}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={attendanceDisabled || isBulkPending}
+            onClick={() => onBulkAttendance(false)}
+          >
+            {t("unmarkAll")}
+          </Button>
+        </div>
       </div>
 
       {attendanceDisabledReason ? (
@@ -248,6 +284,7 @@ export function MeetingAttendanceList({
                 member={member}
                 rsvpDisabled={rsvpDisabled}
                 attendanceDisabled={attendanceDisabled}
+                onChange={(patch) => onMemberChange(member.memberId, patch)}
               />
             ),
           )

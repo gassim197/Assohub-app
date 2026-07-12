@@ -1,6 +1,6 @@
 import { getMeetingAttendance } from "@/lib/meetings/attendance-queries";
 import { canRecordAttendance, canRecordRsvp } from "@/lib/meetings/constants";
-import { MeetingAttendanceList } from "./meeting-attendance-list";
+import { MeetingAttendanceView } from "./meeting-attendance-view";
 
 /**
  * Server Component : charge l'état de présence (jointure membres actifs +
@@ -29,10 +29,10 @@ export async function MeetingAttendanceSection({
     meetingStatus === "annulee" ? "cancelled" : attendanceDisabled ? "future" : null;
 
   return (
-    <MeetingAttendanceList
+    <MeetingAttendanceView
       orgSlug={orgSlug}
       meetingId={meetingId}
-      members={members}
+      initialMembers={members}
       rsvpDisabled={rsvpDisabled}
       attendanceDisabled={attendanceDisabled}
       attendanceDisabledReason={attendanceDisabledReason}
