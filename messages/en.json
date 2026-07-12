@@ -902,7 +902,10 @@
     "minutes": {
       "empty": "No minutes for this meeting.",
       "create": "Create minutes",
+      "createNew": "Create new minutes",
       "edit": "Edit minutes",
+      "changeStatus": "Change status",
+      "preview": "Preview",
       "optional": "(optional)",
       "status": {
         "brouillon": "Draft",
@@ -932,6 +935,16 @@
         "errors": {
           "bodyMarkdownMin": "Minutes content is required."
         }
+      },
+      "statusDialog": {
+        "title": "Change minutes status",
+        "description": "Set the new status for these minutes.",
+        "label": "New status",
+        "confirm": "Update status",
+        "submitting": "Updating…",
+        "cancel": "Cancel",
+        "success": "Minutes status updated.",
+        "error": "The status could not be updated. Please try again."
       }
     },
     "form": {

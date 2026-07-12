@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { MINUTES_STATUSES } from "./minutes-constants";
+
 /**
  * Messages d'erreur de validation, injectés depuis l'appelant (même patron
  * que `lib/meetings/schema.ts`).
@@ -38,3 +40,11 @@ const RAW_MESSAGES: MinutesFormMessages = {
 export const minutesServerSchema = buildMinutesSchema(RAW_MESSAGES);
 
 export type MinutesFormValues = z.output<typeof minutesServerSchema>;
+
+/**
+ * Schéma de changement de statut (checkpoint 2, sélecteur libre — même
+ * patron que `changeMeetingStatusServerSchema`).
+ */
+export const changeMinutesStatusServerSchema = z.object({
+  status: z.enum(MINUTES_STATUSES),
+});

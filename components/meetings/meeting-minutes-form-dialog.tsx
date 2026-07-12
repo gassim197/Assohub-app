@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
@@ -12,6 +12,7 @@ import type { MinutesRow } from "@/lib/meetings/minutes-queries";
 import { toast } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { MinutesMarkdown } from "./minutes-markdown";
 import {
   Dialog,
   DialogContent,
@@ -96,6 +97,8 @@ export function MeetingMinutesFormDialog({
     if (open) form.reset(buildDefaults(minutes, meetingDescription));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  const bodyMarkdownPreview = useWatch({ control: form.control, name: "bodyMarkdown" });
 
   function closeDialog() {
     const params = new URLSearchParams(searchParams.toString());
@@ -207,6 +210,15 @@ export function MeetingMinutesFormDialog({
                 </FormItem>
               )}
             />
+
+            {bodyMarkdownPreview?.trim() ? (
+              <div>
+                <p className="text-sm font-medium text-foreground">{t("preview")}</p>
+                <div className="mt-1 max-h-56 overflow-y-auto rounded-lg border border-border p-3">
+                  <MinutesMarkdown content={bodyMarkdownPreview} />
+                </div>
+              </div>
+            ) : null}
 
             <DialogFooter>
               <Button

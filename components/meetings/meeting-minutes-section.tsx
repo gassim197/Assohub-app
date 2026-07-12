@@ -8,9 +8,11 @@ import {
 } from "@/lib/meetings/minutes-constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MeetingMinutesActions } from "./meeting-minutes-actions";
 import { MeetingMinutesFormDialog } from "./meeting-minutes-form-dialog";
+import { MinutesMarkdown } from "./minutes-markdown";
 
-/** Section de contenu du PV (checkpoint 1 : texte brut, rendu Markdown en checkpoint 2). */
+/** Section de contenu texte du PV (agenda, décisions, actions — pas de rendu Markdown, réservé au corps principal). */
 function MinutesField({ label, value }: { label: string; value: string | null }) {
   if (!value?.trim()) return null;
   return (
@@ -24,9 +26,14 @@ function MinutesField({ label, value }: { label: string; value: string | null })
 /**
  * Server Component : charge le PV courant de la réunion (au plus un
  * non-archivé, cf. `getCurrentMinutesForMeeting`) et affiche soit l'état
- * vide + bouton de création, soit le contenu en lecture + bouton d'édition.
- * La modale de création/édition est pilotée par l'URL (`?newMinutes=true` /
- * `?editMinutes=true`), même patron que `MeetingFormDialog`.
+ * vide + bouton de création, soit le contenu en lecture (corps Markdown
+ * rendu via `MinutesMarkdown`) + actions (édition, changement de statut).
+ *
+ * PV archivé : on propose à la fois « Modifier » (édition toujours
+ * autorisée, pas de versioning en V1) et « Créer un nouveau PV » — la garde
+ * « un seul PV non-archivé par réunion » est appliquée côté serveur dans
+ * `createMinutes`/`changeMinutesStatus`, cette UI ne fait qu'exposer les
+ * actions possibles.
  */
 export async function MeetingMinutesSection({
   orgSlug,
@@ -60,20 +67,29 @@ export async function MeetingMinutesSection({
   }
 
   const status = isMinutesStatus(current.status) ? current.status : "brouillon";
+  const isArchived = status === "archive";
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Badge variant={MINUTES_STATUS_BADGE_VARIANT[status]}>
           {t(`status.${status}`)}
         </Badge>
-        <Button
-          size="sm"
-          variant="outline"
-          render={<Link href={`${basePath}?editMinutes=true`} />}
-        >
-          {t("edit")}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {isArchived ? (
+            <Button size="sm" render={<Link href={`${basePath}?newMinutes=true`} />}>
+              {t("createNew")}
+            </Button>
+          ) : null}
+          <Button
+            size="sm"
+            variant="outline"
+            render={<Link href={`${basePath}?editMinutes=true`} />}
+          >
+            {t("edit")}
+          </Button>
+          <MeetingMinutesActions orgSlug={orgSlug} minutesId={current.id} status={status} />
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -86,7 +102,12 @@ export async function MeetingMinutesSection({
           label={t("fields.actionsToFollow")}
           value={current.actionsToFollow}
         />
-        <MinutesField label={t("fields.bodyMarkdown")} value={current.bodyMarkdown} />
+        <div>
+          <h3 className="text-xs font-medium text-muted-foreground">
+            {t("fields.bodyMarkdown")}
+          </h3>
+          <MinutesMarkdown content={current.bodyMarkdown} />
+        </div>
       </div>
 
       <MeetingMinutesFormDialog
@@ -95,6 +116,13 @@ export async function MeetingMinutesSection({
         meetingDescription={meetingDescription}
         minutes={current}
       />
+      {isArchived ? (
+        <MeetingMinutesFormDialog
+          orgSlug={orgSlug}
+          meetingId={meetingId}
+          meetingDescription={meetingDescription}
+        />
+      ) : null}
     </div>
   );
 }

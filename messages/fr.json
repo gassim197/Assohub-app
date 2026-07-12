@@ -902,7 +902,10 @@
     "minutes": {
       "empty": "Aucun procès-verbal pour cette réunion.",
       "create": "Créer le PV",
+      "createNew": "Créer un nouveau PV",
       "edit": "Modifier le PV",
+      "changeStatus": "Changer le statut",
+      "preview": "Aperçu",
       "optional": "(optionnel)",
       "status": {
         "brouillon": "Brouillon",
@@ -932,6 +935,16 @@
         "errors": {
           "bodyMarkdownMin": "Le contenu du PV est requis."
         }
+      },
+      "statusDialog": {
+        "title": "Changer le statut du PV",
+        "description": "Définissez le nouveau statut de ce procès-verbal.",
+        "label": "Nouveau statut",
+        "confirm": "Mettre à jour le statut",
+        "submitting": "Mise à jour…",
+        "cancel": "Annuler",
+        "success": "Statut du PV mis à jour.",
+        "error": "Le statut n'a pas pu être mis à jour. Veuillez réessayer."
       }
     },
     "form": {
