@@ -1,0 +1,1 @@
+ALTER TABLE "meetings" ADD COLUMN "video_link" text;

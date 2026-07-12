@@ -604,6 +604,7 @@ CREATE TABLE meetings (
   scheduled_at        TIMESTAMP NOT NULL,                  -- date et heure de début
   duration_minutes    INTEGER NULL,                        -- durée prévue, optionnel
   location            TEXT NULL,                           -- lieu en texte libre ("Lambanyi", "Hôtel Kaloum salle B")
+  video_link          TEXT NULL,                           -- lien de visioconférence, affiché en bouton "Rejoindre"
 
   -- État
   status              TEXT NOT NULL DEFAULT 'planifiee',   -- 'planifiee' | 'tenue' | 'annulee' | 'reportee'
@@ -632,10 +633,20 @@ WHERE scheduled_at >= NOW() AND status IN ('planifiee', 'reportee') AND deleted_
 
 Le filtrage "Réunions passées" :
 ```sql
-WHERE scheduled_at < NOW() OR status = 'tenue'
+WHERE (scheduled_at < NOW() OR status = 'tenue') AND status != 'annulee' AND deleted_at IS NULL
 ```
 
 Ne **jamais** afficher une réunion passée dans "Prochaines réunions" — c'était un bug du produit existant.
+
+> **Implémentation (juillet 2026, session 6A)** — Deux ajustements par rapport à
+> la spec d'origine, validés avec le fondateur : (1) `video_link` ajouté à la
+> table (absent de la conception initiale, décision produit 6A : lien de
+> visioconférence optionnel, bouton "Rejoindre" quand présent) ; (2) le filtre
+> "Réunions passées" exclut désormais explicitement `status != 'annulee'` — le
+> filtre littéral ci-dessus ne l'excluait pas, alors qu'une réunion annulée ne
+> doit apparaître dans aucune des deux vues par défaut (seulement via sa page
+> détail, lien direct). `nowUtc` est recalculé à chaque requête, jamais mis en
+> cache, pour garantir structurellement l'absence du bug historique.
 
 ### 6.2. Enum `type` (8 types fixes)
 

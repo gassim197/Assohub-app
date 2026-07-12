@@ -792,10 +792,33 @@
   },
   "meetings": {
     "title": "Meetings",
-    "schedule": "Schedule a meeting",
+    "subtitle": "Organize and track your organization's meetings.",
     "upcoming": "Upcoming meetings",
     "past": "Past meetings",
-    "empty": "No meetings scheduled.",
+    "join": "Join",
+    "durationLabel": "{minutes} min",
+    "empty": {
+      "upcomingTitle": "No upcoming meeting",
+      "upcomingDescription": "No meeting scheduled. Create your first meeting to organize your team.",
+      "pastTitle": "No past meeting",
+      "pastDescription": "No meeting held yet."
+    },
+    "types": {
+      "ag": "General Assembly",
+      "bureau": "Board",
+      "ca": "Board of Directors",
+      "commission": "Committee",
+      "formation": "Training",
+      "atelier": "Workshop",
+      "evenement": "Event",
+      "autre": "Other"
+    },
+    "status": {
+      "planifiee": "Scheduled",
+      "tenue": "Held",
+      "annulee": "Cancelled",
+      "reportee": "Postponed"
+    },
     "minutes": {
       "draft": "Draft",
       "published": "Published",

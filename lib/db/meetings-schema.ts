@@ -16,9 +16,13 @@ import { associationMembers } from "./members-schema";
 // Enum type : ag | bureau | ca | commission | formation | atelier | evenement | autre
 // Enum status : planifiee | tenue | annulee | reportee
 //
-// IMPORTANT — filtres corrects à utiliser dans les requêtes :
+// IMPORTANT — filtres corrects à utiliser dans les requêtes (session 6A) :
 //   Prochaines : scheduled_at >= NOW() AND status IN ('planifiee', 'reportee')
-//   Passées    : scheduled_at < NOW() OR status = 'tenue'
+//   Passées    : (scheduled_at < NOW() OR status = 'tenue') AND status != 'annulee'
+//                (exclusion explicite d'annulee ajoutée en 6A — le filtre
+//                littéral de schema-design.md ne l'excluait pas, corrigé avec
+//                confirmation : une réunion annulée n'apparaît dans aucune des
+//                deux vues par défaut, seulement via sa page détail)
 
 export const meetings = pgTable(
   "meetings",
@@ -36,6 +40,9 @@ export const meetings = pgTable(
     scheduledAt: timestamp("scheduled_at").notNull(),
     durationMinutes: integer("duration_minutes"),
     location: text("location"),
+    // Ajouté en session 6A (décision produit) : absent du schema-design.md
+    // d'origine (§6.1), qui ne prévoyait pas de lien de visioconférence.
+    videoLink: text("video_link"),
     status: text("status").notNull().default("planifiee"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

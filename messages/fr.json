@@ -792,10 +792,33 @@
   },
   "meetings": {
     "title": "Réunions",
-    "schedule": "Planifier une réunion",
+    "subtitle": "Organisez et suivez les réunions de votre organisation.",
     "upcoming": "Prochaines réunions",
     "past": "Réunions passées",
-    "empty": "Aucune réunion planifiée.",
+    "join": "Rejoindre",
+    "durationLabel": "{minutes} min",
+    "empty": {
+      "upcomingTitle": "Aucune réunion planifiée",
+      "upcomingDescription": "Aucune réunion planifiée. Créez votre première réunion pour organiser votre équipe.",
+      "pastTitle": "Aucune réunion tenue",
+      "pastDescription": "Aucune réunion tenue pour le moment."
+    },
+    "types": {
+      "ag": "Assemblée Générale",
+      "bureau": "Bureau",
+      "ca": "Conseil d'Administration",
+      "commission": "Commission",
+      "formation": "Formation",
+      "atelier": "Atelier",
+      "evenement": "Événement",
+      "autre": "Autre"
+    },
+    "status": {
+      "planifiee": "Planifiée",
+      "tenue": "Tenue",
+      "annulee": "Annulée",
+      "reportee": "Reportée"
+    },
     "minutes": {
       "draft": "Brouillon",
       "published": "Publié",
