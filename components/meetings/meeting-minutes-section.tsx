@@ -8,6 +8,7 @@ import {
 } from "@/lib/meetings/minutes-constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { MeetingMinutesActions } from "./meeting-minutes-actions";
 import { MeetingMinutesFormDialog } from "./meeting-minutes-form-dialog";
 import { MinutesMarkdown } from "./minutes-markdown";
@@ -52,17 +53,19 @@ export async function MeetingMinutesSection({
 
   if (!current) {
     return (
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">{t("empty")}</p>
-        <Button size="sm" render={<Link href={`${basePath}?newMinutes=true`} />}>
-          {t("create")}
-        </Button>
+      <Card>
+        <CardContent className="space-y-2">
+          <p className="text-sm text-muted-foreground">{t("empty")}</p>
+          <Button size="sm" render={<Link href={`${basePath}?newMinutes=true`} />}>
+            {t("create")}
+          </Button>
+        </CardContent>
         <MeetingMinutesFormDialog
           orgSlug={orgSlug}
           meetingId={meetingId}
           meetingDescription={meetingDescription}
         />
-      </div>
+      </Card>
     );
   }
 
@@ -70,45 +73,47 @@ export async function MeetingMinutesSection({
   const isArchived = status === "archive";
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Badge variant={MINUTES_STATUS_BADGE_VARIANT[status]}>
-          {t(`status.${status}`)}
-        </Badge>
-        <div className="flex flex-wrap items-center gap-2">
-          {isArchived ? (
-            <Button size="sm" render={<Link href={`${basePath}?newMinutes=true`} />}>
-              {t("createNew")}
+    <Card>
+      <CardContent className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Badge variant={MINUTES_STATUS_BADGE_VARIANT[status]}>
+            {t(`status.${status}`)}
+          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            {isArchived ? (
+              <Button size="sm" render={<Link href={`${basePath}?newMinutes=true`} />}>
+                {t("createNew")}
+              </Button>
+            ) : null}
+            <Button
+              size="sm"
+              variant="outline"
+              render={<Link href={`${basePath}?editMinutes=true`} />}
+            >
+              {t("edit")}
             </Button>
-          ) : null}
-          <Button
-            size="sm"
-            variant="outline"
-            render={<Link href={`${basePath}?editMinutes=true`} />}
-          >
-            {t("edit")}
-          </Button>
-          <MeetingMinutesActions orgSlug={orgSlug} minutesId={current.id} status={status} />
+            <MeetingMinutesActions orgSlug={orgSlug} minutesId={current.id} status={status} />
+          </div>
         </div>
-      </div>
 
-      <div className="space-y-3">
-        <MinutesField label={t("fields.agenda")} value={current.agenda} />
-        <MinutesField
-          label={t("fields.decisionsSummary")}
-          value={current.decisionsSummary}
-        />
-        <MinutesField
-          label={t("fields.actionsToFollow")}
-          value={current.actionsToFollow}
-        />
-        <div>
-          <h3 className="text-xs font-medium text-muted-foreground">
-            {t("fields.bodyMarkdown")}
-          </h3>
-          <MinutesMarkdown content={current.bodyMarkdown} />
+        <div className="space-y-3">
+          <MinutesField label={t("fields.agenda")} value={current.agenda} />
+          <MinutesField
+            label={t("fields.decisionsSummary")}
+            value={current.decisionsSummary}
+          />
+          <MinutesField
+            label={t("fields.actionsToFollow")}
+            value={current.actionsToFollow}
+          />
+          <div>
+            <h3 className="text-xs font-medium text-muted-foreground">
+              {t("fields.bodyMarkdown")}
+            </h3>
+            <MinutesMarkdown content={current.bodyMarkdown} />
+          </div>
         </div>
-      </div>
+      </CardContent>
 
       <MeetingMinutesFormDialog
         orgSlug={orgSlug}
@@ -123,6 +128,6 @@ export async function MeetingMinutesSection({
           meetingDescription={meetingDescription}
         />
       ) : null}
-    </div>
+    </Card>
   );
 }

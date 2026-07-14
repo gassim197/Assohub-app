@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Pencil, Video } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, MapPin, Pencil, Video } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
@@ -16,18 +16,28 @@ import { formatMeetingDateTime } from "@/lib/meetings/date";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { MeetingAttendanceSection } from "@/components/meetings/meeting-attendance-section";
 import { MeetingDetailActions } from "@/components/meetings/meeting-detail-actions";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
 import { MeetingMinutesSection } from "@/components/meetings/meeting-minutes-section";
 
-/** Ligne libellé / valeur d'une section de la fiche. */
-function Field({ label, children }: { label: string; children: ReactNode }) {
+/** Ligne icône + libellé + valeur, compacte (carte "Détails pratiques"). */
+function DetailRow({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof Clock;
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="grid gap-1 py-2 sm:grid-cols-[200px_1fr] sm:gap-4">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="text-sm text-foreground">{children}</dd>
+    <div className="space-y-0.5">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Icon className="size-3.5" />
+        <span>{label}</span>
+      </div>
+      <p className="text-sm text-foreground">{children}</p>
     </div>
   );
 }
@@ -77,7 +87,8 @@ export default async function MeetingDetailPage({
         {t("detail.backToList")}
       </Button>
 
-      {/* En-tête : identité + actions */}
+      {/* En-tête : identité + actions — la date est l'info principale d'une
+          réunion, elle est mise en valeur au même niveau que le titre. */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
@@ -87,7 +98,8 @@ export default async function MeetingDetailPage({
             <Badge variant={typeVariant}>{typeLabel}</Badge>
             <Badge variant={statusVariant}>{statusLabel}</Badge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-2 flex items-center gap-1.5 text-base font-medium text-foreground">
+            <CalendarDays className="size-4 text-muted-foreground" />
             {formatMeetingDateTime(meeting.scheduledAt, locale)}
           </p>
         </div>
@@ -126,88 +138,90 @@ export default async function MeetingDetailPage({
         </div>
       </div>
 
-      {/* Détail en mode lecture */}
-      <Card>
-        <CardContent className="space-y-6">
+      {/* Grille : colonne principale (description, présence, PV) + colonne
+          latérale compacte (détails pratiques) — remplace l'unique colonne
+          empilée d'origine, cf. session 6.5. */}
+      <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="space-y-6 lg:col-span-2">
           <section>
-            <h2 className="text-sm font-semibold text-foreground">
-              {t("detail.sectionSchedule")}
-            </h2>
-            <Separator className="mt-2" />
-            <dl className="mt-2 divide-y divide-border">
-              <Field label={t("detail.duration")}>
-                {meeting.durationMinutes
-                  ? t("durationLabel", { minutes: meeting.durationMinutes })
-                  : notProvided}
-              </Field>
-              <Field label={t("detail.location")}>
-                {meeting.location ?? notProvided}
-              </Field>
-              <Field label={t("detail.videoLink")}>
-                {meeting.videoLink ? (
-                  <a
-                    href={meeting.videoLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline-offset-2 hover:underline"
-                  >
-                    {meeting.videoLink}
-                  </a>
-                ) : (
-                  notProvided
-                )}
-              </Field>
-            </dl>
-          </section>
-
-          <section>
-            <h2 className="text-sm font-semibold text-foreground">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">
               {t("detail.sectionDescription")}
             </h2>
-            <Separator className="mt-2" />
-            <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">
-              {meeting.description?.trim() ? (
-                meeting.description
-              ) : (
-                <span className="text-muted-foreground">
-                  {t("detail.descriptionEmpty")}
-                </span>
-              )}
-            </p>
+            <Card>
+              <CardContent>
+                <p className="whitespace-pre-wrap text-sm text-foreground">
+                  {meeting.description?.trim() ? (
+                    meeting.description
+                  ) : (
+                    <span className="text-muted-foreground">
+                      {t("detail.descriptionEmpty")}
+                    </span>
+                  )}
+                </p>
+              </CardContent>
+            </Card>
           </section>
 
           <section>
-            <h2 className="text-sm font-semibold text-foreground">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">
               {t("detail.attendanceTitle")}
             </h2>
-            <Separator className="mt-2" />
-            <div className="mt-2">
-              <MeetingAttendanceSection
-                orgSlug={orgSlug}
-                organizationId={organizationId}
-                meetingId={meeting.id}
-                meetingStatus={meeting.status}
-                meetingScheduledAt={meeting.scheduledAt}
-              />
-            </div>
+            <MeetingAttendanceSection
+              orgSlug={orgSlug}
+              organizationId={organizationId}
+              meetingId={meeting.id}
+              meetingStatus={meeting.status}
+              meetingScheduledAt={meeting.scheduledAt}
+            />
           </section>
 
           <section>
-            <h2 className="text-sm font-semibold text-foreground">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">
               {t("detail.minutesTitle")}
             </h2>
-            <Separator className="mt-2" />
-            <div className="mt-2">
-              <MeetingMinutesSection
-                orgSlug={orgSlug}
-                organizationId={organizationId}
-                meetingId={meeting.id}
-                meetingDescription={meeting.description}
-              />
-            </div>
+            <MeetingMinutesSection
+              orgSlug={orgSlug}
+              organizationId={organizationId}
+              meetingId={meeting.id}
+              meetingDescription={meeting.description}
+            />
           </section>
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="space-y-6">
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-foreground">
+              {t("detail.sectionSchedule")}
+            </h2>
+            <Card>
+              <CardContent className="space-y-3">
+                <DetailRow icon={Clock} label={t("detail.duration")}>
+                  {meeting.durationMinutes
+                    ? t("durationLabel", { minutes: meeting.durationMinutes })
+                    : notProvided}
+                </DetailRow>
+                <DetailRow icon={MapPin} label={t("detail.location")}>
+                  {meeting.location ?? notProvided}
+                </DetailRow>
+                <DetailRow icon={Video} label={t("detail.videoLink")}>
+                  {meeting.videoLink ? (
+                    <a
+                      href={meeting.videoLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline-offset-2 hover:underline"
+                    >
+                      {meeting.videoLink}
+                    </a>
+                  ) : (
+                    notProvided
+                  )}
+                </DetailRow>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      </div>
 
       {/* Modal d'édition, pilotée par ?editMeeting=true */}
       <MeetingFormDialog orgSlug={orgSlug} meeting={meeting} />

@@ -5,10 +5,21 @@ import { useTranslations } from "next-intl";
 
 import { bulkUpdateAttendance } from "@/lib/meetings/attendance-actions";
 import type { MemberAttendanceRow } from "@/lib/meetings/attendance-queries";
-import type { RsvpStatus } from "@/lib/meetings/constants";
+import { RSVP_STATUSES, type RsvpStatus } from "@/lib/meetings/constants";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 import { MeetingAttendanceList } from "./meeting-attendance-list";
+
+/** Pastille RSVP colorée + libellé + compteur (présentation uniquement). */
+const RSVP_DOT_CLASSNAME: Record<RsvpStatus, string> = {
+  yes: "bg-success",
+  no: "bg-destructive",
+  maybe: "bg-warning",
+  no_response: "bg-muted-foreground/40",
+};
 
 export interface MeetingAttendanceViewProps {
   orgSlug: string;
@@ -98,38 +109,51 @@ export function MeetingAttendanceView({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1 text-sm">
-          {total > 0 ? (
-            <p className="text-foreground">
-              {t("summary.presentCount", { present: presentCount, total, percent })}
-            </p>
-          ) : (
-            <p className="text-muted-foreground">{t("noActiveMembers")}</p>
-          )}
-          {hasRsvps ? (
-            <p className="text-muted-foreground">
-              {t("summary.rsvpBreakdown", {
-                yes: rsvpCounts.yes,
-                no: rsvpCounts.no,
-                maybe: rsvpCounts.maybe,
-                noResponse: rsvpCounts.no_response,
-              })}
-            </p>
-          ) : null}
-        </div>
+      <Card>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {total > 0 ? (
+              <div className="flex flex-1 items-center gap-4">
+                <p className="text-3xl font-semibold tabular-nums text-foreground">
+                  {percent}%
+                </p>
+                <div className="min-w-0 flex-1 space-y-1.5">
+                  <Progress value={percent} />
+                  <p className="text-sm text-muted-foreground">
+                    {t("summary.presentCount", { present: presentCount, total })}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("noActiveMembers")}</p>
+            )}
 
-        {total > 0 ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setManaging((value) => !value)}
-          >
-            {managing ? t("hide") : t("manage")}
-          </Button>
-        ) : null}
-      </div>
+            {total > 0 ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setManaging((value) => !value)}
+              >
+                {managing ? t("hide") : t("manage")}
+              </Button>
+            ) : null}
+          </div>
+
+          {hasRsvps ? (
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+              {RSVP_STATUSES.map((rsvpStatus) => (
+                <span key={rsvpStatus} className="flex items-center gap-1.5">
+                  <span
+                    className={cn("size-2 rounded-full", RSVP_DOT_CLASSNAME[rsvpStatus])}
+                  />
+                  {rsvpCounts[rsvpStatus]} {t(`rsvp.${rsvpStatus}`)}
+                </span>
+              ))}
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
 
       {managing ? (
         <MeetingAttendanceList

@@ -902,8 +902,7 @@
         "no_response": "No response"
       },
       "summary": {
-        "presentCount": "{present} present out of {total} active members ({percent}%)",
-        "rsvpBreakdown": "{yes} confirmed, {no} declined, {maybe} maybe, {noResponse} no response"
+        "presentCount": "{present} present out of {total} active members"
       }
     },
     "minutes": {
