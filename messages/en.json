@@ -987,11 +987,154 @@
   },
   "reports": {
     "title": "Reports",
-    "revenue": "Revenue",
-    "expenses": "Expenses",
-    "balance": "Net balance",
-    "last30Days": "Last 30 days",
-    "thisYear": "This year",
-    "custom": "Custom"
+    "subtitle": "Track your organization's finances.",
+    "comingSoon": "Coming soon.",
+    "tabs": {
+      "overview": "Overview",
+      "transactions": "Transactions",
+      "expenses": "Expenses",
+      "manualRevenues": "Other revenue"
+    },
+    "categories": {
+      "revenue": {
+        "cotisations": "Dues",
+        "dons": "Donations",
+        "subventions": "Grants",
+        "recettes_evenements": "Event revenue",
+        "ventes": "Sale of goods/services",
+        "partenariats": "Partnerships / Sponsorship",
+        "autre_revenu": "Other"
+      },
+      "expense": {
+        "loyer_charges": "Rent and utilities",
+        "fournitures": "Supplies and equipment",
+        "communication": "Communication",
+        "evenements": "Events",
+        "transport": "Transport",
+        "personnel": "Staff",
+        "frais_bancaires": "Bank and financial fees",
+        "dons_verses": "Donations and grants given",
+        "impots_taxes": "Taxes",
+        "autre_depense": "Other"
+      }
+    },
+    "expenses": {
+      "new": "New expense",
+      "empty": {
+        "title": "No expense recorded",
+        "description": "Record your expenses to keep your books up to date.",
+        "cta": "Record my first expense"
+      },
+      "table": {
+        "date": "Date",
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount",
+        "recordedBy": "Recorded by"
+      },
+      "form": {
+        "title": "New expense",
+        "description": "Record an expense for the organization.",
+        "editTitle": "Edit expense",
+        "editDescription": "Update this expense's information.",
+        "fieldAmount": "Amount (GNF)",
+        "fieldCategory": "Category",
+        "fieldDescription": "Description",
+        "fieldDate": "Date",
+        "fieldReference": "Supporting document reference",
+        "optional": "(optional)",
+        "cancel": "Cancel",
+        "submit": "Record expense",
+        "submitting": "Recording…",
+        "editSubmit": "Save",
+        "editSubmitting": "Saving…",
+        "success": "Expense recorded.",
+        "editSuccess": "Expense updated.",
+        "errorGeneric": "Something went wrong. Please try again.",
+        "errorLinkedToPayment": "This transaction is linked to a dues payment and cannot be edited here.",
+        "errors": {
+          "amountInteger": "The amount must be a whole number.",
+          "amountMin": "The amount must be greater than 0.",
+          "amountMax": "The amount exceeds the allowed limit.",
+          "descriptionRequired": "Description is required.",
+          "dateInvalid": "Invalid date.",
+          "dateNotFuture": "The date cannot be in the future."
+        }
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "deleteDialog": {
+        "title": "Delete this expense?",
+        "description": "This deletes the expense \"{description}\" ({amount}). You'll be able to restore this deletion later if needed.",
+        "cancel": "Cancel",
+        "confirm": "Delete",
+        "submitting": "Deleting…",
+        "success": "Expense deleted.",
+        "error": "The expense could not be deleted. Please try again.",
+        "errorLinkedToPayment": "This transaction is linked to a dues payment and cannot be deleted here."
+      }
+    },
+    "manualRevenues": {
+      "new": "New revenue",
+      "empty": {
+        "title": "No manual revenue recorded",
+        "description": "Record donations, grants, and other revenue outside of dues.",
+        "cta": "Record my first revenue"
+      },
+      "table": {
+        "date": "Date",
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount",
+        "recordedBy": "Recorded by"
+      },
+      "form": {
+        "title": "New revenue",
+        "description": "Record revenue outside of dues (donation, grant, etc.).",
+        "editTitle": "Edit revenue",
+        "editDescription": "Update this revenue's information.",
+        "fieldAmount": "Amount (GNF)",
+        "fieldCategory": "Category",
+        "fieldDescription": "Description",
+        "fieldDate": "Date",
+        "fieldReference": "Supporting document reference",
+        "optional": "(optional)",
+        "cancel": "Cancel",
+        "submit": "Record revenue",
+        "submitting": "Recording…",
+        "editSubmit": "Save",
+        "editSubmitting": "Saving…",
+        "success": "Revenue recorded.",
+        "editSuccess": "Revenue updated.",
+        "errorGeneric": "Something went wrong. Please try again.",
+        "errorLinkedToPayment": "This transaction is linked to a dues payment and cannot be edited here.",
+        "errors": {
+          "amountInteger": "The amount must be a whole number.",
+          "amountMin": "The amount must be greater than 0.",
+          "amountMax": "The amount exceeds the allowed limit.",
+          "descriptionRequired": "Description is required.",
+          "dateInvalid": "Invalid date.",
+          "dateNotFuture": "The date cannot be in the future."
+        }
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "deleteDialog": {
+        "title": "Delete this revenue?",
+        "description": "This deletes the revenue \"{description}\" ({amount}). You'll be able to restore this deletion later if needed.",
+        "cancel": "Cancel",
+        "confirm": "Delete",
+        "submitting": "Deleting…",
+        "success": "Revenue deleted.",
+        "error": "The revenue could not be deleted. Please try again.",
+        "errorLinkedToPayment": "This transaction is linked to a dues payment and cannot be deleted here."
+      }
+    }
   }
 }

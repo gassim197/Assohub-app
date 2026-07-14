@@ -987,11 +987,154 @@
   },
   "reports": {
     "title": "Rapports",
-    "revenue": "Revenus",
-    "expenses": "Dépenses",
-    "balance": "Solde net",
-    "last30Days": "30 derniers jours",
-    "thisYear": "Cette année",
-    "custom": "Personnalisé"
+    "subtitle": "Suivez les finances de votre organisation.",
+    "comingSoon": "Bientôt disponible.",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "transactions": "Transactions",
+      "expenses": "Dépenses",
+      "manualRevenues": "Autres revenus"
+    },
+    "categories": {
+      "revenue": {
+        "cotisations": "Cotisations",
+        "dons": "Dons",
+        "subventions": "Subventions",
+        "recettes_evenements": "Recettes d'événements",
+        "ventes": "Vente de produits/services",
+        "partenariats": "Partenariats / Sponsoring",
+        "autre_revenu": "Autre"
+      },
+      "expense": {
+        "loyer_charges": "Loyer et charges",
+        "fournitures": "Fournitures et matériel",
+        "communication": "Communication",
+        "evenements": "Événements",
+        "transport": "Transport et déplacements",
+        "personnel": "Personnel",
+        "frais_bancaires": "Frais bancaires et financiers",
+        "dons_verses": "Dons et subventions versés",
+        "impots_taxes": "Impôts et taxes",
+        "autre_depense": "Autre"
+      }
+    },
+    "expenses": {
+      "new": "Nouvelle dépense",
+      "empty": {
+        "title": "Aucune dépense enregistrée",
+        "description": "Enregistrez vos dépenses pour garder une comptabilité à jour.",
+        "cta": "Enregistrer ma première dépense"
+      },
+      "table": {
+        "date": "Date",
+        "category": "Catégorie",
+        "description": "Description",
+        "amount": "Montant",
+        "recordedBy": "Enregistré par"
+      },
+      "form": {
+        "title": "Nouvelle dépense",
+        "description": "Enregistrez une dépense de l'organisation.",
+        "editTitle": "Modifier la dépense",
+        "editDescription": "Mettez à jour les informations de cette dépense.",
+        "fieldAmount": "Montant (GNF)",
+        "fieldCategory": "Catégorie",
+        "fieldDescription": "Description",
+        "fieldDate": "Date",
+        "fieldReference": "Référence de pièce justificative",
+        "optional": "(optionnel)",
+        "cancel": "Annuler",
+        "submit": "Enregistrer la dépense",
+        "submitting": "Enregistrement…",
+        "editSubmit": "Enregistrer",
+        "editSubmitting": "Enregistrement…",
+        "success": "Dépense enregistrée.",
+        "editSuccess": "Dépense mise à jour.",
+        "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+        "errorLinkedToPayment": "Cette transaction est liée à un paiement de cotisation et ne peut pas être modifiée ici.",
+        "errors": {
+          "amountInteger": "Le montant doit être un nombre entier.",
+          "amountMin": "Le montant doit être supérieur à 0.",
+          "amountMax": "Le montant dépasse la limite autorisée.",
+          "descriptionRequired": "La description est requise.",
+          "dateInvalid": "Date invalide.",
+          "dateNotFuture": "La date ne peut pas être dans le futur."
+        }
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "deleteDialog": {
+        "title": "Supprimer cette dépense ?",
+        "description": "Cette action supprime la dépense « {description} » ({amount}). Vous pourrez restaurer cette suppression plus tard si nécessaire.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer",
+        "submitting": "Suppression…",
+        "success": "Dépense supprimée.",
+        "error": "La dépense n'a pas pu être supprimée. Veuillez réessayer.",
+        "errorLinkedToPayment": "Cette transaction est liée à un paiement de cotisation et ne peut pas être supprimée ici."
+      }
+    },
+    "manualRevenues": {
+      "new": "Nouveau revenu",
+      "empty": {
+        "title": "Aucun revenu manuel enregistré",
+        "description": "Enregistrez les dons, subventions et autres revenus hors cotisations.",
+        "cta": "Enregistrer mon premier revenu"
+      },
+      "table": {
+        "date": "Date",
+        "category": "Catégorie",
+        "description": "Description",
+        "amount": "Montant",
+        "recordedBy": "Enregistré par"
+      },
+      "form": {
+        "title": "Nouveau revenu",
+        "description": "Enregistrez un revenu hors cotisations (don, subvention, etc.).",
+        "editTitle": "Modifier le revenu",
+        "editDescription": "Mettez à jour les informations de ce revenu.",
+        "fieldAmount": "Montant (GNF)",
+        "fieldCategory": "Catégorie",
+        "fieldDescription": "Description",
+        "fieldDate": "Date",
+        "fieldReference": "Référence de pièce justificative",
+        "optional": "(optionnel)",
+        "cancel": "Annuler",
+        "submit": "Enregistrer le revenu",
+        "submitting": "Enregistrement…",
+        "editSubmit": "Enregistrer",
+        "editSubmitting": "Enregistrement…",
+        "success": "Revenu enregistré.",
+        "editSuccess": "Revenu mis à jour.",
+        "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+        "errorLinkedToPayment": "Cette transaction est liée à un paiement de cotisation et ne peut pas être modifiée ici.",
+        "errors": {
+          "amountInteger": "Le montant doit être un nombre entier.",
+          "amountMin": "Le montant doit être supérieur à 0.",
+          "amountMax": "Le montant dépasse la limite autorisée.",
+          "descriptionRequired": "La description est requise.",
+          "dateInvalid": "Date invalide.",
+          "dateNotFuture": "La date ne peut pas être dans le futur."
+        }
+      },
+      "rowActions": {
+        "label": "Actions",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "deleteDialog": {
+        "title": "Supprimer ce revenu ?",
+        "description": "Cette action supprime le revenu « {description} » ({amount}). Vous pourrez restaurer cette suppression plus tard si nécessaire.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer",
+        "submitting": "Suppression…",
+        "success": "Revenu supprimé.",
+        "error": "Le revenu n'a pas pu être supprimé. Veuillez réessayer.",
+        "errorLinkedToPayment": "Cette transaction est liée à un paiement de cotisation et ne peut pas être supprimée ici."
+      }
+    }
   }
 }
