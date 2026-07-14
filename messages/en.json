@@ -798,6 +798,12 @@
     "past": "Past meetings",
     "join": "Join",
     "durationLabel": "{minutes} min",
+    "kpis": {
+      "upcoming": "Upcoming meetings",
+      "heldThisYear": "Held this year",
+      "nextMeeting": "Next meeting",
+      "noneScheduled": "No meeting scheduled"
+    },
     "empty": {
       "upcomingTitle": "No upcoming meeting",
       "upcomingDescription": "No meeting scheduled. Create your first meeting to organize your team.",
@@ -822,6 +828,7 @@
       "reportee": "Postponed"
     },
     "calendar": {
+      "title": "Calendar",
       "showAll": "Show all"
     },
     "rowActions": {

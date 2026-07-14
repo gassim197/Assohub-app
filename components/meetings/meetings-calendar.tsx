@@ -95,25 +95,28 @@ export function MeetingsCalendar({ dates }: { dates: string[] }) {
   }
 
   return (
-    <Card className="w-fit p-3">
-      <Calendar
-        mode="single"
-        locale={locale.startsWith("fr") ? fr : enUS}
-        selected={selected}
-        onSelect={goToDay}
-        modifiers={{ hasMeeting: meetingDates }}
-        components={{ DayButton: MeetingDayButton }}
-      />
-      {currentDay ? (
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-2 w-full"
-          onClick={showAll}
-        >
-          {t("showAll")}
-        </Button>
-      ) : null}
-    </Card>
+    <div className="w-fit space-y-3">
+      <h2 className="text-sm font-medium text-foreground">{t("title")}</h2>
+      <Card className="w-fit p-4">
+        <Calendar
+          mode="single"
+          locale={locale.startsWith("fr") ? fr : enUS}
+          selected={selected}
+          onSelect={goToDay}
+          modifiers={{ hasMeeting: meetingDates }}
+          components={{ DayButton: MeetingDayButton }}
+        />
+        {currentDay ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2 w-full"
+            onClick={showAll}
+          >
+            {t("showAll")}
+          </Button>
+        ) : null}
+      </Card>
+    </div>
   );
 }

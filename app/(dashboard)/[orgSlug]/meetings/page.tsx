@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MeetingsListTab } from "@/components/meetings/meetings-list-tab";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
 import { MeetingsCalendar } from "@/components/meetings/meetings-calendar";
+import { MeetingsKpis } from "@/components/meetings/meetings-kpis";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -36,10 +37,14 @@ export default async function MeetingsPage({
 
   const day = readParam(sp.day);
 
-  const [upcoming, past, calendarDates] = await Promise.all([
+  const [upcoming, past, calendarDates, kpiUpcoming, kpiPast] = await Promise.all([
     listUpcomingMeetings({ organizationId, day }),
     listPastMeetings({ organizationId, day }),
     listMeetingDatesForCalendar(organizationId),
+    // Non filtrées par `day` : le bandeau de KPI reste global même quand le
+    // calendrier restreint les deux onglets à une date (filtre additif).
+    listUpcomingMeetings({ organizationId }),
+    listPastMeetings({ organizationId }),
   ]);
 
   // Édition en place : `?editMeeting=true&meetingId=X` monte la modale pré-remplie.
@@ -64,6 +69,8 @@ export default async function MeetingsPage({
           {t("schedule")}
         </Button>
       </div>
+
+      <MeetingsKpis upcoming={kpiUpcoming} past={kpiPast} />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-start">
         <Tabs defaultValue="upcoming">

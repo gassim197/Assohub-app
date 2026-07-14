@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, Plus, Video } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Plus, Video } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import {
@@ -14,6 +14,34 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MeetingRowActions } from "./meeting-row-actions";
+
+/**
+ * Bloc date façon calendrier (jour en gros + mois abrégé), ancrage visuel de
+ * la carte (session 6.5, purement présentationnel). Calculé en UTC, cohérent
+ * avec `formatMeetingDateTime` (Africa/Conakry = UTC toute l'année, cf.
+ * `lib/meetings/date.ts`).
+ */
+function MeetingDateBadge({ date, locale }: { date: Date; locale: string }) {
+  const day = new Intl.DateTimeFormat(locale, { day: "2-digit", timeZone: "UTC" }).format(
+    date,
+  );
+  const month = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    timeZone: "UTC",
+  })
+    .format(date)
+    .replace(".", "")
+    .toUpperCase();
+
+  return (
+    <div className="flex size-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <span className="text-lg leading-none font-semibold tabular-nums">{day}</span>
+      <span className="mt-0.5 text-[0.65rem] leading-none font-medium tracking-wide">
+        {month}
+      </span>
+    </div>
+  );
+}
 
 /** Une réunion, en carte (décision 6A : carte plutôt que ligne de table — contenu trop riche pour un tableau). */
 function MeetingCard({
@@ -30,41 +58,49 @@ function MeetingCard({
   const type = isMeetingType(meeting.type) ? meeting.type : null;
   const status = isMeetingStatus(meeting.status) ? meeting.status : null;
 
-  const subline = [
-    meeting.location,
-    meeting.durationMinutes
-      ? t("durationLabel", { minutes: meeting.durationMinutes })
-      : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
   return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex-1 space-y-1.5">
-          <p className="text-sm font-medium tabular-nums text-foreground">
-            {formatMeetingDateTime(meeting.scheduledAt, locale)}
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-semibold text-foreground">
-              {meeting.title}
-            </h3>
-            <Badge variant={type ? MEETING_TYPE_BADGE_VARIANT[type] : "outline"}>
-              {type ? t(`types.${type}`) : meeting.type}
-            </Badge>
-            <Badge
-              variant={status ? MEETING_STATUS_BADGE_VARIANT[status] : "outline"}
-            >
-              {status ? t(`status.${status}`) : meeting.status}
-            </Badge>
+    <Card className="transition-colors hover:bg-muted/40">
+      <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 items-center gap-4">
+          <MeetingDateBadge date={meeting.scheduledAt} locale={locale} />
+
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-base font-semibold text-foreground">
+                {meeting.title}
+              </h3>
+              <Badge variant={type ? MEETING_TYPE_BADGE_VARIANT[type] : "outline"}>
+                {type ? t(`types.${type}`) : meeting.type}
+              </Badge>
+              <Badge
+                variant={status ? MEETING_STATUS_BADGE_VARIANT[status] : "outline"}
+              >
+                {status ? t(`status.${status}`) : meeting.status}
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {formatMeetingDateTime(meeting.scheduledAt, locale)}
+            </p>
+            {meeting.location || meeting.durationMinutes ? (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                {meeting.location ? (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="size-3.5" />
+                    {meeting.location}
+                  </span>
+                ) : null}
+                {meeting.durationMinutes ? (
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="size-3.5" />
+                    {t("durationLabel", { minutes: meeting.durationMinutes })}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
           </div>
-          {subline ? (
-            <p className="text-sm text-muted-foreground">{subline}</p>
-          ) : null}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
           {meeting.videoLink ? (
             <Button
               variant="outline"

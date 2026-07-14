@@ -798,6 +798,12 @@
     "past": "Réunions passées",
     "join": "Rejoindre",
     "durationLabel": "{minutes} min",
+    "kpis": {
+      "upcoming": "Prochaines réunions",
+      "heldThisYear": "Tenues cette année",
+      "nextMeeting": "Prochaine réunion",
+      "noneScheduled": "Aucune réunion planifiée"
+    },
     "empty": {
       "upcomingTitle": "Aucune réunion planifiée",
       "upcomingDescription": "Aucune réunion planifiée. Créez votre première réunion pour organiser votre équipe.",
@@ -822,6 +828,7 @@
       "reportee": "Reportée"
     },
     "calendar": {
+      "title": "Calendrier",
       "showAll": "Voir tout"
     },
     "rowActions": {
