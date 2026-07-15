@@ -995,6 +995,35 @@
       "expenses": "Expenses",
       "manualRevenues": "Other revenue"
     },
+    "period": {
+      "label": "Period",
+      "options": {
+        "last30days": "Last 30 days",
+        "thisYear": "This year",
+        "custom": "Custom"
+      },
+      "from": "From",
+      "to": "To",
+      "rangeSeparator": "→"
+    },
+    "kpis": {
+      "totalRevenue": "Total revenue",
+      "totalExpense": "Total expenses",
+      "netBalance": "Net balance"
+    },
+    "charts": {
+      "revenue": "Revenue",
+      "expense": "Expenses",
+      "noCategoryData": "No data for this category over the period."
+    },
+    "overview": {
+      "monthlyChartTitle": "Monthly trend",
+      "categoryChartTitle": "Breakdown by category",
+      "empty": {
+        "title": "No transactions for this period",
+        "description": "Record expenses or revenue, or choose another period, to see your financial indicators appear."
+      }
+    },
     "categories": {
       "revenue": {
         "cotisations": "Dues",

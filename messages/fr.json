@@ -995,6 +995,35 @@
       "expenses": "Dépenses",
       "manualRevenues": "Autres revenus"
     },
+    "period": {
+      "label": "Période",
+      "options": {
+        "last30days": "30 derniers jours",
+        "thisYear": "Cette année",
+        "custom": "Personnalisé"
+      },
+      "from": "Du",
+      "to": "Au",
+      "rangeSeparator": "→"
+    },
+    "kpis": {
+      "totalRevenue": "Revenus totaux",
+      "totalExpense": "Dépenses totales",
+      "netBalance": "Solde net"
+    },
+    "charts": {
+      "revenue": "Revenus",
+      "expense": "Dépenses",
+      "noCategoryData": "Aucune donnée pour cette catégorie sur la période."
+    },
+    "overview": {
+      "monthlyChartTitle": "Évolution mensuelle",
+      "categoryChartTitle": "Répartition par catégorie",
+      "empty": {
+        "title": "Aucune transaction sur cette période",
+        "description": "Enregistrez des dépenses ou des revenus, ou choisissez une autre période, pour voir apparaître vos indicateurs financiers."
+      }
+    },
     "categories": {
       "revenue": {
         "cotisations": "Cotisations",

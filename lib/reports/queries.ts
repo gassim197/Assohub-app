@@ -1,8 +1,13 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { transactions } from "@/lib/db/transactions-schema";
 import { user } from "@/lib/db/auth-schema";
+
+export interface ReportsPeriodRange {
+  start: string;
+  end: string;
+}
 
 export type TransactionRow = typeof transactions.$inferSelect;
 
@@ -99,4 +104,118 @@ export async function getTransactionById(
     .limit(1);
 
   return row ?? null;
+}
+
+// ─── Dashboard (checkpoint 2) ─────────────────────────────────────────────────
+// Agrégations SQL directes (`db.execute` + `FILTER`/`GROUP BY`) plutôt que du
+// calcul en JS sur des lignes chargées : les sommes doivent porter sur TOUTES
+// les transactions validées de la période, pas seulement une page. Les
+// agrégats Postgres (`SUM`) reviennent en chaîne via le driver (précision
+// bigint) — converties en `number` ici, les montants restant largement sous
+// `Number.MAX_SAFE_INTEGER` en centimes GNF pour une association.
+
+export interface FinancialKpis {
+  totalRevenue: number;
+  totalExpense: number;
+  netBalance: number;
+}
+
+/**
+ * KPIs financiers sur une période (schema-design §7.4) : revenus totaux,
+ * dépenses totales (transactions `validated`, non supprimées), solde net.
+ * Une seule requête à agrégation conditionnelle (`FILTER`) plutôt que deux
+ * requêtes séparées. Multi-tenant strict.
+ */
+export async function getFinancialKpis(
+  organizationId: string,
+  period: ReportsPeriodRange,
+): Promise<FinancialKpis> {
+  const result = await db.execute(sql`
+    SELECT
+      COALESCE(SUM(amount) FILTER (WHERE type = 'revenue'), 0) AS total_revenue,
+      COALESCE(SUM(amount) FILTER (WHERE type = 'expense'), 0) AS total_expense
+    FROM transactions
+    WHERE organization_id = ${organizationId}
+      AND status = 'validated'
+      AND deleted_at IS NULL
+      AND occurred_at BETWEEN ${period.start} AND ${period.end}
+  `);
+
+  const row = result.rows[0] as
+    | { total_revenue: string; total_expense: string }
+    | undefined;
+  const totalRevenue = Number(row?.total_revenue ?? 0);
+  const totalExpense = Number(row?.total_expense ?? 0);
+
+  return { totalRevenue, totalExpense, netBalance: totalRevenue - totalExpense };
+}
+
+export interface MonthlyBreakdownRow {
+  /** "YYYY-MM" */
+  month: string;
+  revenue: number;
+  expense: number;
+}
+
+/**
+ * Évolution mensuelle (schema-design §7.4) : `GROUP BY DATE_TRUNC('month',
+ * occurred_at)`, revenus et dépenses sur la même ligne pour alimenter
+ * directement un graphique en barres groupées. Multi-tenant strict.
+ */
+export async function getMonthlyBreakdown(
+  organizationId: string,
+  period: ReportsPeriodRange,
+): Promise<MonthlyBreakdownRow[]> {
+  const result = await db.execute(sql`
+    SELECT
+      TO_CHAR(DATE_TRUNC('month', occurred_at), 'YYYY-MM') AS month,
+      COALESCE(SUM(amount) FILTER (WHERE type = 'revenue'), 0) AS revenue,
+      COALESCE(SUM(amount) FILTER (WHERE type = 'expense'), 0) AS expense
+    FROM transactions
+    WHERE organization_id = ${organizationId}
+      AND status = 'validated'
+      AND deleted_at IS NULL
+      AND occurred_at BETWEEN ${period.start} AND ${period.end}
+    GROUP BY DATE_TRUNC('month', occurred_at)
+    ORDER BY DATE_TRUNC('month', occurred_at)
+  `);
+
+  return result.rows.map((row) => {
+    const r = row as { month: string; revenue: string; expense: string };
+    return { month: r.month, revenue: Number(r.revenue), expense: Number(r.expense) };
+  });
+}
+
+export interface CategoryBreakdownRow {
+  category: string;
+  amount: number;
+}
+
+/**
+ * Répartition par catégorie (schema-design §7.4) : `GROUP BY category`
+ * filtré par `type`, triée par montant décroissant. Le pourcentage se
+ * calcule à l'affichage (dépend du total, déjà connu par l'appelant via
+ * `getFinancialKpis`). Multi-tenant strict.
+ */
+export async function getCategoryBreakdown(
+  organizationId: string,
+  period: ReportsPeriodRange,
+  type: "revenue" | "expense",
+): Promise<CategoryBreakdownRow[]> {
+  const result = await db.execute(sql`
+    SELECT category, SUM(amount) AS amount
+    FROM transactions
+    WHERE organization_id = ${organizationId}
+      AND type = ${type}
+      AND status = 'validated'
+      AND deleted_at IS NULL
+      AND occurred_at BETWEEN ${period.start} AND ${period.end}
+    GROUP BY category
+    ORDER BY amount DESC
+  `);
+
+  return result.rows.map((row) => {
+    const r = row as { category: string; amount: string };
+    return { category: r.category, amount: Number(r.amount) };
+  });
 }

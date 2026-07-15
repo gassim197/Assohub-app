@@ -7,6 +7,7 @@ import { ExpensesTab } from "@/components/reports/expenses-tab";
 import { ManualRevenuesTab } from "@/components/reports/manual-revenues-tab";
 import { ExpenseFormDialog } from "@/components/reports/expense-form-dialog";
 import { ManualRevenueFormDialog } from "@/components/reports/manual-revenue-form-dialog";
+import { OverviewTab } from "@/components/reports/overview-tab";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -63,7 +64,12 @@ export default async function ReportsPage({
         </TabsList>
 
         <TabsContent value="overview" className="pt-4">
-          <p className="text-sm text-muted-foreground">{t("comingSoon")}</p>
+          <OverviewTab
+            organizationId={organizationId}
+            overviewPeriod={readParam(sp.overviewPeriod)}
+            overviewFrom={readParam(sp.overviewFrom)}
+            overviewTo={readParam(sp.overviewTo)}
+          />
         </TabsContent>
 
         <TabsContent value="transactions" className="pt-4">
