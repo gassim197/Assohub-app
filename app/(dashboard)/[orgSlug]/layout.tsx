@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { getUserOrganizations } from "@/lib/organizations/queries";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { WelcomeToast } from "@/components/layout/welcome-toast";
@@ -34,6 +35,7 @@ export default async function DashboardLayout({
 
   const userName = session.user.name;
   const userInitials = getInitials(userName);
+  const organizations = await getUserOrganizations(session.user.id);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -41,6 +43,7 @@ export default async function DashboardLayout({
         orgSlug={orgSlug}
         userName={userName}
         userInitials={userInitials}
+        organizations={organizations}
       />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar />

@@ -45,7 +45,18 @@
       "other": "Other"
     },
     "submit": "Create organization",
-    "creating": "Creating…"
+    "creating": "Creating…",
+    "cancel": "Cancel"
+  },
+  "organizations": {
+    "switcher": {
+      "createOrganization": "Create an organization",
+      "noOrganization": "No organization",
+      "errors": {
+        "notMember": "You are no longer a member of this organization.",
+        "unknown": "Something went wrong. Please try again."
+      }
+    }
   },
   "dashboard": {
     "welcome": "Welcome",

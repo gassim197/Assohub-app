@@ -14,6 +14,7 @@ import {
 import { useTranslations } from "next-intl";
 
 import { signOut } from "@/lib/auth/client";
+import type { UserOrganizationRow } from "@/lib/organizations/queries";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -24,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Logo } from "@/components/ui/logo";
+import { OrganizationSwitcher } from "@/components/organizations/organization-switcher";
 
 const NAV_ITEMS = [
   { key: "home", icon: LayoutDashboard, path: "" },
@@ -37,9 +39,10 @@ interface SidebarProps {
   orgSlug: string;
   userName: string;
   userInitials: string;
+  organizations: UserOrganizationRow[];
 }
 
-export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
+export function Sidebar({ orgSlug, userName, userInitials, organizations }: SidebarProps) {
   const t = useTranslations("dashboard");
   const tAuth = useTranslations("auth");
   const pathname = usePathname();
@@ -58,6 +61,9 @@ export function Sidebar({ orgSlug, userName, userInitials }: SidebarProps) {
           <Logo variant="full" scheme="dark" />
         </Link>
       </div>
+
+      {/* Organization switcher */}
+      <OrganizationSwitcher orgSlug={orgSlug} organizations={organizations} />
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
