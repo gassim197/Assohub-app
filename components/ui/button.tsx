@@ -44,11 +44,21 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
+  render,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
       data-slot="button"
+      // Base UI attend un vrai <button> quand `nativeButton` est true (par
+      // défaut). Un `render` personnalisé (ex. `render={<Link .../>}`) rend
+      // un élément différent (<a>...) — sans ce défaut intelligent, Base UI
+      // logue "A component that acts as a button expected a native
+      // <button>..." en dev à chaque bouton-lien de l'app. `nativeButton`
+      // reste surchargeable explicitement si un cas particulier l'exige.
+      nativeButton={nativeButton ?? !render}
+      render={render}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
