@@ -205,3 +205,35 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  /*
+   * Indicateur discret de scroll horizontal (tableaux sur mobile, session
+   * 8C) : dégradés de bord "collés" au contenu scrollable
+   * (background-attachment: local, cachés dès qu'il n'y a plus rien à
+   * scroller dans cette direction) par-dessus des ombres fixes à la fenêtre
+   * (background-attachment: scroll). Technique CSS pure, sans JS — ne
+   * s'affiche jamais si le contenu tient déjà dans la largeur disponible.
+   */
+  .scroll-shadow-x {
+    background-color: var(--card);
+    background-repeat: no-repeat;
+    background-image:
+      linear-gradient(to right, var(--card), transparent),
+      linear-gradient(to left, var(--card), transparent),
+      radial-gradient(farthest-side at 0 50%, oklch(0 0 0 / 0.12), transparent),
+      radial-gradient(farthest-side at 100% 50%, oklch(0 0 0 / 0.12), transparent);
+    background-position:
+      0 0,
+      100% 0,
+      0 0,
+      100% 0;
+    background-size:
+      24px 100%,
+      24px 100%,
+      10px 100%,
+      10px 100%;
+    background-attachment: local, local, scroll, scroll;
+    overscroll-behavior-x: contain;
+  }
+}
