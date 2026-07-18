@@ -87,6 +87,24 @@
         "netBalance": "Solde financier",
         "nextMeeting": "Prochaine réunion",
         "noneScheduled": "Aucune réunion planifiée"
+      },
+      "activity": {
+        "meetings": {
+          "title": "Prochaines réunions",
+          "viewAll": "Voir toutes les réunions",
+          "empty": "Aucune réunion à venir."
+        },
+        "cotisations": {
+          "title": "Cotisations en retard",
+          "viewAll": "Gérer les cotisations",
+          "empty": "Toutes les cotisations sont à jour."
+        }
+      },
+      "quickActions": {
+        "addMember": "Ajouter un membre",
+        "recordPayment": "Enregistrer un paiement",
+        "createMeeting": "Créer une réunion",
+        "generateInviteLink": "Générer un lien d'invitation"
       }
     }
   },

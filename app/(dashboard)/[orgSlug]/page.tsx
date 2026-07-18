@@ -4,12 +4,15 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { requireOrgAccess } from "@/lib/auth/org";
 import { getMemberKpis } from "@/lib/members/queries";
-import { getCotisationKpis } from "@/lib/cotisations/queries";
+import { getCotisationKpis, listCotisationsDue } from "@/lib/cotisations/queries";
 import { getFinancialKpis } from "@/lib/reports/queries";
 import { resolveReportsPeriod } from "@/lib/reports/period";
 import { listUpcomingMeetings } from "@/lib/meetings/queries";
 import { DashboardKpis } from "@/components/dashboard/dashboard-kpis";
 import { OnboardingGuide } from "@/components/dashboard/onboarding-guide";
+import { UpcomingMeetingsSection } from "@/components/dashboard/upcoming-meetings-section";
+import { OverdueCotisationsSection } from "@/components/dashboard/overdue-cotisations-section";
+import { QuickActions } from "@/components/dashboard/quick-actions";
 
 export default async function DashboardHomePage({
   params,
@@ -53,6 +56,15 @@ export default async function DashboardHomePage({
     return <OnboardingGuide orgSlug={orgSlug} />;
   }
 
+  // Non chargée avant la bascule État A / État B : inutile pour la
+  // détection (déjà tranchée ci-dessus par `cotisationKpis`), seulement
+  // pour l'aperçu "Cotisations en retard" de l'état actif.
+  const overdueResult = await listCotisationsDue({
+    organizationId,
+    status: "en_retard",
+    page: 1,
+  });
+
   const todayLabel = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     day: "numeric",
@@ -69,12 +81,19 @@ export default async function DashboardHomePage({
         <p className="mt-1 text-sm text-muted-foreground capitalize">{todayLabel}</p>
       </div>
 
+      <QuickActions orgSlug={orgSlug} />
+
       <DashboardKpis
         memberKpis={memberKpis}
         cotisationKpis={cotisationKpis}
         financialKpis={financialKpis}
         nextMeeting={upcomingMeetings[0] ?? null}
       />
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <UpcomingMeetingsSection orgSlug={orgSlug} meetings={upcomingMeetings} />
+        <OverdueCotisationsSection orgSlug={orgSlug} overdue={overdueResult.rows} />
+      </div>
     </div>
   );
 }

@@ -87,6 +87,24 @@
         "netBalance": "Net balance",
         "nextMeeting": "Next meeting",
         "noneScheduled": "No meeting scheduled"
+      },
+      "activity": {
+        "meetings": {
+          "title": "Upcoming meetings",
+          "viewAll": "View all meetings",
+          "empty": "No upcoming meetings."
+        },
+        "cotisations": {
+          "title": "Overdue dues",
+          "viewAll": "Manage dues",
+          "empty": "All dues are up to date."
+        }
+      },
+      "quickActions": {
+        "addMember": "Add a member",
+        "recordPayment": "Record a payment",
+        "createMeeting": "Create a meeting",
+        "generateInviteLink": "Generate an invite link"
       }
     }
   },
