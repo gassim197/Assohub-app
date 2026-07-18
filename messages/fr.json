@@ -61,6 +61,8 @@
   "dashboard": {
     "welcome": "Bienvenue",
     "home": "Tableau de bord",
+    "openMobileMenu": "Ouvrir le menu",
+    "mobileMenuTitle": "Menu de navigation",
     "members": "Membres",
     "cotisations": "Cotisations",
     "meetings": "Réunions",

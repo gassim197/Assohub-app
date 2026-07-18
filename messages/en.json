@@ -61,6 +61,8 @@
   "dashboard": {
     "welcome": "Welcome",
     "home": "Dashboard",
+    "openMobileMenu": "Open menu",
+    "mobileMenuTitle": "Navigation menu",
     "members": "Members",
     "cotisations": "Contributions",
     "meetings": "Meetings",

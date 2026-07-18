@@ -35,14 +35,28 @@ const NAV_ITEMS = [
   { key: "reports", icon: BarChart2, path: "/reports" },
 ] as const;
 
-interface SidebarProps {
+interface SidebarContentProps {
   orgSlug: string;
   userName: string;
   userInitials: string;
   organizations: UserOrganizationRow[];
+  /** Appelé au clic sur un lien de navigation — ferme le menu mobile (session 8C). */
+  onNavigate?: () => void;
 }
 
-export function Sidebar({ orgSlug, userName, userInitials, organizations }: SidebarProps) {
+/**
+ * Contenu de la sidebar (logo, switcher d'organisations, nav, menu
+ * utilisateur) — sans wrapper `<aside>` ni classes de visibilité
+ * responsive, pour rester réutilisable tel quel à la fois dans `Sidebar`
+ * (desktop, `<aside>` fixe) et `MobileSidebar` (Sheet, session 8C).
+ */
+export function SidebarContent({
+  orgSlug,
+  userName,
+  userInitials,
+  organizations,
+  onNavigate,
+}: SidebarContentProps) {
   const t = useTranslations("dashboard");
   const tAuth = useTranslations("auth");
   const pathname = usePathname();
@@ -54,10 +68,14 @@ export function Sidebar({ orgSlug, userName, userInitials, organizations }: Side
   }
 
   return (
-    <aside className="flex h-screen w-56 flex-col bg-sidebar text-sidebar-foreground">
+    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       {/* Logo */}
       <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
-        <Link href={`/${orgSlug}`} className="outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-sm">
+        <Link
+          href={`/${orgSlug}`}
+          onClick={onNavigate}
+          className="outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-sm"
+        >
           <Logo variant="full" scheme="dark" />
         </Link>
       </div>
@@ -78,6 +96,7 @@ export function Sidebar({ orgSlug, userName, userInitials, organizations }: Side
             <Link
               key={key}
               href={href}
+              onClick={onNavigate}
               className={cn(
                 "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive
@@ -104,14 +123,20 @@ export function Sidebar({ orgSlug, userName, userInitials, organizations }: Side
             <span className="flex-1 truncate text-left">{userName}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" className="w-48">
-            <DropdownMenuItem render={<Link href={`/${orgSlug}/settings`} />}>
+            <DropdownMenuItem
+              onClick={onNavigate}
+              render={<Link href={`/${orgSlug}/settings`} />}
+            >
               <Settings className="size-4" />
               {t("settings")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onClick={handleSignOut}
+              onClick={() => {
+                onNavigate?.();
+                handleSignOut();
+              }}
             >
               <LogOut className="size-4" />
               {tAuth("signOut")}
@@ -119,6 +144,15 @@ export function Sidebar({ orgSlug, userName, userInitials, organizations }: Side
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+    </div>
+  );
+}
+
+/** Sidebar desktop fixe (≥ 768px) — masquée en dessous, remplacée par `MobileSidebar`. */
+export function Sidebar(props: SidebarContentProps) {
+  return (
+    <aside className="hidden h-screen w-56 flex-col md:flex">
+      <SidebarContent {...props} />
     </aside>
   );
 }

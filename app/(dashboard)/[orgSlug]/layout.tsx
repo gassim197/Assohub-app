@@ -3,8 +3,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { getUserOrganizations } from "@/lib/organizations/queries";
-import { Sidebar } from "@/components/layout/sidebar";
-import { Topbar } from "@/components/layout/topbar";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { WelcomeToast } from "@/components/layout/welcome-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -38,21 +37,17 @@ export default async function DashboardLayout({
   const organizations = await getUserOrganizations(session.user.id);
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
+    <>
+      <DashboardShell
         orgSlug={orgSlug}
         userName={userName}
         userInitials={userInitials}
         organizations={organizations}
-      />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Topbar />
-        <main className="flex-1 overflow-y-auto bg-muted/20 p-6">
-          {children}
-        </main>
-      </div>
+      >
+        {children}
+      </DashboardShell>
       <Toaster />
       <WelcomeToast />
-    </div>
+    </>
   );
 }
