@@ -1187,6 +1187,18 @@
         "viewPayment": "Voir le paiement"
       },
       "empty": "Aucune transaction ne correspond à ces critères."
+    },
+    "pdf": {
+      "exportButton": "Exporter en PDF",
+      "title": "Rapport financier",
+      "periodLabel": "Période couverte",
+      "generatedAtLabel": "Généré le",
+      "revenueCategoryTitle": "Revenus par catégorie",
+      "expenseCategoryTitle": "Dépenses par catégorie",
+      "transactionsTitle": "Transactions de la période",
+      "noTransactions": "Aucune transaction sur cette période.",
+      "footerPrefix": "Généré par AssoHub",
+      "filenamePrefix": "rapport-financier"
     }
   }
 }

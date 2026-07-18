@@ -330,3 +330,29 @@ export async function listTransactions({
     totalPages: Math.max(1, Math.ceil(total / REPORTS_TRANSACTIONS_PAGE_SIZE)),
   };
 }
+
+/**
+ * Toutes les transactions de la période, sans pagination — pour le tableau
+ * du rapport PDF (checkpoint 4), qui doit couvrir la période entière plutôt
+ * qu'une seule page. Même filtre `status = 'validated'` que les autres
+ * agrégats. Multi-tenant strict.
+ */
+export async function listAllTransactionsForPeriod(
+  organizationId: string,
+  period: ReportsPeriodRange,
+): Promise<TransactionWithRecorderRow[]> {
+  return db
+    .select(RECORDER_COLUMNS)
+    .from(transactions)
+    .innerJoin(user, eq(transactions.recordedByUserId, user.id))
+    .where(
+      and(
+        eq(transactions.organizationId, organizationId),
+        eq(transactions.status, "validated"),
+        isNull(transactions.deletedAt),
+        gte(transactions.occurredAt, period.start),
+        lte(transactions.occurredAt, period.end),
+      ),
+    )
+    .orderBy(desc(transactions.occurredAt), desc(transactions.createdAt));
+}

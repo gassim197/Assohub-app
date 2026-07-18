@@ -1,6 +1,9 @@
+import Link from "next/link";
+import { FileDown } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
+import { Button } from "@/components/ui/button";
 import { listExpenses, listManualRevenues, listTransactions } from "@/lib/reports/queries";
 import {
   isExpenseCategory,
@@ -62,6 +65,20 @@ export default async function ReportsPage({
   const rawPage = Number(readParam(sp.page));
   const transactionsPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
+  // Export PDF (checkpoint 4) : couvre la même période que la Vue
+  // d'ensemble — ses paramètres `overviewPeriod`/`overviewFrom`/`overviewTo`
+  // sont traduits vers `?period=`/`?from=`/`?to=`, le vocabulaire attendu par
+  // la route `/reports/pdf`.
+  const exportPeriodOption = readParam(sp.overviewPeriod);
+  const exportFrom = readParam(sp.overviewFrom);
+  const exportTo = readParam(sp.overviewTo);
+  const exportParams = new URLSearchParams();
+  if (exportPeriodOption) exportParams.set("period", exportPeriodOption);
+  if (exportFrom) exportParams.set("from", exportFrom);
+  if (exportTo) exportParams.set("to", exportTo);
+  const exportQuery = exportParams.toString();
+  const exportHref = `/${orgSlug}/reports/pdf${exportQuery ? `?${exportQuery}` : ""}`;
+
   const [expenses, revenues, transactionsResult] = await Promise.all([
     listExpenses(organizationId),
     listManualRevenues(organizationId),
@@ -92,9 +109,19 @@ export default async function ReportsPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          render={<Link href={exportHref} />}
+        >
+          <FileDown />
+          {t("pdf.exportButton")}
+        </Button>
       </div>
 
       <Tabs defaultValue="overview">
