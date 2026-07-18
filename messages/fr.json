@@ -57,9 +57,38 @@
     "settings": "Paramètres",
     "underConstruction": "Module en construction",
     "underConstructionDesc": "Ce module sera disponible prochainement.",
-    "emptyTitle": "Bienvenue dans AssoHub",
-    "emptySubtitle": "Votre espace est prêt. Commencez par inviter les membres de votre organisation.",
-    "ctaInvite": "Inviter votre premier membre"
+    "onboarding": {
+      "title": "Bienvenue dans AssoHub",
+      "subtitle": "Votre espace est prêt. Voici trois premières étapes pour démarrer.",
+      "steps": {
+        "members": {
+          "title": "Ajoutez vos membres",
+          "description": "Construisez l'annuaire de votre organisation.",
+          "cta": "Ajouter un membre"
+        },
+        "cotisationTypes": {
+          "title": "Créez vos types de cotisations",
+          "description": "Définissez les cotisations à percevoir auprès de vos membres.",
+          "cta": "Créer un type de cotisation"
+        },
+        "firstMeeting": {
+          "title": "Planifiez votre première réunion",
+          "description": "Organisez et suivez les réunions de votre organisation.",
+          "cta": "Planifier une réunion"
+        }
+      }
+    },
+    "overview": {
+      "greeting": "Bonjour {firstName}",
+      "kpis": {
+        "activeMembers": "Membres actifs",
+        "outstanding": "À percevoir",
+        "lateCount": "{count, plural, =0 {Aucun retardataire} one {# retardataire} other {# retardataires}}",
+        "netBalance": "Solde financier",
+        "nextMeeting": "Prochaine réunion",
+        "noneScheduled": "Aucune réunion planifiée"
+      }
+    }
   },
   "members": {
     "title": "Membres",
