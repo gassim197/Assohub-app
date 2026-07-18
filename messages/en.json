@@ -1164,6 +1164,29 @@
         "error": "The revenue could not be deleted. Please try again.",
         "errorLinkedToPayment": "This transaction is linked to a dues payment and cannot be deleted here."
       }
+    },
+    "transactions": {
+      "types": {
+        "all": "All",
+        "revenue": "Revenue",
+        "expense": "Expenses"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Search by description…",
+        "typeLabel": "Type",
+        "categoryLabel": "Category",
+        "allCategories": "All categories"
+      },
+      "table": {
+        "date": "Date",
+        "type": "Type",
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount",
+        "recordedBy": "Recorded by",
+        "viewPayment": "View payment"
+      },
+      "empty": "No transaction matches these criteria."
     }
   }
 }

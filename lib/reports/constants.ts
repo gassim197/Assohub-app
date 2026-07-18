@@ -85,3 +85,7 @@ export const MAX_TRANSACTION_AMOUNT_CENTIMES = 100_000_000_000; // 1 000 000 000
 
 export const MIN_TRANSACTION_AMOUNT_GNF = centimesToGnf(MIN_TRANSACTION_AMOUNT_CENTIMES);
 export const MAX_TRANSACTION_AMOUNT_GNF = centimesToGnf(MAX_TRANSACTION_AMOUNT_CENTIMES);
+
+// ─── Onglet "Transactions" (checkpoint 3) ────────────────────────────────────
+
+export const REPORTS_TRANSACTIONS_PAGE_SIZE = 20;

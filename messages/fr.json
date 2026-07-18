@@ -1164,6 +1164,29 @@
         "error": "Le revenu n'a pas pu être supprimé. Veuillez réessayer.",
         "errorLinkedToPayment": "Cette transaction est liée à un paiement de cotisation et ne peut pas être supprimée ici."
       }
+    },
+    "transactions": {
+      "types": {
+        "all": "Tous",
+        "revenue": "Revenus",
+        "expense": "Dépenses"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Rechercher par description…",
+        "typeLabel": "Type",
+        "categoryLabel": "Catégorie",
+        "allCategories": "Toutes les catégories"
+      },
+      "table": {
+        "date": "Date",
+        "type": "Type",
+        "category": "Catégorie",
+        "description": "Description",
+        "amount": "Montant",
+        "recordedBy": "Enregistré par",
+        "viewPayment": "Voir le paiement"
+      },
+      "empty": "Aucune transaction ne correspond à ces critères."
     }
   }
 }

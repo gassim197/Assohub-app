@@ -1,8 +1,11 @@
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, ilike, isNull, lte, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { transactions } from "@/lib/db/transactions-schema";
+import { payments } from "@/lib/db/cotisations-schema";
 import { user } from "@/lib/db/auth-schema";
+import { REPORTS_TRANSACTIONS_PAGE_SIZE } from "./constants";
+import type { TransactionType } from "./constants";
 
 export interface ReportsPeriodRange {
   start: string;
@@ -218,4 +221,112 @@ export async function getCategoryBreakdown(
     const r = row as { category: string; amount: string };
     return { category: r.category, amount: Number(r.amount) };
   });
+}
+
+// ─── Onglet "Transactions" (checkpoint 3) ─────────────────────────────────────
+
+export interface TransactionListRow {
+  id: string;
+  type: string;
+  category: string;
+  amount: number;
+  occurredAt: string;
+  description: string;
+  paymentId: string | null;
+  /** Id de la cotisation liée, via `payments.cotisationId` — pour le lien "Voir le paiement". */
+  cotisationId: string | null;
+  referenceDocument: string | null;
+  recordedByName: string;
+}
+
+export interface ListTransactionsParams {
+  organizationId: string;
+  period: ReportsPeriodRange;
+  type?: TransactionType;
+  category?: string;
+  search?: string;
+  page?: number;
+}
+
+export interface ListTransactionsResult {
+  rows: TransactionListRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/**
+ * Liste paginée de toutes les transactions (revenus ET dépenses) de
+ * l'organisation, filtrable par type/catégorie/recherche/période
+ * (checkpoint 3). `payments` est jointe en `left join` pour exposer
+ * `cotisationId` — seules les lignes `payment_id IS NOT NULL` en ont un,
+ * utilisé pour le lien "Voir le paiement" vers le module Cotisations. Même
+ * filtre `status = 'validated'` que les agrégats de la vue d'ensemble
+ * (schema-design §7.4). Multi-tenant strict.
+ */
+export async function listTransactions({
+  organizationId,
+  period,
+  type,
+  category,
+  search,
+  page = 1,
+}: ListTransactionsParams): Promise<ListTransactionsResult> {
+  const conditions = [
+    eq(transactions.organizationId, organizationId),
+    eq(transactions.status, "validated"),
+    isNull(transactions.deletedAt),
+    gte(transactions.occurredAt, period.start),
+    lte(transactions.occurredAt, period.end),
+  ];
+
+  if (type) {
+    conditions.push(eq(transactions.type, type));
+  }
+  if (category) {
+    conditions.push(eq(transactions.category, category));
+  }
+  const term = search?.trim();
+  if (term) {
+    conditions.push(ilike(transactions.description, `%${term}%`));
+  }
+
+  const where = and(...conditions);
+  const safePage = Math.max(1, page);
+  const offset = (safePage - 1) * REPORTS_TRANSACTIONS_PAGE_SIZE;
+
+  const [rows, totalResult] = await Promise.all([
+    db
+      .select({
+        id: transactions.id,
+        type: transactions.type,
+        category: transactions.category,
+        amount: transactions.amount,
+        occurredAt: transactions.occurredAt,
+        description: transactions.description,
+        paymentId: transactions.paymentId,
+        cotisationId: payments.cotisationId,
+        referenceDocument: transactions.referenceDocument,
+        recordedByName: user.name,
+      })
+      .from(transactions)
+      .innerJoin(user, eq(transactions.recordedByUserId, user.id))
+      .leftJoin(payments, eq(transactions.paymentId, payments.id))
+      .where(where)
+      .orderBy(desc(transactions.occurredAt), desc(transactions.createdAt))
+      .limit(REPORTS_TRANSACTIONS_PAGE_SIZE)
+      .offset(offset),
+    db.select({ value: count() }).from(transactions).where(where),
+  ]);
+
+  const total = Number(totalResult[0]?.value ?? 0);
+
+  return {
+    rows: rows.map((row) => ({ ...row, cotisationId: row.cotisationId ?? null })),
+    total,
+    page: safePage,
+    pageSize: REPORTS_TRANSACTIONS_PAGE_SIZE,
+    totalPages: Math.max(1, Math.ceil(total / REPORTS_TRANSACTIONS_PAGE_SIZE)),
+  };
 }
