@@ -1,153 +1,33 @@
-"use client";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { auth } from "@/lib/auth";
+import { getUserOrganizations } from "@/lib/organizations/queries";
+import { OnboardingForm } from "@/components/organizations/onboarding-form";
 
-import { organization } from "@/lib/auth/client";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-const ORG_TYPES = [
-  "student",
-  "ngo",
-  "community",
-  "network",
-  "other",
-] as const;
-
-const onboardingSchema = z.object({
-  name: z.string().min(2),
-  type: z.enum(ORG_TYPES),
-});
-
-type OnboardingValues = z.infer<typeof onboardingSchema>;
-
-export default function OnboardingPage() {
-  const t = useTranslations();
-  const router = useRouter();
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  const form = useForm<OnboardingValues>({
-    resolver: zodResolver(onboardingSchema),
-    defaultValues: { name: "", type: undefined },
-  });
-
-  async function onSubmit(values: OnboardingValues) {
-    setServerError(null);
-    const result = await organization.create({
-      name: values.name,
-      slug: slugify(values.name),
-      metadata: { type: values.type },
-    });
-    if (result.error) {
-      setServerError(t("auth.genericError"));
-      return;
-    }
-    router.push(`/${result.data?.slug}`);
+/**
+ * Page de création d'organisation — sert à la fois le tout premier
+ * onboarding (inscription) et une création "secondaire" depuis le switcher
+ * d'organisations (session 8B). `cancelHref` n'est calculé (et l'échappatoire
+ * "Annuler" affichée) que si l'utilisateur a déjà au moins une organisation :
+ * un tout nouveau compte n'a nulle part où revenir tant qu'aucune
+ * organisation n'existe.
+ */
+export default async function OnboardingPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">{t("onboarding.title")}</CardTitle>
-        <CardDescription>{t("onboarding.subtitle")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("onboarding.orgName")}</FormLabel>
-                  <FormControl>
-                    <Input autoFocus {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+  const organizations = await getUserOrganizations(session.user.id);
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("onboarding.orgType")}</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          placeholder={t("onboarding.orgTypePlaceholder")}
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {ORG_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {t(`onboarding.orgTypes.${type}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+  let cancelHref: string | undefined;
+  if (organizations.length > 0) {
+    const activeId = session.session.activeOrganizationId;
+    const active = activeId ? organizations.find((org) => org.id === activeId) : null;
+    const target = active ?? organizations[0]!;
+    cancelHref = `/${target.slug}`;
+  }
 
-            {serverError && (
-              <p className="text-destructive text-sm">{serverError}</p>
-            )}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting
-                ? t("onboarding.creating")
-                : t("onboarding.submit")}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-  );
+  return <OnboardingForm cancelHref={cancelHref} />;
 }
