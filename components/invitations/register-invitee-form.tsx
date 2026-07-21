@@ -10,6 +10,7 @@ import { registerAndJoin } from "@/lib/invitations/actions";
 import { buildRegisterInviteeSchema } from "@/lib/invitations/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -152,8 +153,7 @@ export function RegisterInviteeForm({
                 <FormItem>
                   <FormLabel>{tAuth("password")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       autoComplete="new-password"
                       {...field}
                     />

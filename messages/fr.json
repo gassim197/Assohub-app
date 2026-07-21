@@ -29,7 +29,9 @@
     "noAccount": "Pas encore de compte ?",
     "emailAlreadyUsed": "Cette adresse email est déjà utilisée. Voulez-vous vous connecter ?",
     "invalidCredentials": "Email ou mot de passe incorrect.",
-    "genericError": "Une erreur est survenue. Veuillez réessayer."
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
   },
   "onboarding": {
     "title": "Créez votre organisation",

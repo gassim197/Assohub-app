@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import { signIn } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Card,
   CardContent,
@@ -104,8 +105,7 @@ export default function LoginPage() {
                     </span>
                   </div>
                   <FormControl>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       autoComplete="current-password"
                       {...field}
                     />

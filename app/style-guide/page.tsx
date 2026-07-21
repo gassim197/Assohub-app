@@ -2,6 +2,7 @@ import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -317,7 +318,7 @@ export default function StyleGuidePage() {
             </div>
             <div className="grid gap-1.5">
               <Label>Mot de passe</Label>
-              <Input type="password" placeholder="••••••••" />
+              <PasswordInput placeholder="••••••••" />
             </div>
             <div className="grid gap-1.5">
               <Label>État : désactivé</Label>

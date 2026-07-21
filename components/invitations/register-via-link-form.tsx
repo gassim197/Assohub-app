@@ -10,6 +10,7 @@ import { registerAndJoinViaLink } from "@/lib/invitations/actions";
 import { buildRegisterViaLinkSchema } from "@/lib/invitations/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
@@ -142,8 +143,7 @@ export function RegisterViaLinkForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>{tAuth("password")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       autoComplete="new-password"
                       {...field}
                     />

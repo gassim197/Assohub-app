@@ -29,7 +29,9 @@
     "noAccount": "Don't have an account?",
     "emailAlreadyUsed": "This email address is already in use. Would you like to sign in?",
     "invalidCredentials": "Incorrect email or password.",
-    "genericError": "An error occurred. Please try again."
+    "genericError": "An error occurred. Please try again.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "onboarding": {
     "title": "Create your organization",
