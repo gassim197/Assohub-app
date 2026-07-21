@@ -35,7 +35,22 @@
     "continueWithGoogle": "Continue with Google",
     "orDivider": "or",
     "oauthAccountNotLinked": "An account already exists with this email address. Sign in with your password, or verify your email first if you just created this account.",
-    "oauthGenericError": "Sign-in with Google failed. Please try again."
+    "oauthGenericError": "Sign-in with Google failed. Please try again.",
+    "emailNotVerified": "Your email isn't verified yet. Check your inbox or resend the confirmation email.",
+    "verifyEmail": {
+      "pendingTitle": "Check your inbox",
+      "pendingDescription": "We sent a confirmation link to {email}. Click it to activate your account.",
+      "backToLogin": "Back to sign in",
+      "resend": "Resend email",
+      "resendCooldown": "Resend ({seconds}s)",
+      "resendSuccess": "Email resent.",
+      "resendError": "Couldn't send it. Please try again.",
+      "errorTitle": "Invalid or expired link",
+      "errorDescription": "This verification link is no longer valid. Request a new one below.",
+      "successTitle": "Email verified!",
+      "successDescription": "Your address {email} is confirmed. Redirecting…",
+      "continue": "Continue"
+    }
   },
   "onboarding": {
     "title": "Create your organization",

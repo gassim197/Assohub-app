@@ -18,6 +18,7 @@ import {
 } from "@/lib/db/members-schema";
 import { toE164 } from "@/lib/phone";
 import { getAppUrl } from "@/lib/url";
+import { buildVerifyEmailCallbackURL } from "@/lib/auth/verify-email";
 import { sendInvitationEmail } from "@/lib/email/invitation-email";
 import {
   INVITATION_EXPIRY_DAYS,
@@ -336,6 +337,21 @@ export async function registerAndJoin(
     newUserId = result.user.id;
   } catch {
     return { ok: false, error: "emailTaken" };
+  }
+
+  // Vérifiée d'office (chantier 3) : l'invité a déjà reçu et cliqué le lien
+  // d'invitation DANS sa boîte mail, une double vérification serait absurde.
+  // `signUpEmail` ne pose pas de session tant que `requireEmailVerification`
+  // est actif (lib/auth/index.ts) : on la recrée nous-mêmes via `signInEmail`
+  // pour préserver l'auto-connexion existante de ce flow.
+  try {
+    await db.update(user).set({ emailVerified: true }).where(eq(user.id, newUserId));
+    await auth.api.signInEmail({
+      body: { email: invitation.email, password: values.password },
+    });
+  } catch {
+    await db.delete(user).where(eq(user.id, newUserId));
+    return { ok: false, error: "unknown" };
   }
 
   try {
@@ -715,6 +731,26 @@ export async function registerAndJoinViaLink(
     ? link.acceptanceMode
     : "auto";
   const status = acceptanceMode === "auto" ? "actif" : "en_attente_validation";
+  // Contrairement à l'invitation nominative, l'email saisi via un lien
+  // partageable n'est pas implicitement vérifié (la personne a juste cliqué
+  // un lien WhatsApp) : vérification email normale, requise avant connexion
+  // (`requireEmailVerification`, lib/auth/index.ts) — en plus, pour le mode
+  // manuel, de la validation admin (`approveJoinRequest`), les deux portes
+  // étant indépendantes.
+  const verifyEmailNext = acceptanceMode === "auto" ? "home" : "joinPending";
+  try {
+    await auth.api.sendVerificationEmail({
+      body: {
+        email: values.email,
+        callbackURL: buildVerifyEmailCallbackURL(values.email, verifyEmailNext),
+      },
+    });
+  } catch (error) {
+    console.error(
+      "[invitations] échec d'envoi de l'email de vérification (inscription via lien)",
+      error,
+    );
+  }
 
   try {
     await db.insert(associationMembers).values({
@@ -769,10 +805,16 @@ export async function registerAndJoinViaLink(
 
   if (acceptanceMode === "auto") {
     revalidatePath(`/${org.slug}`);
-    redirect(`/${org.slug}?welcome=true`);
   }
 
-  redirect("/join/pending");
+  // La vérification email bloque la connexion (mode strict, chantier 3) :
+  // pas d'accès direct au dashboard ni à `/join/pending` tant qu'elle n'est
+  // pas faite, même en mode auto où la ligne `member` existe déjà — dès la
+  // vérification, `autoSignInAfterVerification` pose la session et
+  // `verifyEmailNext` renvoie vers la bonne destination.
+  redirect(
+    `/verify-email?email=${encodeURIComponent(values.email)}&next=${verifyEmailNext}`,
+  );
 }
 
 export type JoinViaInviteLinkResult =

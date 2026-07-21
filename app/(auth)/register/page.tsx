@@ -8,7 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { signUp } from "@/lib/auth/client";
+import { signUp, sendVerificationEmail } from "@/lib/auth/client";
+import { buildVerifyEmailCallbackURL } from "@/lib/auth/verify-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -64,7 +65,21 @@ export default function RegisterPage() {
       setServerError(t("auth.genericError"));
       return;
     }
-    router.push("/onboarding");
+    // `sendOnSignUp: false` (lib/auth/index.ts) : l'envoi de l'email de
+    // vérification est déclenché explicitement ici plutôt que par
+    // Better-Auth, pour ne pas le déclencher aussi pour les invités
+    // auto-vérifiés (registerAndJoin). Le compte existe déjà à ce stade : un
+    // échec d'envoi ne doit pas bloquer la redirection (l'utilisateur pourra
+    // renvoyer l'email depuis la page suivante).
+    try {
+      const callbackURL = buildVerifyEmailCallbackURL(values.email, "home");
+      await sendVerificationEmail({ email: values.email, callbackURL });
+    } catch (error) {
+      console.error("[auth] échec d'envoi de l'email de vérification", error);
+    }
+    router.push(
+      `/verify-email?email=${encodeURIComponent(values.email)}&next=home`,
+    );
   }
 
   return (

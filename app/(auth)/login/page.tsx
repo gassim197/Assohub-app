@@ -9,11 +9,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { signIn } from "@/lib/auth/client";
+import { buildVerifyEmailCallbackURL } from "@/lib/auth/verify-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { AuthDivider } from "@/components/auth/auth-divider";
+import { ResendVerificationButton } from "@/components/auth/resend-verification-button";
 import {
   Card,
   CardContent,
@@ -52,6 +54,7 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
   const redirectTo = safeRedirect(searchParams.get("redirect"));
   const prefillEmail = searchParams.get("email") ?? "";
@@ -64,12 +67,17 @@ export default function LoginPage() {
 
   async function onSubmit(values: LoginValues) {
     setServerError(null);
+    setUnverifiedEmail(null);
     const result = await signIn.email({
       email: values.email,
       password: values.password,
     });
     if (result.error) {
-      setServerError(t("auth.invalidCredentials"));
+      if (result.error.code === "EMAIL_NOT_VERIFIED") {
+        setUnverifiedEmail(values.email);
+      } else {
+        setServerError(t("auth.invalidCredentials"));
+      }
       return;
     }
     router.push(redirectTo ?? "/");
@@ -128,6 +136,15 @@ export default function LoginPage() {
             />
             {serverError && (
               <p className="text-destructive text-sm">{serverError}</p>
+            )}
+            {unverifiedEmail && (
+              <div className="space-y-2 rounded-md bg-warning/10 p-3 text-sm text-foreground">
+                <p>{t("auth.emailNotVerified")}</p>
+                <ResendVerificationButton
+                  email={unverifiedEmail}
+                  callbackURL={buildVerifyEmailCallbackURL(unverifiedEmail, "home")}
+                />
+              </div>
             )}
             <Button
               type="submit"

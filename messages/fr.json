@@ -35,7 +35,22 @@
     "continueWithGoogle": "Continuer avec Google",
     "orDivider": "ou",
     "oauthAccountNotLinked": "Un compte existe déjà avec cette adresse email. Connectez-vous avec votre mot de passe, ou vérifiez d'abord votre adresse email si vous venez de créer ce compte.",
-    "oauthGenericError": "La connexion avec Google a échoué. Veuillez réessayer."
+    "oauthGenericError": "La connexion avec Google a échoué. Veuillez réessayer.",
+    "emailNotVerified": "Votre email n'est pas encore vérifié. Vérifiez votre boîte mail ou renvoyez l'email de confirmation.",
+    "verifyEmail": {
+      "pendingTitle": "Vérifiez votre boîte mail",
+      "pendingDescription": "Nous avons envoyé un lien de confirmation à {email}. Cliquez dessus pour activer votre compte.",
+      "backToLogin": "Retour à la connexion",
+      "resend": "Renvoyer l'email",
+      "resendCooldown": "Renvoyer ({seconds}s)",
+      "resendSuccess": "Email renvoyé.",
+      "resendError": "Échec de l'envoi. Veuillez réessayer.",
+      "errorTitle": "Lien invalide ou expiré",
+      "errorDescription": "Ce lien de vérification n'est plus valide. Demandez-en un nouveau ci-dessous.",
+      "successTitle": "Email vérifié !",
+      "successDescription": "Votre adresse {email} est confirmée. Redirection en cours…",
+      "continue": "Continuer"
+    }
   },
   "onboarding": {
     "title": "Créez votre organisation",

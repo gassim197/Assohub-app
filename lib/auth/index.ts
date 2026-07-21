@@ -4,6 +4,9 @@ import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { ensureFounderMember } from "@/lib/members/founder";
+import { sendVerificationEmail as sendVerificationEmailViaResend } from "@/lib/email/verification-email";
+
+const EMAIL_VERIFICATION_EXPIRES_IN_SECONDS = 60 * 60 * 24; // 24h (brief chantier 3)
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET!,
@@ -15,7 +18,29 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // V1 : pas de vérification email obligatoire
+    // Mode strict (chantier 3) : impossible de se connecter tant que l'email
+    // n'est pas vérifié. Les comptes créés via Google sont exemptés
+    // nativement (Google atteste déjà l'email, cf. `createOAuthUser`).
+    requireEmailVerification: true,
+  },
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmailViaResend({ to: user.email, verifyUrl: url });
+    },
+    // `false` (et non `undefined`) : avec `requireEmailVerification: true`,
+    // Better-Auth enverrait sinon un email de vérification à CHAQUE
+    // `signUpEmail`, y compris les comptes d'invités qu'on marque vérifiés
+    // d'office (`lib/invitations/actions.ts::registerAndJoin`) — double
+    // vérification absurde pour ces derniers. On déclenche donc l'envoi
+    // explicitement nous-mêmes, uniquement là où c'est pertinent (inscription
+    // normale, inscription via lien partageable).
+    sendOnSignUp: false,
+    // Connecte automatiquement l'utilisateur au clic sur le lien de
+    // vérification (session posée par Better-Auth avant la redirection vers
+    // `callbackURL`) — évite un aller-retour par /login après vérification.
+    autoSignInAfterVerification: true,
+    expiresIn: EMAIL_VERIFICATION_EXPIRES_IN_SECONDS,
   },
 
   plugins: [
