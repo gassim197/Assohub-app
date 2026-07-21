@@ -31,7 +31,11 @@
     "invalidCredentials": "Email ou mot de passe incorrect.",
     "genericError": "Une erreur est survenue. Veuillez réessayer.",
     "showPassword": "Afficher le mot de passe",
-    "hidePassword": "Masquer le mot de passe"
+    "hidePassword": "Masquer le mot de passe",
+    "continueWithGoogle": "Continuer avec Google",
+    "orDivider": "ou",
+    "oauthAccountNotLinked": "Un compte existe déjà avec cette adresse email. Connectez-vous avec votre mot de passe, ou vérifiez d'abord votre adresse email si vous venez de créer ce compte.",
+    "oauthGenericError": "La connexion avec Google a échoué. Veuillez réessayer."
   },
   "onboarding": {
     "title": "Créez votre organisation",

@@ -12,6 +12,8 @@ import { signUp } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { AuthDivider } from "@/components/auth/auth-divider";
 import {
   Card,
   CardContent,
@@ -70,7 +72,9 @@ export default function RegisterPage() {
       <CardHeader>
         <CardTitle className="text-xl">{t("auth.createAccount")}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        <GoogleSignInButton callbackURL="/" />
+        <AuthDivider />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

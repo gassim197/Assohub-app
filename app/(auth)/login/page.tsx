@@ -12,6 +12,8 @@ import { signIn } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { AuthDivider } from "@/components/auth/auth-divider";
 import {
   Card,
   CardContent,
@@ -53,6 +55,7 @@ export default function LoginPage() {
 
   const redirectTo = safeRedirect(searchParams.get("redirect"));
   const prefillEmail = searchParams.get("email") ?? "";
+  const oauthErrorCode = searchParams.get("error");
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -77,7 +80,16 @@ export default function LoginPage() {
       <CardHeader>
         <CardTitle className="text-xl">{t("auth.signIn")}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {oauthErrorCode && (
+          <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            {oauthErrorCode === "account_not_linked"
+              ? t("auth.oauthAccountNotLinked")
+              : t("auth.oauthGenericError")}
+          </p>
+        )}
+        <GoogleSignInButton callbackURL={redirectTo ?? "/"} />
+        <AuthDivider />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

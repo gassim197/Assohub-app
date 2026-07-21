@@ -31,7 +31,11 @@
     "invalidCredentials": "Incorrect email or password.",
     "genericError": "An error occurred. Please try again.",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "continueWithGoogle": "Continue with Google",
+    "orDivider": "or",
+    "oauthAccountNotLinked": "An account already exists with this email address. Sign in with your password, or verify your email first if you just created this account.",
+    "oauthGenericError": "Sign-in with Google failed. Please try again."
   },
   "onboarding": {
     "title": "Create your organization",

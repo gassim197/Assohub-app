@@ -45,8 +45,12 @@ export const auth = betterAuth({
     nextCookies(),
   ],
 
-  // V1.1 : magic link + OAuth Google (non activés)
-  // socialProviders: { google: { clientId: "", clientSecret: "" } },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;
