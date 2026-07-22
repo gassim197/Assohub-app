@@ -1415,6 +1415,27 @@
         "trust": "Without transparency, trust erodes between members."
       }
     },
+    "beforeAfter": {
+      "title": "From scrambling to peace of mind.",
+      "without": {
+        "label": "Without AssoHub",
+        "item1": "Notebooks and files scattered around, lost at the first mishap.",
+        "item2": "\"Who paid?\" — hours spent recounting everything by hand.",
+        "item3": "Follow-ups one by one, member by member.",
+        "item4": "A financial summary improvised in a panic before the AGM.",
+        "item5": "Everything relies on one person's memory.",
+        "item6": "Doubts and tension over transparency."
+      },
+      "with": {
+        "label": "With AssoHub",
+        "item1": "All your data centralized and secure.",
+        "item2": "Who paid, who's late: visible at a glance.",
+        "item3": "Bulk follow-up by email or WhatsApp in one click.",
+        "item4": "Financial PDF report ready in seconds.",
+        "item5": "Continuity guaranteed, even when the board changes.",
+        "item6": "Transparency that builds trust."
+      }
+    },
     "solution": {
       "title": "AssoHub brings together everything your association needs.",
       "modules": {

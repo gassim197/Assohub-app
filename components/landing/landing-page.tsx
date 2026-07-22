@@ -1,6 +1,7 @@
 import { LandingHeader } from "./landing-header";
 import { HeroSection } from "./hero-section";
 import { ProblemSection } from "./problem-section";
+import { BeforeAfterSection } from "./before-after-section";
 import { SolutionSection } from "./solution-section";
 import { WhyAssoHubSection } from "./why-assohub-section";
 import { HowItWorksSection } from "./how-it-works-section";
@@ -19,6 +20,7 @@ export function LandingPage() {
       <main className="flex-1">
         <HeroSection />
         <ProblemSection />
+        <BeforeAfterSection />
         <SolutionSection />
         <WhyAssoHubSection />
         <HowItWorksSection />

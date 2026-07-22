@@ -1415,6 +1415,27 @@
         "trust": "Sans transparence, la confiance s'érode entre les membres."
       }
     },
+    "beforeAfter": {
+      "title": "De la débrouille à la sérénité.",
+      "without": {
+        "label": "Sans AssoHub",
+        "item1": "Cahiers et fichiers éparpillés, perdus au moindre incident.",
+        "item2": "« Qui a payé ? » — des heures à recompter à la main.",
+        "item3": "Relances une par une, membre par membre.",
+        "item4": "Bilan financier improvisé dans la panique avant l'AG.",
+        "item5": "Tout repose sur la mémoire d'une seule personne.",
+        "item6": "Des doutes et des tensions sur la transparence."
+      },
+      "with": {
+        "label": "Avec AssoHub",
+        "item1": "Toutes vos données centralisées et en sécurité.",
+        "item2": "Qui a payé, qui est en retard : visible en un coup d'œil.",
+        "item3": "Relance groupée par email ou WhatsApp en un clic.",
+        "item4": "Rapport financier PDF prêt en quelques secondes.",
+        "item5": "La continuité assurée, même quand le bureau change.",
+        "item6": "Une transparence qui renforce la confiance."
+      }
+    },
     "solution": {
       "title": "AssoHub réunit tout ce dont votre association a besoin.",
       "modules": {
