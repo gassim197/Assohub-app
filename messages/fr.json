@@ -1307,5 +1307,27 @@
       "footerPrefix": "Généré par AssoHub",
       "filenamePrefix": "rapport-financier"
     }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez les informations de votre organisation et de votre profil.",
+    "tabs": {
+      "organization": "Organisation",
+      "profile": "Profil"
+    },
+    "organization": {
+      "title": "Organisation",
+      "subtitle": "Ces informations sont visibles par tous les membres.",
+      "name": "Nom de l'organisation",
+      "type": "Type d'organisation",
+      "logoPlaceholder": "Personnalisation du logo bientôt disponible.",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement…",
+      "success": "Organisation mise à jour.",
+      "errors": {
+        "forbidden": "Seuls les administrateurs de l'organisation peuvent modifier ces paramètres.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    }
   }
 }

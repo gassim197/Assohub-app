@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { organization } from "@/lib/auth/client";
+import { ORG_TYPES } from "@/lib/organizations/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,14 +45,6 @@ function slugify(text: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 }
-
-const ORG_TYPES = [
-  "student",
-  "ngo",
-  "community",
-  "network",
-  "other",
-] as const;
 
 const onboardingSchema = z.object({
   name: z.string().min(2),

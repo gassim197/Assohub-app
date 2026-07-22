@@ -2,6 +2,7 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { organization, user } from "@/lib/db/auth-schema";
+import { isOrgType } from "@/lib/organizations/types";
 import {
   associationMembers,
   organizationInviteLinks,
@@ -79,18 +80,13 @@ export async function getInvitationByToken(
   return row ?? null;
 }
 
-// Miroir de `ORG_TYPES` dans `app/(auth)/onboarding/page.tsx` — dupliqué ici
-// plutôt qu'importé depuis un Client Component. Garde nécessaire : un type
-// inconnu ferait planter `t("onboarding.orgTypes.<type>")` côté page.
-const KNOWN_ORG_TYPES = ["student", "ngo", "community", "network", "other"] as const;
-
 /** Type d'organisation saisi à l'onboarding, stocké en JSON dans `organization.metadata`. */
 export function parseOrganizationType(metadata: string | null): string | null {
   if (!metadata) return null;
   try {
     const parsed = JSON.parse(metadata) as { type?: unknown };
-    return (KNOWN_ORG_TYPES as readonly string[]).includes(parsed.type as string)
-      ? (parsed.type as string)
+    return typeof parsed.type === "string" && isOrgType(parsed.type)
+      ? parsed.type
       : null;
   } catch {
     return null;
