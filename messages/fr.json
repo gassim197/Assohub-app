@@ -1386,5 +1386,108 @@
         "error": "Une erreur est survenue. Veuillez réessayer."
       }
     }
+  },
+  "landing": {
+    "header": {
+      "login": "Connexion",
+      "register": "Créer un compte"
+    },
+    "hero": {
+      "title": "La gestion de votre association, enfin simple.",
+      "subtitle": "Membres, cotisations, réunions, finances — tout au même endroit. Pensé pour les associations africaines : Orange Money, MTN, PayCard, Soutra Money et partage WhatsApp.",
+      "ctaPrimary": "Créer mon compte gratuitement",
+      "ctaSecondary": "Découvrir les fonctionnalités",
+      "mockup": {
+        "orgName": "Association des Jeunes de Kaloum",
+        "subtitle": "Tableau de bord",
+        "activeMembers": "Membres actifs",
+        "outstanding": "À percevoir",
+        "netBalance": "Solde",
+        "nextMeeting": "Prochaine réunion",
+        "nextMeetingValue": "Assemblée Générale"
+      }
+    },
+    "problem": {
+      "title": "Gérer une association ne devrait pas être un casse-tête.",
+      "pains": {
+        "notebook": "Un cahier, des SMS, votre mémoire — et tout peut disparaître du jour au lendemain.",
+        "tracking": "Qui a payé sa cotisation ? Qui est en retard ? Impossible de le savoir sans tout recompter.",
+        "trust": "Sans transparence, la confiance s'érode entre les membres."
+      }
+    },
+    "solution": {
+      "title": "AssoHub réunit tout ce dont votre association a besoin.",
+      "modules": {
+        "members": {
+          "title": "Membres",
+          "description": "Votre annuaire complet. Invitez vos membres par email ou par un simple lien WhatsApp."
+        },
+        "cotisations": {
+          "title": "Cotisations",
+          "description": "Suivez qui a payé, encaissez via Orange Money, MTN, PayCard ou Soutra Money, relancez les retardataires en un clic."
+        },
+        "meetings": {
+          "title": "Réunions & PV",
+          "description": "Planifiez vos réunions, suivez les présences, rédigez vos procès-verbaux."
+        },
+        "reports": {
+          "title": "Rapports financiers",
+          "description": "Revenus, dépenses, solde — et un rapport PDF prêt pour votre AG ou vos bailleurs."
+        },
+        "dashboard": {
+          "title": "Tableau de bord",
+          "description": "Tout l'essentiel de votre association en un coup d'œil."
+        }
+      }
+    },
+    "whyUs": {
+      "title": "Conçu ici, pour nos réalités.",
+      "reasons": {
+        "mobileMoney": {
+          "title": "Mobile money intégré",
+          "description": "Orange Money, MTN MoMo, PayCard, Soutra Money."
+        },
+        "whatsapp": {
+          "title": "WhatsApp au cœur",
+          "description": "Invitez et relancez par le canal que tout le monde utilise."
+        },
+        "mobileFirst": {
+          "title": "Pensé mobile d'abord",
+          "description": "Gérez votre association depuis votre téléphone."
+        },
+        "security": {
+          "title": "Vos données en sécurité",
+          "description": "Fini le cahier qu'on peut perdre."
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "Commencez en 3 étapes.",
+      "steps": {
+        "createOrg": {
+          "title": "Créez votre organisation",
+          "description": "Inscrivez-vous et créez l'espace de votre association."
+        },
+        "addMembers": {
+          "title": "Ajoutez vos membres",
+          "description": "Par email ou lien WhatsApp partageable."
+        },
+        "manage": {
+          "title": "Gérez en toute sérénité",
+          "description": "Cotisations, réunions, finances — tout devient simple."
+        }
+      }
+    },
+    "finalCta": {
+      "title": "Prêt à simplifier la gestion de votre association ?",
+      "subtitle": "Rejoignez les associations qui passent au numérique avec AssoHub.",
+      "cta": "Créer mon compte gratuitement"
+    },
+    "footer": {
+      "tagline": "L'infrastructure numérique des organisations africaines",
+      "login": "Connexion",
+      "register": "Créer un compte",
+      "copyright": "© {year} AssoHub. Tous droits réservés."
+    }
   }
 }

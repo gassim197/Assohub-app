@@ -1386,5 +1386,108 @@
         "error": "Something went wrong. Please try again."
       }
     }
+  },
+  "landing": {
+    "header": {
+      "login": "Sign in",
+      "register": "Create an account"
+    },
+    "hero": {
+      "title": "Managing your association, finally simple.",
+      "subtitle": "Members, dues, meetings, finances — all in one place. Built for African organizations: Orange Money, MTN, PayCard, Soutra Money and WhatsApp sharing.",
+      "ctaPrimary": "Create my free account",
+      "ctaSecondary": "Discover the features",
+      "mockup": {
+        "orgName": "Kaloum Youth Association",
+        "subtitle": "Dashboard",
+        "activeMembers": "Active members",
+        "outstanding": "Outstanding",
+        "netBalance": "Balance",
+        "nextMeeting": "Next meeting",
+        "nextMeetingValue": "General Assembly"
+      }
+    },
+    "problem": {
+      "title": "Running an association shouldn't be a headache.",
+      "pains": {
+        "notebook": "A notebook, texts, your memory — and it can all disappear overnight.",
+        "tracking": "Who paid their dues? Who's late? Impossible to know without recounting everything.",
+        "trust": "Without transparency, trust erodes between members."
+      }
+    },
+    "solution": {
+      "title": "AssoHub brings together everything your association needs.",
+      "modules": {
+        "members": {
+          "title": "Members",
+          "description": "Your complete directory. Invite members by email or a simple WhatsApp link."
+        },
+        "cotisations": {
+          "title": "Dues",
+          "description": "Track who's paid, collect via Orange Money, MTN, PayCard or Soutra Money, follow up with latecomers in one click."
+        },
+        "meetings": {
+          "title": "Meetings & Minutes",
+          "description": "Schedule meetings, track attendance, write up your minutes."
+        },
+        "reports": {
+          "title": "Financial reports",
+          "description": "Revenue, expenses, balance — and a PDF report ready for your AGM or funders."
+        },
+        "dashboard": {
+          "title": "Dashboard",
+          "description": "Everything essential about your association at a glance."
+        }
+      }
+    },
+    "whyUs": {
+      "title": "Built here, for our realities.",
+      "reasons": {
+        "mobileMoney": {
+          "title": "Mobile money built in",
+          "description": "Orange Money, MTN MoMo, PayCard, Soutra Money."
+        },
+        "whatsapp": {
+          "title": "WhatsApp at the core",
+          "description": "Invite and follow up through the channel everyone already uses."
+        },
+        "mobileFirst": {
+          "title": "Built mobile-first",
+          "description": "Manage your association from your phone."
+        },
+        "security": {
+          "title": "Your data, secure",
+          "description": "No more notebooks that can get lost."
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "Get started in 3 steps.",
+      "steps": {
+        "createOrg": {
+          "title": "Create your organization",
+          "description": "Sign up and create your association's space."
+        },
+        "addMembers": {
+          "title": "Add your members",
+          "description": "By email or a shareable WhatsApp link."
+        },
+        "manage": {
+          "title": "Manage with peace of mind",
+          "description": "Dues, meetings, finances — it all becomes simple."
+        }
+      }
+    },
+    "finalCta": {
+      "title": "Ready to simplify your association's management?",
+      "subtitle": "Join the associations going digital with AssoHub.",
+      "cta": "Create my free account"
+    },
+    "footer": {
+      "tagline": "The digital infrastructure for African organizations",
+      "login": "Sign in",
+      "register": "Create an account",
+      "copyright": "© {year} AssoHub. All rights reserved."
+    }
   }
 }
