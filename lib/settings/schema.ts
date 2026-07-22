@@ -47,3 +47,13 @@ export const setPasswordSchema = z
   });
 
 export type SetPasswordInput = z.infer<typeof setPasswordSchema>;
+
+// Mot-clé de confirmation fixe (plutôt que l'email tapé) : simple, sans
+// souci de casse/espaces, pattern standard de confirmation de suppression.
+export const ACCOUNT_DELETION_CONFIRMATION_WORD = "SUPPRIMER";
+
+export const deleteAccountSchema = z.object({
+  confirmation: z.literal(ACCOUNT_DELETION_CONFIRMATION_WORD),
+});
+
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;

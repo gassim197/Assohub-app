@@ -6,11 +6,13 @@ import {
   getUserProfile,
   hasCredentialAccount,
 } from "@/lib/settings/queries";
+import { getUserSoleOwnedOrganizations } from "@/lib/organizations/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrganizationSettingsForm } from "@/components/settings/organization-settings-form";
 import { ProfileSettingsForm } from "@/components/settings/profile-settings-form";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
 import { SetPasswordForm } from "@/components/settings/set-password-form";
+import { DangerZone } from "@/components/settings/danger-zone";
 
 export default async function SettingsPage({
   params,
@@ -20,12 +22,14 @@ export default async function SettingsPage({
   const { orgSlug } = await params;
   const { organizationId, userId } = await requireOrgAccess(orgSlug);
 
-  const [t, organizationSettings, userProfile, hasPassword] = await Promise.all([
-    getTranslations("settings"),
-    getOrganizationSettings(organizationId),
-    getUserProfile(userId),
-    hasCredentialAccount(userId),
-  ]);
+  const [t, organizationSettings, userProfile, hasPassword, soleOwnedOrganizations] =
+    await Promise.all([
+      getTranslations("settings"),
+      getOrganizationSettings(organizationId),
+      getUserProfile(userId),
+      hasCredentialAccount(userId),
+      getUserSoleOwnedOrganizations(userId),
+    ]);
 
   return (
     <div className="space-y-6">
@@ -63,6 +67,7 @@ export default async function SettingsPage({
           ) : (
             <SetPasswordForm orgSlug={orgSlug} />
           )}
+          <DangerZone orgSlug={orgSlug} soleOwnedOrganizations={soleOwnedOrganizations} />
         </TabsContent>
       </Tabs>
     </div>

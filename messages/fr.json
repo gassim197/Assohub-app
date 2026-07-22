@@ -76,6 +76,11 @@
       "invalidTokenTitle": "Lien invalide ou expiré",
       "invalidTokenDescription": "Ce lien de réinitialisation n'est plus valide. Demandez-en un nouveau ci-dessous.",
       "requestNewLink": "Demander un nouveau lien"
+    },
+    "accountDeleted": {
+      "title": "Votre compte a été supprimé",
+      "description": "Merci d'avoir utilisé AssoHub.",
+      "backToLogin": "Retour à l'accueil"
     }
   },
   "onboarding": {
@@ -1359,6 +1364,26 @@
       "errors": {
         "invalidCurrentPassword": "Mot de passe actuel incorrect.",
         "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "description": "La suppression de votre compte est définitive. Vos informations personnelles seront anonymisées et vous serez retiré de toutes vos organisations.",
+      "deleteButton": "Supprimer mon compte",
+      "error": "Une erreur est survenue. Veuillez réessayer.",
+      "soleOwnerDialog": {
+        "title": "Vous êtes seul responsable de certaines organisations",
+        "description": "Vous êtes l'unique propriétaire des organisations suivantes. Vous devez d'abord les supprimer (ou en transférer la responsabilité) avant de pouvoir supprimer votre compte.",
+        "close": "Fermer"
+      },
+      "confirmDialog": {
+        "title": "Supprimer définitivement votre compte ?",
+        "description": "Cette action est irréversible : vos informations personnelles seront anonymisées, vous serez retiré de toutes vos organisations et déconnecté immédiatement.",
+        "confirmLabel": "Tapez {word} pour confirmer",
+        "cancel": "Annuler",
+        "confirm": "Supprimer définitivement mon compte",
+        "submitting": "Suppression en cours…",
+        "error": "Une erreur est survenue. Veuillez réessayer."
       }
     }
   }

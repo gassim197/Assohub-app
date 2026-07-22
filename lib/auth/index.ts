@@ -24,6 +24,23 @@ export const auth = betterAuth({
     provider: "pg",
   }),
 
+  // Chantier "zone de danger" (suppression de compte) : `unlinkAccount` exige
+  // par défaut de laisser au moins un compte lié — on doit pouvoir tous les
+  // délier (credential + Google) au moment de l'anonymisation.
+  account: {
+    accountLinking: {
+      allowUnlinkingAll: true,
+    },
+  },
+
+  // `unlinkAccount` exige par défaut une session "fraîche" (< 24h) — aucune
+  // fonctionnalité existante ne dépendait de cette contrainte avant ce
+  // chantier, on la désactive pour garantir que la suppression de compte
+  // fonctionne quelle que soit l'ancienneté de la session.
+  session: {
+    freshAge: 0,
+  },
+
   emailAndPassword: {
     enabled: true,
     // Mode strict (chantier 3) : impossible de se connecter tant que l'email

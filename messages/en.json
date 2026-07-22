@@ -76,6 +76,11 @@
       "invalidTokenTitle": "Invalid or expired link",
       "invalidTokenDescription": "This reset link is no longer valid. Request a new one below.",
       "requestNewLink": "Request a new link"
+    },
+    "accountDeleted": {
+      "title": "Your account has been deleted",
+      "description": "Thank you for using AssoHub.",
+      "backToLogin": "Back to home"
     }
   },
   "onboarding": {
@@ -1359,6 +1364,26 @@
       "errors": {
         "invalidCurrentPassword": "Incorrect current password.",
         "generic": "Something went wrong. Please try again."
+      }
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "description": "Deleting your account is permanent. Your personal information will be anonymized and you will be removed from all your organizations.",
+      "deleteButton": "Delete my account",
+      "error": "Something went wrong. Please try again.",
+      "soleOwnerDialog": {
+        "title": "You're the sole owner of some organizations",
+        "description": "You are the sole owner of the following organizations. You must delete them (or transfer ownership) before you can delete your account.",
+        "close": "Close"
+      },
+      "confirmDialog": {
+        "title": "Permanently delete your account?",
+        "description": "This action is irreversible: your personal information will be anonymized, you will be removed from all your organizations, and you will be signed out immediately.",
+        "confirmLabel": "Type {word} to confirm",
+        "cancel": "Cancel",
+        "confirm": "Permanently delete my account",
+        "submitting": "Deleting…",
+        "error": "Something went wrong. Please try again."
       }
     }
   }

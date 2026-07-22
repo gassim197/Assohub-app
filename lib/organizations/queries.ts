@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, ne } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { member, organization } from "@/lib/db/schema";
@@ -30,4 +30,45 @@ export async function getUserOrganizations(userId: string): Promise<UserOrganiza
     .innerJoin(organization, eq(member.organizationId, organization.id))
     .where(eq(member.userId, userId))
     .orderBy(asc(organization.name));
+}
+
+export interface SoleOwnedOrganization {
+  id: string;
+  name: string;
+}
+
+/**
+ * Organisations dont `userId` est le seul `owner` (chantier "zone de
+ * danger" — un utilisateur ne peut pas supprimer son compte tant qu'il en
+ * reste le seul responsable, pas de transfert de propriété en V1). Seul le
+ * rôle Better-Auth `owner` compte (`admin` n'est pas considéré "responsable"
+ * ici), posé automatiquement sur le créateur d'une organisation.
+ */
+export async function getUserSoleOwnedOrganizations(
+  userId: string,
+): Promise<SoleOwnedOrganization[]> {
+  const ownedOrgs = await db
+    .select({ id: organization.id, name: organization.name })
+    .from(member)
+    .innerJoin(organization, eq(organization.id, member.organizationId))
+    .where(and(eq(member.userId, userId), eq(member.role, "owner")));
+
+  if (ownedOrgs.length === 0) return [];
+
+  const soleOwned: SoleOwnedOrganization[] = [];
+  for (const org of ownedOrgs) {
+    const [otherOwner] = await db
+      .select({ id: member.id })
+      .from(member)
+      .where(
+        and(
+          eq(member.organizationId, org.id),
+          eq(member.role, "owner"),
+          ne(member.userId, userId),
+        ),
+      )
+      .limit(1);
+    if (!otherOwner) soleOwned.push(org);
+  }
+  return soleOwned;
 }
