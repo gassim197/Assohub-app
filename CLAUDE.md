@@ -56,10 +56,10 @@ Accessible en dev sans authentification.
 
 ### 9.6 Routage racine
 
-La route `/` est un Server Component pur (`app/page.tsx`) qui exécute une redirection intelligente basée sur l'état d'authentification — pas de landing marketing en V1 :
+La route `/` est un Server Component (`app/page.tsx`) qui exécute une redirection intelligente basée sur l'état d'authentification, ou affiche la landing publique (`components/landing/landing-page.tsx`) :
 
-- Pas de session → `/login`
+- Pas de session → landing publique (`LandingPage`, assohub-gn.com)
 - Session sans organisation → `/onboarding`
 - Session avec organisation → `/<orgSlug>` (organisation active si `session.activeOrganizationId` est défini, sinon la première de la liste retournée par `auth.api.listOrganizations`)
 
-En cas d'erreur lors de la résolution de la session (session corrompue, base indisponible), fallback vers `/login`.
+En cas d'erreur lors de la résolution de la session (session corrompue, base indisponible), fallback vers `/login` (inchangé — distinct du cas "pas de session").

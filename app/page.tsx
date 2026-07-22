@@ -2,9 +2,14 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { LandingPage } from "@/components/landing/landing-page";
 
 export default async function RootPage() {
-  let target = "/login";
+  // `null` = pas de session, pas d'erreur → landing publique (pas de
+  // redirection). `redirect()` reste appelé HORS du try/catch ci-dessous :
+  // il lève une exception interne Next.js (`NEXT_REDIRECT`) qu'un `catch`
+  // générique attraperait sinon par erreur, cassant la redirection.
+  let target: string | null = "/login";
 
   try {
     const requestHeaders = await headers();
@@ -21,10 +26,16 @@ export default async function RootPage() {
         const active = activeId ? orgs.find((o) => o.id === activeId) : null;
         target = `/${(active ?? firstOrg).slug}`;
       }
+    } else {
+      target = null;
     }
   } catch {
     target = "/login";
   }
 
-  redirect(target);
+  if (target) {
+    redirect(target);
+  }
+
+  return <LandingPage />;
 }
