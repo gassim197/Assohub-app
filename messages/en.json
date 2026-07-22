@@ -1482,6 +1482,14 @@
         }
       }
     },
+    "stats": {
+      "items": {
+        "modules": { "value": "5 modules", "label": "All-in-one" },
+        "payments": { "value": "4 mobile payment methods", "label": "Orange Money, MTN, PayCard, Soutra Money" },
+        "french": { "value": "100% French", "label": "" },
+        "free": { "value": "Free", "label": "At launch" }
+      }
+    },
     "howItWorks": {
       "title": "Get started in 3 steps.",
       "steps": {
@@ -1496,6 +1504,31 @@
         "manage": {
           "title": "Manage with peace of mind",
           "description": "Dues, meetings, finances — it all becomes simple."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions.",
+      "questions": {
+        "q1": {
+          "question": "Is AssoHub really free?",
+          "answer": "Yes, AssoHub is entirely free at launch. You can create your organization, add your members, and manage your dues at no cost."
+        },
+        "q2": {
+          "question": "Is my data secure?",
+          "answer": "Your data is stored securely and only accessible to authorized members of your organization. You stay in full control and can delete it at any time."
+        },
+        "q3": {
+          "question": "Is it complicated to use?",
+          "answer": "Not at all. AssoHub is designed to be simple, even without technical skills. If you know how to use WhatsApp, you'll know how to use AssoHub."
+        },
+        "q4": {
+          "question": "Can I manage several associations?",
+          "answer": "Yes. You can create and manage several organizations from a single account, and switch between them in one click."
+        },
+        "q5": {
+          "question": "How do my members pay their dues?",
+          "answer": "You record payments received via Orange Money, MTN MoMo, PayCard, Soutra Money, cash, or bank transfer. AssoHub automatically tracks who's paid and who's late."
         }
       }
     },

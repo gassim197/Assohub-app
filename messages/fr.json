@@ -1482,6 +1482,14 @@
         }
       }
     },
+    "stats": {
+      "items": {
+        "modules": { "value": "5 modules", "label": "Tout-en-un" },
+        "payments": { "value": "4 moyens de paiement mobile", "label": "Orange Money, MTN, PayCard, Soutra Money" },
+        "french": { "value": "100% en français", "label": "" },
+        "free": { "value": "Gratuit", "label": "Au lancement" }
+      }
+    },
     "howItWorks": {
       "title": "Commencez en 3 étapes.",
       "steps": {
@@ -1496,6 +1504,31 @@
         "manage": {
           "title": "Gérez en toute sérénité",
           "description": "Cotisations, réunions, finances — tout devient simple."
+        }
+      }
+    },
+    "faq": {
+      "title": "Questions fréquentes.",
+      "questions": {
+        "q1": {
+          "question": "AssoHub est-il vraiment gratuit ?",
+          "answer": "Oui, AssoHub est entièrement gratuit au lancement. Vous pouvez créer votre organisation, ajouter vos membres et gérer vos cotisations sans aucun frais."
+        },
+        "q2": {
+          "question": "Mes données sont-elles en sécurité ?",
+          "answer": "Vos données sont stockées de manière sécurisée et ne sont accessibles qu'aux membres autorisés de votre organisation. Vous gardez le contrôle total et pouvez les supprimer à tout moment."
+        },
+        "q3": {
+          "question": "Est-ce compliqué à utiliser ?",
+          "answer": "Pas du tout. AssoHub est pensé pour être simple, même sans compétences techniques. Si vous savez utiliser WhatsApp, vous saurez utiliser AssoHub."
+        },
+        "q4": {
+          "question": "Puis-je gérer plusieurs associations ?",
+          "answer": "Oui. Vous pouvez créer et gérer plusieurs organisations depuis un même compte, et basculer de l'une à l'autre en un clic."
+        },
+        "q5": {
+          "question": "Comment mes membres paient-ils leurs cotisations ?",
+          "answer": "Vous enregistrez les paiements reçus via Orange Money, MTN MoMo, PayCard, Soutra Money, espèces ou virement. AssoHub suit automatiquement qui a payé et qui est en retard."
         }
       }
     },
