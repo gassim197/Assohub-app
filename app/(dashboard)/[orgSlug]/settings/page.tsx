@@ -1,9 +1,16 @@
 import { getTranslations } from "next-intl/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
-import { getOrganizationSettings } from "@/lib/settings/queries";
+import {
+  getOrganizationSettings,
+  getUserProfile,
+  hasCredentialAccount,
+} from "@/lib/settings/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrganizationSettingsForm } from "@/components/settings/organization-settings-form";
+import { ProfileSettingsForm } from "@/components/settings/profile-settings-form";
+import { ChangePasswordForm } from "@/components/settings/change-password-form";
+import { SetPasswordForm } from "@/components/settings/set-password-form";
 
 export default async function SettingsPage({
   params,
@@ -11,11 +18,13 @@ export default async function SettingsPage({
   params: Promise<{ orgSlug: string }>;
 }) {
   const { orgSlug } = await params;
-  const { organizationId } = await requireOrgAccess(orgSlug);
+  const { organizationId, userId } = await requireOrgAccess(orgSlug);
 
-  const [t, organizationSettings] = await Promise.all([
+  const [t, organizationSettings, userProfile, hasPassword] = await Promise.all([
     getTranslations("settings"),
     getOrganizationSettings(organizationId),
+    getUserProfile(userId),
+    hasCredentialAccount(userId),
   ]);
 
   return (
@@ -41,8 +50,19 @@ export default async function SettingsPage({
           />
         </TabsContent>
 
-        <TabsContent value="profile" className="pt-4">
-          {/* Chantier 3 */}
+        <TabsContent value="profile" className="space-y-6 pt-4">
+          <ProfileSettingsForm
+            orgSlug={orgSlug}
+            defaultValues={{
+              name: userProfile?.name ?? "",
+              email: userProfile?.email ?? "",
+            }}
+          />
+          {hasPassword ? (
+            <ChangePasswordForm orgSlug={orgSlug} />
+          ) : (
+            <SetPasswordForm orgSlug={orgSlug} />
+          )}
         </TabsContent>
       </Tabs>
     </div>

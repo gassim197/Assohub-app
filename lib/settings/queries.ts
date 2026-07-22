@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { account, organization } from "@/lib/db/auth-schema";
+import { account, organization, user } from "@/lib/db/auth-schema";
 import { parseOrganizationType } from "@/lib/invitations/queries";
 
 export interface OrganizationSettings {
@@ -21,6 +21,22 @@ export async function getOrganizationSettings(
 
   if (!row) return null;
   return { name: row.name, type: parseOrganizationType(row.metadata) };
+}
+
+export interface UserProfile {
+  name: string;
+  email: string;
+}
+
+/** Nom + email courants de l'utilisateur, pour préremplir le formulaire Profil. */
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
+  const [row] = await db
+    .select({ name: user.name, email: user.email })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  return row ?? null;
 }
 
 /**

@@ -1328,6 +1328,38 @@
         "forbidden": "Only organization administrators can update these settings.",
         "generic": "Something went wrong. Please try again."
       }
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Your personal information.",
+      "name": "Full name",
+      "email": "Email address",
+      "emailHint": "To change your email, contact support.",
+      "save": "Save",
+      "saving": "Saving…",
+      "success": "Profile updated.",
+      "errors": {
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "password": {
+      "title": "Change password",
+      "subtitle": "Choose a new password for your account.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "passwordRules": "At least 8 characters, 1 uppercase letter, 1 number",
+      "save": "Change password",
+      "saving": "Changing…",
+      "success": "Password changed.",
+      "setTitle": "Set a password",
+      "setSubtitle": "Your account is connected via Google and doesn't have a password yet. Set one to also be able to sign in with your email.",
+      "setSave": "Set password",
+      "setSuccess": "Password set.",
+      "errors": {
+        "invalidCurrentPassword": "Incorrect current password.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   }
 }

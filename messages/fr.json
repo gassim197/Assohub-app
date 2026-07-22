@@ -1328,6 +1328,38 @@
         "forbidden": "Seuls les administrateurs de l'organisation peuvent modifier ces paramètres.",
         "generic": "Une erreur est survenue. Veuillez réessayer."
       }
+    },
+    "profile": {
+      "title": "Profil",
+      "subtitle": "Vos informations personnelles.",
+      "name": "Nom complet",
+      "email": "Adresse email",
+      "emailHint": "Pour modifier votre email, contactez le support.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "success": "Profil mis à jour.",
+      "errors": {
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "password": {
+      "title": "Changer le mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordRules": "8 caractères minimum, 1 majuscule, 1 chiffre",
+      "save": "Changer le mot de passe",
+      "saving": "Modification…",
+      "success": "Mot de passe modifié.",
+      "setTitle": "Définir un mot de passe",
+      "setSubtitle": "Votre compte est connecté via Google et n'a pas encore de mot de passe. Définissez-en un pour pouvoir aussi vous connecter avec votre email.",
+      "setSave": "Définir le mot de passe",
+      "setSuccess": "Mot de passe défini.",
+      "errors": {
+        "invalidCurrentPassword": "Mot de passe actuel incorrect.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
     }
   }
 }
