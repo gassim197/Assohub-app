@@ -5,12 +5,20 @@ import { organization } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { ensureFounderMember } from "@/lib/members/founder";
 import { sendVerificationEmail as sendVerificationEmailViaResend } from "@/lib/email/verification-email";
+import { sendResetPasswordEmail } from "@/lib/email/reset-password-email";
 
 const EMAIL_VERIFICATION_EXPIRES_IN_SECONDS = 60 * 60 * 24; // 24h (brief chantier 3)
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET!,
   baseURL: process.env.BETTER_AUTH_URL!,
+  // Dérivé des mêmes variables d'env que baseURL (pas de valeur en dur) :
+  // en dev http://localhost:3000, en prod https://assohub-gn.com dès que
+  // BETTER_AUTH_URL / NEXT_PUBLIC_BETTER_AUTH_URL y pointent — sans
+  // modification de code au déploiement.
+  trustedOrigins: [process.env.BETTER_AUTH_URL, process.env.NEXT_PUBLIC_BETTER_AUTH_URL].filter(
+    (origin): origin is string => Boolean(origin),
+  ),
 
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -22,6 +30,12 @@ export const auth = betterAuth({
     // n'est pas vérifié. Les comptes créés via Google sont exemptés
     // nativement (Google atteste déjà l'email, cf. `createOAuthUser`).
     requireEmailVerification: true,
+    // Chantier "mot de passe oublié" : envoi du lien de réinitialisation via
+    // le même patron d'email que la vérification (`lib/email/reset-password-email.ts`).
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail({ to: user.email, resetUrl: url });
+    },
+    resetPasswordTokenExpiresIn: 60 * 60, // 1h
   },
 
   emailVerification: {

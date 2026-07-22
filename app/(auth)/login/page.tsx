@@ -120,9 +120,12 @@ export default function LoginPage() {
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>{t("auth.password")}</FormLabel>
-                    <span className="text-muted-foreground text-xs">
+                    <Link
+                      href="/forgot-password"
+                      className="text-muted-foreground text-xs underline-offset-4 hover:underline hover:text-foreground"
+                    >
                       {t("auth.forgotPassword")}
-                    </span>
+                    </Link>
                   </div>
                   <FormControl>
                     <PasswordInput

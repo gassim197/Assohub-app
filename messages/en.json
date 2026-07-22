@@ -50,6 +50,32 @@
       "successTitle": "Email verified!",
       "successDescription": "Your address {email} is confirmed. Redirecting…",
       "continue": "Continue"
+    },
+    "forgotPasswordPage": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+      "email": "Email address",
+      "submit": "Send reset link",
+      "sending": "Sending…",
+      "sentTitle": "Check your inbox",
+      "sentDescription": "If an account exists with this email, you'll receive a reset link shortly.",
+      "backToLogin": "Back to sign in"
+    },
+    "resetPasswordPage": {
+      "title": "New password",
+      "subtitle": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "passwordRules": "At least 8 characters, 1 uppercase letter, 1 number",
+      "submit": "Reset my password",
+      "submitting": "Resetting…",
+      "genericError": "Something went wrong. Please try again.",
+      "successTitle": "Password reset!",
+      "successDescription": "Your password has been changed. You can now sign in.",
+      "continueToLogin": "Sign in",
+      "invalidTokenTitle": "Invalid or expired link",
+      "invalidTokenDescription": "This reset link is no longer valid. Request a new one below.",
+      "requestNewLink": "Request a new link"
     }
   },
   "onboarding": {

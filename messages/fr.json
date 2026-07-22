@@ -50,6 +50,32 @@
       "successTitle": "Email vérifié !",
       "successDescription": "Votre adresse {email} est confirmée. Redirection en cours…",
       "continue": "Continuer"
+    },
+    "forgotPasswordPage": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Indiquez votre adresse email, nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "email": "Adresse email",
+      "submit": "Envoyer le lien de réinitialisation",
+      "sending": "Envoi en cours…",
+      "sentTitle": "Vérifiez votre boîte mail",
+      "sentDescription": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation dans quelques instants.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPasswordPage": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordRules": "8 caractères minimum, 1 majuscule, 1 chiffre",
+      "submit": "Réinitialiser mon mot de passe",
+      "submitting": "Réinitialisation en cours…",
+      "genericError": "Une erreur est survenue. Veuillez réessayer.",
+      "successTitle": "Mot de passe réinitialisé !",
+      "successDescription": "Votre mot de passe a bien été changé. Vous pouvez maintenant vous connecter.",
+      "continueToLogin": "Se connecter",
+      "invalidTokenTitle": "Lien invalide ou expiré",
+      "invalidTokenDescription": "Ce lien de réinitialisation n'est plus valide. Demandez-en un nouveau ci-dessous.",
+      "requestNewLink": "Demander un nouveau lien"
     }
   },
   "onboarding": {
