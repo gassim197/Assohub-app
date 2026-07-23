@@ -1543,5 +1543,37 @@
       "register": "Créer un compte",
       "copyright": "© {year} AssoHub. Tous droits réservés."
     }
+  },
+  "legal": {
+    "mentionsLegales": {
+      "title": "Mentions légales",
+      "lastUpdated": "Dernière mise à jour : 23 juillet 2026",
+      "sections": {
+        "s1": {
+          "title": "Éditeur du site",
+          "body": "Le site assohub-gn.com (« AssoHub ») est édité par Gassimou Cissé, personne physique résidant à Conakry, République de Guinée.\n\nAssoHub est actuellement exploité à titre individuel, par une personne physique non encore constituée en société commerciale.\n\nContact : fondateur@assohub-gn.com"
+        },
+        "s2": {
+          "title": "Directeur de la publication",
+          "body": "Le directeur de la publication est Gassimou Cissé, également éditeur du site (voir section 1)."
+        },
+        "s3": {
+          "title": "Hébergement",
+          "body": "Hébergement du site\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789, États-Unis\nhttps://vercel.com\n\nHébergement de la base de données\nNeon Inc. (base de données PostgreSQL managée)\n[À COMPLÉTER : adresse postale de Neon Inc.]\nhttps://neon.tech"
+        },
+        "s4": {
+          "title": "Propriété intellectuelle",
+          "body": "Le nom « AssoHub », son logo, l'interface de la plateforme ainsi que l'ensemble des contenus du site (textes, visuels, structure) sont la propriété de l'éditeur.\n\nToute reproduction, représentation ou réutilisation non autorisée de ces éléments, totale ou partielle, est interdite sans accord préalable écrit de l'éditeur."
+        },
+        "s5": {
+          "title": "Limitation de responsabilité",
+          "body": "AssoHub est fourni « en l'état ». L'éditeur met tout en œuvre pour assurer la disponibilité et le bon fonctionnement du site et du service, sans toutefois garantir une absence totale d'interruption, d'erreur ou de dysfonctionnement.\n\nL'éditeur ne saurait être tenu responsable des dommages directs ou indirects résultant de l'utilisation du site ou de l'impossibilité d'y accéder."
+        },
+        "s6": {
+          "title": "Droit applicable et juridiction",
+          "body": "Les présentes mentions légales sont soumises au droit guinéen. Tout litige relatif à leur interprétation ou à leur exécution relève de la compétence des tribunaux de la République de Guinée."
+        }
+      }
+    }
   }
 }
