@@ -1574,6 +1574,64 @@
           "body": "Les présentes mentions légales sont soumises au droit guinéen. Tout litige relatif à leur interprétation ou à leur exécution relève de la compétence des tribunaux de la République de Guinée."
         }
       }
+    },
+    "confidentialite": {
+      "title": "Politique de confidentialité",
+      "lastUpdated": "Dernière mise à jour : 23 juillet 2026",
+      "sections": {
+        "s1": {
+          "title": "Préambule",
+          "body": "AssoHub (« nous », « la plateforme ») est un service édité par Gassimou Cissé, dont les coordonnées figurent dans nos mentions légales.\n\nCette politique explique quelles données nous collectons lorsque vous utilisez AssoHub, pourquoi, comment elles sont protégées, et quels sont vos droits. Elle s'adresse aux responsables d'associations qui créent un compte, ainsi qu'à toute personne dont les données sont saisies dans la plateforme par une organisation (membre d'association, invité)."
+        },
+        "s2": {
+          "title": "Les données que nous collectons",
+          "body": "Selon votre usage d'AssoHub, nous collectons les catégories de données suivantes :\n\nDonnées de compte utilisateur\n- Nom et adresse email\n- Mot de passe, stocké sous forme chiffrée/hachée — jamais en clair, jamais lisible par nous\n- Photo de profil, si vous vous connectez avec un compte Google\n- Statut de vérification de votre adresse email\n- Dates de création de compte et de connexion\n\nDonnées d'organisation\n- Nom et type de votre association\n- Identifiant technique de votre organisation (slug, utilisé dans l'adresse de votre espace)\n- Rôle de chaque utilisateur au sein de l'organisation\n\nDonnées des membres de votre association (saisies par vous ou vos collaborateurs)\n- Nom complet, téléphone, email (facultatif)\n- Date de naissance et profession, si renseignées\n- Statut d'adhésion, rôle associatif, dates d'adhésion et de départ\n- Toute note libre que vous ajoutez dans l'annuaire\n\nDonnées des personnes invitées, avant même la création de leur compte\n- Nom, téléphone, email et message personnel associés à une invitation en cours\n\nDonnées financières\n- Types de cotisations, montants, échéances\n- Paiements enregistrés et méthode utilisée (espèces, Orange Money, Wave, MTN MoMo, PayCard, Soutra Money, virement bancaire, chèque, ou autre)\n- Dépenses, revenus et catégories comptables de votre organisation\n- Historique des relances de paiement envoyées\n\nDonnées de réunions\n- Titre, type, date, durée, lieu et lien de visioconférence éventuel\n- Présences et réponses aux invitations (RSVP)\n- Procès-verbaux : ordre du jour, décisions, actions à suivre\n\nDonnées techniques\n- Sessions de connexion (adresse IP, type de navigateur)\n- Cookies de session strictement nécessaires à l'authentification\n- Jetons temporaires de vérification d'email ou de réinitialisation de mot de passe, supprimés après usage"
+        },
+        "s3": {
+          "title": "Pourquoi nous collectons ces données (finalités)",
+          "body": "Nous utilisons ces données pour :\n- Fournir le service : faire fonctionner votre espace, votre annuaire de membres, vos cotisations, vos réunions et vos rapports\n- Vous authentifier et sécuriser l'accès à votre organisation\n- Vous envoyer les emails nécessaires au fonctionnement du service (vérification d'email, réinitialisation de mot de passe, invitations, confirmations)\n- Assurer la continuité et la sécurité de la plateforme\n\nNous n'utilisons pas vos données à des fins publicitaires et ne réalisons aucun profilage marketing."
+        },
+        "s4": {
+          "title": "Base du traitement",
+          "body": "Les données sont fournies volontairement par vous, dans le cadre de votre utilisation d'AssoHub : à l'inscription, à la création de votre organisation, et à chaque saisie que vous effectuez (membres, cotisations, réunions). En créant un compte ou en saisissant des données, vous consentez à ce traitement, nécessaire à la fourniture du service."
+        },
+        "s5": {
+          "title": "Votre rôle sur les données de vos membres",
+          "body": "Lorsque vous saisissez des informations sur les membres de votre association (nom, téléphone, cotisations, présences...), vous en êtes responsable vis-à-vis d'eux : c'est vous qui décidez de collecter ces données et qui devez, le cas échéant, en informer les personnes concernées.\n\nAssoHub agit comme hébergeur technique de ces données : nous les stockons et les rendons disponibles pour votre usage, mais nous n'en sommes pas responsables au sens où votre association l'est vis-à-vis de ses propres membres."
+        },
+        "s6": {
+          "title": "Destinataires et sous-traitants",
+          "body": "Vos données sont hébergées et traitées par les prestataires techniques suivants, qui agissent en tant que sous-traitants d'AssoHub :\n- Vercel Inc. — hébergement du site (https://vercel.com)\n- Neon Inc. — hébergement de la base de données (https://neon.tech)\n- Resend — envoi des emails transactionnels (https://resend.com)\n- Google — uniquement si vous choisissez de vous connecter avec un compte Google\n\nAucune de vos données n'est vendue, louée, ou cédée à des tiers à des fins commerciales ou publicitaires."
+        },
+        "s7": {
+          "title": "Transferts de données hors de Guinée",
+          "body": "Les serveurs de nos prestataires techniques (Vercel, Neon, Resend) peuvent être situés hors de la République de Guinée. Vos données peuvent donc être traitées et stockées à l'étranger, dans le cadre strict de la fourniture du service décrit dans cette politique."
+        },
+        "s8": {
+          "title": "Durée de conservation",
+          "body": "Vos données sont conservées tant que votre compte reste actif. Vous pouvez à tout moment demander la suppression de votre compte (voir « Vos droits » ci-dessous), ce qui déclenche l'anonymisation de vos données personnelles."
+        },
+        "s9": {
+          "title": "Sécurité",
+          "body": "- Les mots de passe sont hachés et ne sont jamais stockés ni consultables en clair\n- Toutes les connexions au site sont chiffrées (HTTPS)\n- L'accès aux données d'une organisation est strictement limité à ses membres autorisés\n- Chaque organisation est cloisonnée : aucune organisation ne peut accéder aux données d'une autre"
+        },
+        "s10": {
+          "title": "Vos droits",
+          "body": "Vous disposez d'un droit d'accès et de rectification sur vos données : vous pouvez consulter et modifier votre profil et vos informations directement depuis la page Paramètres de votre compte.\n\nVous pouvez demander la suppression de votre compte à tout moment, depuis la « Zone de danger » de la page Paramètres : vos données personnelles sont alors anonymisées et vous êtes retiré de toutes vos organisations.\n\nPour toute autre demande relative à vos données (accès aux données saisies par une organisation dont vous êtes membre, question, réclamation), contactez-nous à fondateur@assohub-gn.com."
+        },
+        "s11": {
+          "title": "Cookies",
+          "body": "AssoHub utilise uniquement des cookies de session, strictement nécessaires au fonctionnement de l'authentification. Nous n'utilisons aucun cookie publicitaire, aucun cookie de suivi (tracking), et aucun outil de mesure d'audience (analytics)."
+        },
+        "s12": {
+          "title": "Mineurs",
+          "body": "AssoHub s'adresse à des responsables d'associations (présidents, trésoriers, membres de bureau). Si vous êtes mineur, vous ne devez pas créer de compte sans l'autorisation de votre représentant légal."
+        },
+        "s13": {
+          "title": "Modifications de cette politique",
+          "body": "Cette politique peut être mise à jour pour refléter des évolutions du service ou de la réglementation. La date de dernière mise à jour est indiquée en haut de cette page. En cas de changement important, nous en informerons les utilisateurs par email.\n\n[À COMPLÉTER : référence légale guinéenne spécifique sur la protection des données, si vous souhaitez la citer explicitement]"
+        }
+      }
     }
   }
 }
