@@ -1632,6 +1632,64 @@
           "body": "Cette politique peut être mise à jour pour refléter des évolutions du service ou de la réglementation. La date de dernière mise à jour est indiquée en haut de cette page. En cas de changement important, nous en informerons les utilisateurs par email.\n\n[À COMPLÉTER : référence légale guinéenne spécifique sur la protection des données, si vous souhaitez la citer explicitement]"
         }
       }
+    },
+    "conditionsUtilisation": {
+      "title": "Conditions générales d'utilisation",
+      "lastUpdated": "Date d'entrée en vigueur : 23 juillet 2026",
+      "sections": {
+        "s1": {
+          "title": "Objet et champ d'application",
+          "body": "Les présentes conditions générales d'utilisation (« CGU ») régissent l'accès et l'utilisation de la plateforme AssoHub, éditée par Gassimou Cissé (voir nos mentions légales). En créant un compte ou en utilisant AssoHub, vous acceptez sans réserve les présentes CGU."
+        },
+        "s2": {
+          "title": "Description du service",
+          "body": "AssoHub est une plateforme de gestion associative permettant à une organisation de gérer : son annuaire de membres, ses cotisations, ses réunions et procès-verbaux, ainsi que ses rapports financiers, depuis un espace dédié."
+        },
+        "s3": {
+          "title": "Gratuité du service",
+          "body": "AssoHub est gratuit au lancement. L'éditeur se réserve la possibilité d'introduire, à l'avenir, des offres payantes ou des fonctionnalités additionnelles payantes. Les utilisateurs en seraient informés préalablement, avant toute mise en place d'une facturation."
+        },
+        "s4": {
+          "title": "Création de compte",
+          "body": "La création d'un compte nécessite de fournir des informations exactes (nom, adresse email). Un compte est associé à une seule personne physique. Vous êtes responsable de la confidentialité de vos identifiants de connexion et de toute activité effectuée depuis votre compte."
+        },
+        "s5": {
+          "title": "Obligations de l'utilisateur",
+          "body": "En utilisant AssoHub, vous vous engagez à :\n- Utiliser le service de manière licite et conforme aux lois de la République de Guinée\n- Ne pas utiliser AssoHub à des fins frauduleuses\n- Ne publier ou saisir aucun contenu illicite\n- Ne pas tenter de porter atteinte à la sécurité, à l'intégrité ou au bon fonctionnement de la plateforme"
+        },
+        "s6": {
+          "title": "Responsabilité de l'utilisateur sur les données de ses membres",
+          "body": "Vous garantissez disposer du droit de traiter les données que vous saisissez sur les membres de votre association, et être en mesure d'en informer les personnes concernées le cas échéant. Vous restez seul responsable de l'exactitude et de la licéité des données que vous saisissez dans AssoHub."
+        },
+        "s7": {
+          "title": "Responsabilité de l'éditeur",
+          "body": "L'éditeur s'engage à une obligation de moyens pour assurer le bon fonctionnement d'AssoHub. Le service est fourni « en l'état », sans garantie d'absence d'interruption, d'erreur, ou de disponibilité continue. Des sauvegardes sont effectuées, sans garantie absolue contre toute perte de données."
+        },
+        "s8": {
+          "title": "Paiements : le rôle d'AssoHub",
+          "body": "AssoHub ne traite, n'encaisse et ne détient aucun paiement. Les cotisations et autres paiements sont reçus directement par votre association, par les moyens qu'elle choisit (Orange Money, MTN MoMo, PayCard, Soutra Money, espèces, virement, etc.).\n\nAssoHub se limite à enregistrer et suivre ces paiements une fois reçus par votre association, à votre initiative. AssoHub n'est ni un établissement de paiement, ni un intermédiaire financier."
+        },
+        "s9": {
+          "title": "Suspension ou résiliation de compte",
+          "body": "L'éditeur se réserve le droit de suspendre ou de résilier un compte en cas de manquement aux présentes CGU, notamment en cas d'usage frauduleux, illicite, ou portant atteinte à la sécurité de la plateforme."
+        },
+        "s10": {
+          "title": "Suppression du compte par l'utilisateur",
+          "body": "Vous pouvez supprimer votre compte à tout moment depuis la « Zone de danger » de la page Paramètres. Cette action anonymise vos données personnelles et vous retire de toutes vos organisations. Voir notre politique de confidentialité pour le détail de ce traitement."
+        },
+        "s11": {
+          "title": "Propriété intellectuelle",
+          "body": "La plateforme AssoHub (marque, logo, interface, code) est la propriété de l'éditeur. Les données que vous saisissez dans AssoHub (membres, cotisations, réunions, documents) restent votre propriété ou celle de votre association."
+        },
+        "s12": {
+          "title": "Modification des CGU",
+          "body": "Les présentes CGU peuvent être modifiées à tout moment. Les utilisateurs seront informés de toute modification substantielle par email, avant son entrée en vigueur. La poursuite de l'utilisation d'AssoHub après une modification vaut acceptation des nouvelles CGU."
+        },
+        "s13": {
+          "title": "Droit applicable et règlement des litiges",
+          "body": "Les présentes CGU sont soumises au droit guinéen. Tout litige relatif à leur interprétation ou à leur exécution relève de la compétence des tribunaux de la République de Guinée."
+        }
+      }
     }
   }
 }
