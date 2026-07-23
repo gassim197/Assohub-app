@@ -403,7 +403,7 @@
       },
       "footer": {
         "tagline": "The digital backbone of African organizations",
-        "legal": "By joining AssoHub, you agree to our terms of use."
+        "legalPrefix": "By joining AssoHub, you agree to our"
       },
       "errors": {
         "notFound": {

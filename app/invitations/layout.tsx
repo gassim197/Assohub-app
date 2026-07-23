@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { Logo } from "@/components/ui/logo";
+import { InvitationLegalLine } from "@/components/legal/invitation-legal-line";
 
 /**
  * Chrome public des pages `/invitations/*` (volet 2 de la 4B) : aucune
@@ -25,7 +26,7 @@ export default async function InvitationsLayout({
       <footer className="flex flex-col items-center gap-1 border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground">
         <Logo variant="icon" scheme="light" />
         <p>{t("tagline")}</p>
-        <p>{t("legal")}</p>
+        <InvitationLegalLine />
       </footer>
     </div>
   );

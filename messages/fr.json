@@ -403,7 +403,7 @@
       },
       "footer": {
         "tagline": "L'infrastructure numérique des organisations africaines",
-        "legal": "En rejoignant AssoHub, vous acceptez nos conditions d'utilisation."
+        "legalPrefix": "En rejoignant AssoHub, vous acceptez nos"
       },
       "errors": {
         "notFound": {
@@ -1571,7 +1571,7 @@
         },
         "s3": {
           "title": "Hébergement",
-          "body": "Hébergement du site\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789, États-Unis\nhttps://vercel.com\n\nHébergement de la base de données\nNeon Inc. (base de données PostgreSQL managée)\n[À COMPLÉTER : adresse postale de Neon Inc.]\nhttps://neon.tech"
+          "body": "Hébergement du site\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789, États-Unis\nhttps://vercel.com\n\nHébergement de la base de données\nNeon Inc. (groupe Databricks), San Francisco, Californie, États-Unis\nhttps://neon.tech"
         },
         "s4": {
           "title": "Propriété intellectuelle",
@@ -1641,7 +1641,7 @@
         },
         "s13": {
           "title": "Modifications de cette politique",
-          "body": "Cette politique peut être mise à jour pour refléter des évolutions du service ou de la réglementation. La date de dernière mise à jour est indiquée en haut de cette page. En cas de changement important, nous en informerons les utilisateurs par email.\n\n[À COMPLÉTER : référence légale guinéenne spécifique sur la protection des données, si vous souhaitez la citer explicitement]"
+          "body": "Cette politique peut être mise à jour pour refléter des évolutions du service ou de la réglementation. La date de dernière mise à jour est indiquée en haut de cette page. En cas de changement important, nous en informerons les utilisateurs par email.\n\nCette politique est établie dans le respect de la loi L/2016/037/AN relative à la cybersécurité et à la protection des données à caractère personnel en République de Guinée, dont l'Autorité de Régulation des Postes et Télécommunications (ARPT) est l'autorité de régulation compétente."
         }
       }
     },
