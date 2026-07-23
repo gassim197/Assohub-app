@@ -147,6 +147,23 @@ export default function RegisterPage() {
                 ? t("common.loading")
                 : t("auth.signUp")}
             </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              {t("auth.legalConsent.prefix")}{" "}
+              <Link
+                href="/conditions-utilisation"
+                className="underline-offset-2 hover:underline"
+              >
+                {t("auth.legalConsent.terms")}
+              </Link>{" "}
+              {t("auth.legalConsent.and")}{" "}
+              <Link
+                href="/confidentialite"
+                className="underline-offset-2 hover:underline"
+              >
+                {t("auth.legalConsent.privacy")}
+              </Link>
+              {t("auth.legalConsent.suffix")}
+            </p>
           </form>
         </Form>
       </CardContent>

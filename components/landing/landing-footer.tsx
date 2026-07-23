@@ -27,6 +27,20 @@ export async function LandingFooter() {
           <p className="text-xs text-muted-foreground">{t("copyright", { year })}</p>
         </div>
       </div>
+
+      <div className="border-t border-foreground/10">
+        <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 py-4 text-xs text-muted-foreground sm:px-6 lg:px-8">
+          <Link href="/mentions-legales" className="hover:text-foreground">
+            {t("legal.mentionsLegales")}
+          </Link>
+          <Link href="/confidentialite" className="hover:text-foreground">
+            {t("legal.confidentialite")}
+          </Link>
+          <Link href="/conditions-utilisation" className="hover:text-foreground">
+            {t("legal.conditionsUtilisation")}
+          </Link>
+        </nav>
+      </div>
     </footer>
   );
 }

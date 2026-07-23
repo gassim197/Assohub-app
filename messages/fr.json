@@ -24,6 +24,13 @@
     "password": "Mot de passe",
     "fullName": "Nom complet",
     "passwordRules": "8 caractères minimum, 1 majuscule, 1 chiffre",
+    "legalConsent": {
+      "prefix": "En créant un compte, vous acceptez nos",
+      "terms": "conditions d'utilisation",
+      "and": "et notre",
+      "privacy": "politique de confidentialité",
+      "suffix": "."
+    },
     "forgotPassword": "Mot de passe oublié ?",
     "alreadyHaveAccount": "Déjà un compte ?",
     "noAccount": "Pas encore de compte ?",
@@ -1541,7 +1548,12 @@
       "tagline": "L'infrastructure numérique des organisations africaines",
       "login": "Connexion",
       "register": "Créer un compte",
-      "copyright": "© {year} AssoHub. Tous droits réservés."
+      "copyright": "© {year} AssoHub. Tous droits réservés.",
+      "legal": {
+        "mentionsLegales": "Mentions légales",
+        "confidentialite": "Politique de confidentialité",
+        "conditionsUtilisation": "Conditions d'utilisation"
+      }
     }
   },
   "legal": {

@@ -24,6 +24,13 @@
     "password": "Password",
     "fullName": "Full name",
     "passwordRules": "At least 8 characters, 1 uppercase, 1 number",
+    "legalConsent": {
+      "prefix": "By creating an account, you agree to our",
+      "terms": "terms of use",
+      "and": "and our",
+      "privacy": "privacy policy",
+      "suffix": "."
+    },
     "forgotPassword": "Forgot password?",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
@@ -1541,7 +1548,12 @@
       "tagline": "The digital infrastructure for African organizations",
       "login": "Sign in",
       "register": "Create an account",
-      "copyright": "© {year} AssoHub. All rights reserved."
+      "copyright": "© {year} AssoHub. All rights reserved.",
+      "legal": {
+        "mentionsLegales": "Legal notice",
+        "confidentialite": "Privacy policy",
+        "conditionsUtilisation": "Terms of use"
+      }
     }
   }
 }
