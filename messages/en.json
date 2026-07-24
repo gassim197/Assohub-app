@@ -1399,7 +1399,7 @@
       "error": "Something went wrong. Please try again.",
       "soleOwnerDialog": {
         "title": "You're the sole owner of some organizations",
-        "description": "You are the sole owner of the following organizations. You must delete them (or transfer ownership) before you can delete your account.",
+        "description": "You are the sole owner of the following organizations. You must delete them before you can delete your account.",
         "close": "Close"
       },
       "confirmDialog": {

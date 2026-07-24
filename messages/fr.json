@@ -1399,7 +1399,7 @@
       "error": "Une erreur est survenue. Veuillez réessayer.",
       "soleOwnerDialog": {
         "title": "Vous êtes seul responsable de certaines organisations",
-        "description": "Vous êtes l'unique propriétaire des organisations suivantes. Vous devez d'abord les supprimer (ou en transférer la responsabilité) avant de pouvoir supprimer votre compte.",
+        "description": "Vous êtes l'unique propriétaire des organisations suivantes. Vous devez les supprimer avant de pouvoir supprimer votre compte.",
         "close": "Fermer"
       },
       "confirmDialog": {

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import type { SoleOwnedOrganization } from "@/lib/organizations/queries";
@@ -41,7 +42,15 @@ export function SoleOwnerBlockerDialog({
 
         <ul className="list-inside list-disc space-y-1 text-sm text-foreground">
           {organizations.map((org) => (
-            <li key={org.id}>{org.name}</li>
+            <li key={org.id}>
+              <Link
+                href={`/${org.slug}/settings`}
+                onClick={() => onOpenChange(false)}
+                className="underline-offset-2 hover:underline"
+              >
+                {org.name}
+              </Link>
+            </li>
           ))}
         </ul>
 
