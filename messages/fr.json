@@ -1341,6 +1341,25 @@
         "generic": "Une erreur est survenue. Veuillez réessayer."
       }
     },
+    "organizationDangerZone": {
+      "title": "Zone de danger",
+      "description": "La suppression de cette organisation est définitive. Tous les membres, cotisations, paiements, réunions et rapports seront supprimés et ne pourront pas être récupérés.",
+      "deleteButton": "Supprimer cette organisation",
+      "confirmDialog": {
+        "title": "Supprimer définitivement {name} ?",
+        "stats": "Cette organisation compte {members} membres, {cotisations} cotisations, {payments} paiements et {meetings} réunions. Toutes ces données seront supprimées définitivement.",
+        "otherMembersWarning": "{count, plural, one {# autre membre perdra} other {# autres membres perdront}} définitivement l'accès à ces données.",
+        "exportReminder": "Pensez à exporter votre",
+        "exportReminderLink": "rapport financier",
+        "exportReminderSuffix": "avant de continuer.",
+        "confirmLabel": "Pour confirmer, tapez le nom exact de l'organisation : {name}",
+        "cancel": "Annuler",
+        "confirm": "Supprimer définitivement",
+        "submitting": "Suppression en cours…",
+        "success": "{name} a été supprimée.",
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
     "profile": {
       "title": "Profil",
       "subtitle": "Vos informations personnelles.",

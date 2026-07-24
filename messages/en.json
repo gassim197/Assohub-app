@@ -1341,6 +1341,25 @@
         "generic": "Something went wrong. Please try again."
       }
     },
+    "organizationDangerZone": {
+      "title": "Danger zone",
+      "description": "Deleting this organization is permanent. All members, dues, payments, meetings, and reports will be deleted and cannot be recovered.",
+      "deleteButton": "Delete this organization",
+      "confirmDialog": {
+        "title": "Permanently delete {name}?",
+        "stats": "This organization has {members} members, {cotisations} dues, {payments} payments, and {meetings} meetings. All this data will be permanently deleted.",
+        "otherMembersWarning": "{count, plural, one {# other member will} other {# other members will}} permanently lose access to this data.",
+        "exportReminder": "Remember to export your",
+        "exportReminderLink": "financial report",
+        "exportReminderSuffix": "before continuing.",
+        "confirmLabel": "To confirm, type the organization's exact name: {name}",
+        "cancel": "Cancel",
+        "confirm": "Permanently delete",
+        "submitting": "Deleting…",
+        "success": "{name} has been deleted.",
+        "error": "Something went wrong. Please try again."
+      }
+    },
     "profile": {
       "title": "Profile",
       "subtitle": "Your personal information.",

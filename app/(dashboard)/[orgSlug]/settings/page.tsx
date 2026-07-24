@@ -6,9 +6,14 @@ import {
   getUserProfile,
   hasCredentialAccount,
 } from "@/lib/settings/queries";
-import { getUserSoleOwnedOrganizations } from "@/lib/organizations/queries";
+import {
+  getMemberRole,
+  getOrganizationDeletionStats,
+  getUserSoleOwnedOrganizations,
+} from "@/lib/organizations/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrganizationSettingsForm } from "@/components/settings/organization-settings-form";
+import { OrganizationDangerZone } from "@/components/settings/organization-danger-zone";
 import { ProfileSettingsForm } from "@/components/settings/profile-settings-form";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
 import { SetPasswordForm } from "@/components/settings/set-password-form";
@@ -22,14 +27,20 @@ export default async function SettingsPage({
   const { orgSlug } = await params;
   const { organizationId, userId } = await requireOrgAccess(orgSlug);
 
-  const [t, organizationSettings, userProfile, hasPassword, soleOwnedOrganizations] =
+  const [t, organizationSettings, userProfile, hasPassword, soleOwnedOrganizations, role] =
     await Promise.all([
       getTranslations("settings"),
       getOrganizationSettings(organizationId),
       getUserProfile(userId),
       hasCredentialAccount(userId),
       getUserSoleOwnedOrganizations(userId),
+      getMemberRole(organizationId, userId),
     ]);
+
+  const isOwner = role === "owner";
+  const deletionStats = isOwner
+    ? await getOrganizationDeletionStats(organizationId, userId)
+    : null;
 
   return (
     <div className="space-y-6">
@@ -44,7 +55,7 @@ export default async function SettingsPage({
           <TabsTrigger value="profile">{t("tabs.profile")}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="organization" className="pt-4">
+        <TabsContent value="organization" className="space-y-6 pt-4">
           <OrganizationSettingsForm
             orgSlug={orgSlug}
             defaultValues={{
@@ -52,6 +63,13 @@ export default async function SettingsPage({
               type: organizationSettings?.type ?? null,
             }}
           />
+          {isOwner && deletionStats ? (
+            <OrganizationDangerZone
+              orgSlug={orgSlug}
+              organizationName={organizationSettings?.name ?? ""}
+              stats={deletionStats}
+            />
+          ) : null}
         </TabsContent>
 
         <TabsContent value="profile" className="space-y-6 pt-4">
