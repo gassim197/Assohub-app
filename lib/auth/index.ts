@@ -57,6 +57,14 @@ export const auth = betterAuth({
 
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
+      // Log de diagnostic (bug prod "email de vérification jamais envoyé") :
+      // confirme que Better-Auth appelle bien notre callback, avant même
+      // d'atteindre Resend. À retirer une fois le bug résolu.
+      console.log("[auth] emailVerification.sendVerificationEmail invoqué par Better-Auth", {
+        userId: user.id,
+        email: user.email,
+        emailVerified: user.emailVerified,
+      });
       await sendVerificationEmailViaResend({ to: user.email, verifyUrl: url });
     },
     // `false` (et non `undefined`) : avec `requireEmailVerification: true`,

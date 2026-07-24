@@ -114,15 +114,37 @@ export async function sendVerificationEmail(
   params: VerificationEmailParams,
   locale: VerificationLocale = "fr",
 ): Promise<void> {
-  const { data, error } = await resend.emails.send({
-    from: EMAIL_FROM,
-    to: params.to,
-    subject: STRINGS[locale].subject,
-    html: verificationEmailHtml(params, locale),
-  });
+  // Logs de diagnostic (bug prod "email de vérification jamais envoyé") : à
+  // retirer une fois le bug résolu. Le `try/catch` distingue une exception
+  // levée par le SDK Resend lui-même (réseau, etc.) d'une réponse
+  // "réussie" côté HTTP mais contenant un champ `error` (cas normal du SDK
+  // Resend, qui ne lève pas d'exception pour les erreurs API).
+  console.log("[auth] sendVerificationEmail: appel à resend.emails.send", { to: params.to });
+
+  let data;
+  let error;
+  try {
+    ({ data, error } = await resend.emails.send({
+      from: EMAIL_FROM,
+      to: params.to,
+      subject: STRINGS[locale].subject,
+      html: verificationEmailHtml(params, locale),
+    }));
+  } catch (sendException) {
+    console.error(
+      "[auth] sendVerificationEmail: exception levée par resend.emails.send",
+      sendException,
+    );
+    throw sendException;
+  }
+
   console.log("[auth] Resend response (verification email)", { to: params.to, data, error });
 
   if (error) {
+    console.error("[auth] sendVerificationEmail: Resend a renvoyé une erreur", {
+      to: params.to,
+      error,
+    });
     throw new Error(`Resend error: ${error.name} — ${error.message}`);
   }
 }
