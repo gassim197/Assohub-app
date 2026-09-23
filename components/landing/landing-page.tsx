@@ -1,19 +1,16 @@
 import { LandingHeader } from "./landing-header";
 import { HeroSection } from "./hero-section";
-import { ProblemSection } from "./problem-section";
-import { BeforeAfterSection } from "./before-after-section";
-import { SolutionSection } from "./solution-section";
-import { WhyAssoHubSection } from "./why-assohub-section";
-import { StatsBand } from "./stats-band";
-import { HowItWorksSection } from "./how-it-works-section";
-import { FaqSection } from "./faq-section";
+import { SectionNav } from "./section-nav";
+import { FeatureCluster } from "./feature-cluster";
 import { FinalCtaSection } from "./final-cta-section";
 import { LandingFooter } from "./landing-footer";
+import { CLUSTERS } from "./landing-content";
 
 /**
  * Landing publique de assohub-gn.com — rendue à la racine `/` pour les
  * visiteurs sans session (`app/page.tsx`). Pure présentation, aucune
- * logique métier : chaque section est un Server Component statique.
+ * logique métier : hero, barre d'ancres collante, puis une grappe par
+ * domaine fonctionnel (captures produit), et l'appel à l'action final.
  */
 export function LandingPage() {
   return (
@@ -21,13 +18,10 @@ export function LandingPage() {
       <LandingHeader />
       <main className="flex-1">
         <HeroSection />
-        <ProblemSection />
-        <BeforeAfterSection />
-        <SolutionSection />
-        <WhyAssoHubSection />
-        <StatsBand />
-        <HowItWorksSection />
-        <FaqSection />
+        <SectionNav />
+        {CLUSTERS.map((cluster, index) => (
+          <FeatureCluster key={cluster.id} cluster={cluster} shaded={index % 2 === 1} />
+        ))}
         <FinalCtaSection />
       </main>
       <LandingFooter />
