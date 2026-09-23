@@ -34,10 +34,10 @@ export function ScreenshotFrame({
 }
 
 /**
- * Largeur d'affichage d'une capture dans une rangée de grappe : moitié de
- * la colonne `max-w-6xl` (≈ 560 px) à partir de `lg`, pleine largeur avant.
+ * Largeur d'affichage d'une capture dans une rangée de grappe : 3/5 de la
+ * colonne `max-w-6xl` (≈ 620 px) à partir de `lg`, pleine largeur avant.
  */
-export const FEATURE_IMAGE_SIZES = "(min-width: 1024px) 560px, (min-width: 640px) 90vw, 100vw";
+export const FEATURE_IMAGE_SIZES = "(min-width: 1024px) 620px, 100vw";
 
 /** Capture produit encadrée. Chargement différé par défaut (`next/image`). */
 export function Screenshot({

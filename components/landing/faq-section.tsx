@@ -8,13 +8,16 @@ import {
 } from "@/components/ui/accordion";
 import { ScrollReveal } from "./scroll-reveal";
 
-const FAQ_KEYS = ["q1", "q2", "q3", "q4", "q5"] as const;
+const FAQ_KEYS = ["securite", "simplicite", "organisations", "paiements"] as const;
 
 export async function FaqSection() {
   const t = await getTranslations("landing.faq");
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+    <section
+      id="faq"
+      className="mx-auto max-w-3xl scroll-mt-28 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+    >
       <ScrollReveal>
         <h2 className="text-center text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {t("title")}
