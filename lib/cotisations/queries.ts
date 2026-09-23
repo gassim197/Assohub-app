@@ -5,6 +5,7 @@ import { cotisationTypes, cotisations, paymentReminders, payments } from "@/lib/
 import { associationMembers } from "@/lib/db/members-schema";
 import { COTISATIONS_PAGE_SIZE } from "./constants";
 import { getMonthRange } from "./period";
+import { countRemindableMembers } from "./reminder-queries";
 
 /**
  * Sous-requête du dernier rappel envoyé par cotisation (session 5C §2).
@@ -94,7 +95,11 @@ export interface CotisationKpis {
   outstanding: number;
   /** Nombre de cotisations `en_retard`. */
   lateCount: number;
-  /** Nombre de membres distincts ayant au moins une cotisation `en_retard` (« retardataires »). */
+  /**
+   * Nombre de « retardataires » : membres distincts ayant au moins une
+   * cotisation échue non soldée (cf. `countRemindableMembers`, même
+   * définition que la relance groupée).
+   */
   lateMemberCount: number;
   upToDateCount: number;
 }
@@ -111,7 +116,6 @@ export async function getCotisationKpis(
     .select({
       outstanding: sql<string>`COALESCE(SUM(${cotisations.dueAmount} - ${cotisations.paidAmount}), 0)`,
       lateCount: sql<string>`COUNT(*) FILTER (WHERE ${cotisations.status} = 'en_retard')`,
-      lateMemberCount: sql<string>`COUNT(DISTINCT ${cotisations.memberId}) FILTER (WHERE ${cotisations.status} = 'en_retard')`,
     })
     .from(cotisations)
     .where(
@@ -138,11 +142,13 @@ export async function getCotisationKpis(
       ),
     );
 
+  const lateMemberCount = await countRemindableMembers(organizationId);
+
   return {
     collectedThisMonth: Number(collectedRow?.collected ?? 0),
     outstanding: Number(outstandingRow?.outstanding ?? 0),
     lateCount: Number(outstandingRow?.lateCount ?? 0),
-    lateMemberCount: Number(outstandingRow?.lateMemberCount ?? 0),
+    lateMemberCount,
     upToDateCount: Number(paidResult?.value ?? 0),
   };
 }

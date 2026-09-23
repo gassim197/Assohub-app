@@ -1,4 +1,4 @@
-import { and, eq, isNull, lt, or } from "drizzle-orm";
+import { and, countDistinct, eq, isNull, lt, or } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { cotisationTypes, cotisations } from "@/lib/db/cotisations-schema";
@@ -54,6 +54,23 @@ function remindableConditions(organizationId: string) {
       and(eq(cotisations.status, "partiel"), lt(cotisations.dueDate, todayISO())),
     ),
   );
+}
+
+/**
+ * Nombre de « retardataires » : membres distincts ayant au moins une
+ * cotisation relançable (échue non soldée — `en_retard`, ou `partiel` dont
+ * l'échéance est dépassée). Même prédicat que `getRemindableCotisations` :
+ * le compteur du tableau de bord et le bouton de relance groupée (qui
+ * regroupe ces cotisations par membre) désignent toujours les mêmes membres.
+ */
+export async function countRemindableMembers(organizationId: string): Promise<number> {
+  const [row] = await db
+    .select({ value: countDistinct(cotisations.memberId) })
+    .from(cotisations)
+    .innerJoin(associationMembers, eq(cotisations.memberId, associationMembers.id))
+    .where(remindableConditions(organizationId));
+
+  return Number(row?.value ?? 0);
 }
 
 /**
