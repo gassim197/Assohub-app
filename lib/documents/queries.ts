@@ -1,8 +1,10 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/auth-schema";
 import { documents } from "@/lib/db/documents-schema";
+import { meetings } from "@/lib/db/meetings-schema";
+import { payments } from "@/lib/db/cotisations-schema";
 import type { DocumentCategory } from "./constants";
 
 export type DocumentRow = typeof documents.$inferSelect;
@@ -60,6 +62,12 @@ export interface DocumentWithUploaderRow {
   sizeBytes: number;
   createdAt: Date;
   uploadedByName: string;
+  paymentId: string | null;
+  meetingId: string | null;
+  /** Nécessaire pour construire le lien « Lié au paiement du... » (pas de page dédiée à un paiement, il vit sous sa cotisation). */
+  linkedPaymentCotisationId: string | null;
+  linkedPaymentPaidAt: string | null;
+  linkedMeetingScheduledAt: Date | null;
 }
 
 /**
@@ -67,6 +75,11 @@ export interface DocumentWithUploaderRow {
  * filtre en plus (chips/select de la page) sans jamais remplacer le
  * filtrage multi-tenant. Pas de pagination en V1 (volume attendu faible,
  * borné par le quota de 200 Mo) — même décision que `listMeetingDatesForCalendar`.
+ *
+ * LEFT JOIN sur `payments`/`meetings` sans risque de duplication de lignes :
+ * `documents` est la table pilote et chaque document ne référence au plus
+ * qu'un seul paiement ET/OU une seule réunion (colonnes nullables, pas de
+ * relation many-to-many).
  */
 export async function listDocuments(
   organizationId: string,
@@ -87,9 +100,104 @@ export async function listDocuments(
       sizeBytes: documents.sizeBytes,
       createdAt: documents.createdAt,
       uploadedByName: user.name,
+      paymentId: documents.paymentId,
+      meetingId: documents.meetingId,
+      linkedPaymentCotisationId: payments.cotisationId,
+      linkedPaymentPaidAt: payments.paidAt,
+      linkedMeetingScheduledAt: meetings.scheduledAt,
     })
     .from(documents)
     .innerJoin(user, eq(documents.uploadedByUserId, user.id))
+    .leftJoin(payments, eq(documents.paymentId, payments.id))
+    .leftJoin(meetings, eq(documents.meetingId, meetings.id))
     .where(and(...conditions))
+    .orderBy(desc(documents.createdAt));
+}
+
+export interface AttachedDocumentRow {
+  id: string;
+  displayName: string;
+  mimeType: string;
+  paymentId: string | null;
+  meetingId: string | null;
+}
+
+/** Documents rattachés à une réunion (PV signé ou tout autre document lié), plus récents d'abord. */
+export async function listDocumentsForMeeting(
+  organizationId: string,
+  meetingId: string,
+): Promise<AttachedDocumentRow[]> {
+  return db
+    .select({
+      id: documents.id,
+      displayName: documents.displayName,
+      mimeType: documents.mimeType,
+      paymentId: documents.paymentId,
+      meetingId: documents.meetingId,
+    })
+    .from(documents)
+    .where(
+      and(
+        eq(documents.organizationId, organizationId),
+        eq(documents.meetingId, meetingId),
+        isNull(documents.deletedAt),
+      ),
+    )
+    .orderBy(desc(documents.createdAt));
+}
+
+/** Documents rattachés à un ensemble de paiements (historique des paiements d'une cotisation), en un seul aller-retour. */
+export async function listDocumentsForPayments(
+  organizationId: string,
+  paymentIds: string[],
+): Promise<AttachedDocumentRow[]> {
+  if (paymentIds.length === 0) return [];
+
+  return db
+    .select({
+      id: documents.id,
+      displayName: documents.displayName,
+      mimeType: documents.mimeType,
+      paymentId: documents.paymentId,
+      meetingId: documents.meetingId,
+    })
+    .from(documents)
+    .where(
+      and(
+        eq(documents.organizationId, organizationId),
+        inArray(documents.paymentId, paymentIds),
+        isNull(documents.deletedAt),
+      ),
+    )
+    .orderBy(desc(documents.createdAt));
+}
+
+/**
+ * Documents "généraux" de l'organisation — non encore rattachés à un paiement
+ * ni à une réunion — candidats au sélecteur « Choisir parmi les documents
+ * existants » (`AttachDocumentDialog`). Un document déjà rattaché à une autre
+ * réunion/paiement n'est pas proposé : éviter qu'attacher un document en vole
+ * implicitement un autre.
+ */
+export async function listUnattachedDocuments(
+  organizationId: string,
+): Promise<AttachedDocumentRow[]> {
+  return db
+    .select({
+      id: documents.id,
+      displayName: documents.displayName,
+      mimeType: documents.mimeType,
+      paymentId: documents.paymentId,
+      meetingId: documents.meetingId,
+    })
+    .from(documents)
+    .where(
+      and(
+        eq(documents.organizationId, organizationId),
+        isNull(documents.paymentId),
+        isNull(documents.meetingId),
+        isNull(documents.deletedAt),
+      ),
+    )
     .orderBy(desc(documents.createdAt));
 }

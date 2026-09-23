@@ -815,6 +815,10 @@
           "recordedBy": "Recorded by",
           "note": "Note"
         }
+      },
+      "attachment": {
+        "columnLabel": "Attachment",
+        "attach": "Attach"
       }
     },
     "detail": {
@@ -993,7 +997,8 @@
       "videoLink": "Video conference link",
       "descriptionEmpty": "No description",
       "attendanceTitle": "Attendance",
-      "minutesTitle": "Minutes"
+      "minutesTitle": "Minutes",
+      "documentsTitle": "Documents"
     },
     "attendance": {
       "manage": "Manage attendance",
@@ -1352,6 +1357,10 @@
       "uploadedBy": "Added by"
     },
     "sizeInMb": "{size} MB",
+    "linkedTo": {
+      "payment": "Linked to the payment of {date}",
+      "meeting": "Linked to the meeting of {date}"
+    },
     "rowActions": {
       "label": "Actions",
       "download": "Download",
@@ -1396,6 +1405,37 @@
         "quotaExceeded": "Your organization has reached its storage limit.",
         "forbidden": "You do not have permission to add a document.",
         "validation": "Please check the information entered.",
+        "unknown": "Something went wrong. Please try again."
+      }
+    },
+    "meetingSection": {
+      "empty": "No document linked to this meeting.",
+      "add": "Add a document"
+    },
+    "attachDialog": {
+      "title": "Attach a document",
+      "description": "Upload a new file or choose an existing document.",
+      "modeUpload": "New file",
+      "modeExisting": "Existing document",
+      "dropzoneLabel": "Drag and drop a file here",
+      "dropzoneHint": "or click to browse your files",
+      "categoryLabel": "Category",
+      "displayNameLabel": "Display name",
+      "existingLabel": "Document",
+      "cancel": "Cancel",
+      "submit": "Attach",
+      "submitting": "Uploading…",
+      "success": "Document attached.",
+      "errors": {
+        "fileMissing": "Please select a file.",
+        "fileTooLarge": "File too large (10 MB maximum).",
+        "invalidType": "This file type is not accepted.",
+        "quotaExceeded": "Your organization has reached its storage limit.",
+        "forbidden": "You do not have permission to attach a document.",
+        "validation": "Please check the information entered.",
+        "invalidTarget": "This item could not be found. Please refresh the page.",
+        "notFound": "This document could not be found.",
+        "alreadyAttached": "This document is already attached elsewhere.",
         "unknown": "Something went wrong. Please try again."
       }
     }

@@ -7,6 +7,8 @@ import { requireOrgAccess } from "@/lib/auth/org";
 import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
 import { documents } from "@/lib/db/documents-schema";
+import { getPaymentById } from "@/lib/cotisations/payment-queries";
+import { getMeetingById } from "@/lib/meetings/queries";
 import { deleteDocumentBlob, uploadDocumentBlob } from "./blob";
 import { MAX_FILE_SIZE_BYTES } from "./constants";
 import { detectAcceptedMimeType } from "./file-validation";
@@ -19,6 +21,46 @@ import {
 } from "./quota";
 import { documentUploadServerSchema, renameDocumentServerSchema } from "./schema";
 
+/**
+ * Cible de rattachement optionnelle (justificatif de paiement ou PV/document
+ * de réunion) — au plus l'une des deux, jamais les deux (schema-design
+ * §"Rattachement optionnel").
+ */
+export interface DocumentAttachTarget {
+  paymentId?: string;
+  meetingId?: string;
+}
+
+interface ResolvedAttachTarget {
+  paymentId: string | null;
+  meetingId: string | null;
+  /** Pour revalider la page de détail de la cotisation (pas de page dédiée à un paiement seul). */
+  cotisationId: string | null;
+}
+
+/**
+ * Vérifie que la cible de rattachement appartient bien à l'organisation avant
+ * de l'accepter — `paymentId`/`meetingId` viennent du client (FormData ou
+ * argument d'action), jamais dignes de confiance sans cette vérification
+ * (un id d'une autre organisation romprait le multi-tenant strict).
+ */
+async function resolveAttachTarget(
+  organizationId: string,
+  target: DocumentAttachTarget,
+): Promise<ResolvedAttachTarget | null> {
+  if (target.paymentId) {
+    const payment = await getPaymentById(organizationId, target.paymentId);
+    if (!payment) return null;
+    return { paymentId: payment.id, meetingId: null, cotisationId: payment.cotisationId };
+  }
+  if (target.meetingId) {
+    const meeting = await getMeetingById(organizationId, target.meetingId);
+    if (!meeting) return null;
+    return { paymentId: null, meetingId: meeting.id, cotisationId: null };
+  }
+  return { paymentId: null, meetingId: null, cotisationId: null };
+}
+
 export type DocumentUploadError =
   | "forbidden"
   | "validation"
@@ -30,11 +72,21 @@ export type DocumentUploadError =
 
 export type DocumentActionResult =
   | { ok: true; documentId: string }
-  | { ok: false; error: DocumentUploadError };
+  | { ok: false; error: DocumentUploadError | "invalidTarget" };
 
 export type DocumentSimpleActionResult =
   | { ok: true }
-  | { ok: false; error: "forbidden" | "validation" | "notFound" | "blobDeleteFailed" | "unknown" };
+  | {
+      ok: false;
+      error:
+        | "forbidden"
+        | "validation"
+        | "notFound"
+        | "blobDeleteFailed"
+        | "invalidTarget"
+        | "alreadyAttached"
+        | "unknown";
+    };
 
 /**
  * Upload d'un document (checkpoint : permissions admin/owner, validation
@@ -80,6 +132,16 @@ export async function uploadDocument(
     return { ok: false, error: "invalidType" };
   }
 
+  const rawPaymentId = formData.get("paymentId");
+  const rawMeetingId = formData.get("meetingId");
+  const target = await resolveAttachTarget(organizationId, {
+    paymentId: typeof rawPaymentId === "string" ? rawPaymentId : undefined,
+    meetingId: typeof rawMeetingId === "string" ? rawMeetingId : undefined,
+  });
+  if (!target) {
+    return { ok: false, error: "invalidTarget" };
+  }
+
   const currentUsage = await getOrganizationStorageUsage(organizationId);
   if (currentUsage + file.size > ORGANIZATION_STORAGE_QUOTA_BYTES) {
     return { ok: false, error: "quotaExceeded" };
@@ -107,6 +169,8 @@ export async function uploadDocument(
       sizeBytes: file.size,
       blobUrl: blob.url,
       blobPathname: blob.pathname,
+      paymentId: target.paymentId,
+      meetingId: target.meetingId,
     });
 
     await incrementOrganizationStorageUsage(organizationId, file.size);
@@ -115,7 +179,66 @@ export async function uploadDocument(
   }
 
   revalidatePath(`/${orgSlug}/documents`);
+  if (target.meetingId) revalidatePath(`/${orgSlug}/meetings/${target.meetingId}`);
+  if (target.cotisationId) revalidatePath(`/${orgSlug}/cotisations/${target.cotisationId}`);
   return { ok: true, documentId };
+}
+
+/**
+ * Rattache un document EXISTANT et jusqu'ici non rattaché à un paiement ou
+ * une réunion (« Choisir parmi les documents existants »). Refuse un document
+ * déjà rattaché : voler son rattachement à un autre paiement/réunion serait
+ * une surprise silencieuse pour qui l'a attaché en premier.
+ */
+export async function linkDocumentToTarget(
+  orgSlug: string,
+  documentId: string,
+  target: DocumentAttachTarget,
+): Promise<DocumentSimpleActionResult> {
+  const { organizationId, userId } = await requireOrgAccess(orgSlug);
+
+  const canManage = await canManageDocuments(organizationId, userId);
+  if (!canManage) {
+    return { ok: false, error: "forbidden" };
+  }
+
+  const resolved = await resolveAttachTarget(organizationId, target);
+  if (!resolved || (!resolved.paymentId && !resolved.meetingId)) {
+    return { ok: false, error: "invalidTarget" };
+  }
+
+  const [document] = await db
+    .select({ paymentId: documents.paymentId, meetingId: documents.meetingId })
+    .from(documents)
+    .where(
+      and(
+        eq(documents.id, documentId),
+        eq(documents.organizationId, organizationId),
+        isNull(documents.deletedAt),
+      ),
+    )
+    .limit(1);
+
+  if (!document) {
+    return { ok: false, error: "notFound" };
+  }
+  if (document.paymentId || document.meetingId) {
+    return { ok: false, error: "alreadyAttached" };
+  }
+
+  try {
+    await db
+      .update(documents)
+      .set({ paymentId: resolved.paymentId, meetingId: resolved.meetingId })
+      .where(eq(documents.id, documentId));
+  } catch {
+    return { ok: false, error: "unknown" };
+  }
+
+  revalidatePath(`/${orgSlug}/documents`);
+  if (resolved.meetingId) revalidatePath(`/${orgSlug}/meetings/${resolved.meetingId}`);
+  if (resolved.cotisationId) revalidatePath(`/${orgSlug}/cotisations/${resolved.cotisationId}`);
+  return { ok: true };
 }
 
 /** Renomme (nom d'affichage uniquement) un document — admin/owner. */

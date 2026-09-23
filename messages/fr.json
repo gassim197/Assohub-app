@@ -815,6 +815,10 @@
           "recordedBy": "Enregistré par",
           "note": "Note"
         }
+      },
+      "attachment": {
+        "columnLabel": "Justificatif",
+        "attach": "Joindre"
       }
     },
     "detail": {
@@ -993,7 +997,8 @@
       "videoLink": "Lien de visioconférence",
       "descriptionEmpty": "Aucune description",
       "attendanceTitle": "Présence",
-      "minutesTitle": "Procès-verbal"
+      "minutesTitle": "Procès-verbal",
+      "documentsTitle": "Documents"
     },
     "attendance": {
       "manage": "Gérer la présence",
@@ -1352,6 +1357,10 @@
       "uploadedBy": "Ajouté par"
     },
     "sizeInMb": "{size} Mo",
+    "linkedTo": {
+      "payment": "Lié au paiement du {date}",
+      "meeting": "Lié à la réunion du {date}"
+    },
     "rowActions": {
       "label": "Actions",
       "download": "Télécharger",
@@ -1396,6 +1405,37 @@
         "quotaExceeded": "Votre organisation a atteint sa limite de stockage.",
         "forbidden": "Vous n'avez pas la permission d'ajouter un document.",
         "validation": "Veuillez vérifier les informations saisies.",
+        "unknown": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "meetingSection": {
+      "empty": "Aucun document lié à cette réunion.",
+      "add": "Ajouter un document"
+    },
+    "attachDialog": {
+      "title": "Joindre un document",
+      "description": "Téléversez un nouveau fichier ou choisissez un document existant.",
+      "modeUpload": "Nouveau fichier",
+      "modeExisting": "Document existant",
+      "dropzoneLabel": "Glissez-déposez un fichier ici",
+      "dropzoneHint": "ou cliquez pour parcourir vos fichiers",
+      "categoryLabel": "Catégorie",
+      "displayNameLabel": "Nom d'affichage",
+      "existingLabel": "Document",
+      "cancel": "Annuler",
+      "submit": "Joindre",
+      "submitting": "Envoi…",
+      "success": "Document joint.",
+      "errors": {
+        "fileMissing": "Veuillez sélectionner un fichier.",
+        "fileTooLarge": "Fichier trop volumineux (maximum 10 Mo).",
+        "invalidType": "Ce type de fichier n'est pas accepté.",
+        "quotaExceeded": "Votre organisation a atteint sa limite de stockage.",
+        "forbidden": "Vous n'avez pas la permission de joindre un document.",
+        "validation": "Veuillez vérifier les informations saisies.",
+        "invalidTarget": "Cet élément est introuvable. Veuillez rafraîchir la page.",
+        "notFound": "Ce document est introuvable.",
+        "alreadyAttached": "Ce document est déjà rattaché ailleurs.",
         "unknown": "Une erreur est survenue. Veuillez réessayer."
       }
     }

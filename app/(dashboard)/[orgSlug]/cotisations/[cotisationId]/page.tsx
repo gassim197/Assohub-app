@@ -17,6 +17,8 @@ import {
 } from "@/lib/cotisations/constants";
 import { formatPeriodLabel } from "@/lib/cotisations/period";
 import { formatCurrency } from "@/lib/currency";
+import { canManageDocuments } from "@/lib/documents/permissions";
+import { listDocumentsForPayments, listUnattachedDocuments } from "@/lib/documents/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,7 +40,7 @@ export default async function CotisationDetailPage({
 }) {
   const { orgSlug, cotisationId } = await params;
   const sp = await searchParams;
-  const { organizationId } = await requireOrgAccess(orgSlug);
+  const { organizationId, userId } = await requireOrgAccess(orgSlug);
 
   // getCotisationSummary est borné au tenant et exclut les archivées : une
   // cotisation d'une autre organisation (ou supprimée) renvoie null → 404 propre.
@@ -47,10 +49,19 @@ export default async function CotisationDetailPage({
     notFound();
   }
 
-  const [t, locale, payments] = await Promise.all([
+  const [t, locale, payments, canManage] = await Promise.all([
     getTranslations("cotisations"),
     getLocale(),
     listPaymentsForCotisation(organizationId, cotisationId),
+    canManageDocuments(organizationId, userId),
+  ]);
+
+  const [attachedDocuments, unattachedDocuments] = await Promise.all([
+    listDocumentsForPayments(
+      organizationId,
+      payments.map((payment) => payment.id),
+    ),
+    canManage ? listUnattachedDocuments(organizationId) : Promise.resolve([]),
   ]);
 
   // Édition en place : `?editPayment=true&paymentId=X` monte la modal pré-remplie.
@@ -148,7 +159,14 @@ export default async function CotisationDetailPage({
         <h2 className="mb-3 text-sm font-medium text-foreground">
           {t("detail.historyTitle")}
         </h2>
-        <PaymentHistoryTable orgSlug={orgSlug} cotisation={cotisation} payments={payments} />
+        <PaymentHistoryTable
+          orgSlug={orgSlug}
+          cotisation={cotisation}
+          payments={payments}
+          attachedDocuments={attachedDocuments}
+          unattachedDocuments={unattachedDocuments}
+          canManageDocuments={canManage}
+        />
       </div>
 
       <RecordPaymentDialog orgSlug={orgSlug} cotisation={cotisation} />

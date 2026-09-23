@@ -88,9 +88,33 @@ export async function DocumentsTable({
                     mimeType={document.mimeType}
                     displayName={document.displayName}
                   />
-                  <span className="max-w-56 truncate font-medium text-foreground">
-                    {document.displayName}
-                  </span>
+                  <div className="min-w-0">
+                    <span className="block max-w-56 truncate font-medium text-foreground">
+                      {document.displayName}
+                    </span>
+                    {document.paymentId && document.linkedPaymentCotisationId ? (
+                      <Link
+                        href={`/${orgSlug}/cotisations/${document.linkedPaymentCotisationId}`}
+                        className="text-xs text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
+                      >
+                        {t("linkedTo.payment", {
+                          date: document.linkedPaymentPaidAt
+                            ? dateFormatter.format(new Date(document.linkedPaymentPaidAt))
+                            : "",
+                        })}
+                      </Link>
+                    ) : null}
+                    {document.meetingId && document.linkedMeetingScheduledAt ? (
+                      <Link
+                        href={`/${orgSlug}/meetings/${document.meetingId}`}
+                        className="text-xs text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
+                      >
+                        {t("linkedTo.meeting", {
+                          date: dateFormatter.format(document.linkedMeetingScheduledAt),
+                        })}
+                      </Link>
+                    ) : null}
+                  </div>
                 </div>
               </TableCell>
               <TableCell>

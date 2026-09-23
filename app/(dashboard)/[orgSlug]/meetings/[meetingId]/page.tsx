@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MeetingAttendanceSection } from "@/components/meetings/meeting-attendance-section";
 import { MeetingDetailActions } from "@/components/meetings/meeting-detail-actions";
+import { MeetingDocumentsSection } from "@/components/meetings/meeting-documents-section";
 import { MeetingFormDialog } from "@/components/meetings/meeting-form-dialog";
 import { MeetingMinutesSection } from "@/components/meetings/meeting-minutes-section";
 
@@ -48,7 +49,7 @@ export default async function MeetingDetailPage({
   params: Promise<{ orgSlug: string; meetingId: string }>;
 }) {
   const { orgSlug, meetingId } = await params;
-  const { organizationId } = await requireOrgAccess(orgSlug);
+  const { organizationId, userId } = await requireOrgAccess(orgSlug);
 
   // getMeetingById est borné au tenant et exclut les supprimées : une réunion
   // d'une autre organisation (ou soft-deleted) renvoie null → 404 propre. Une
@@ -184,6 +185,18 @@ export default async function MeetingDetailPage({
               organizationId={organizationId}
               meetingId={meeting.id}
               meetingDescription={meeting.description}
+            />
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-foreground">
+              {t("detail.documentsTitle")}
+            </h2>
+            <MeetingDocumentsSection
+              orgSlug={orgSlug}
+              organizationId={organizationId}
+              userId={userId}
+              meetingId={meeting.id}
             />
           </section>
         </div>
