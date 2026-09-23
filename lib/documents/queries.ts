@@ -108,8 +108,12 @@ export async function listDocuments(
     })
     .from(documents)
     .innerJoin(user, eq(documents.uploadedByUserId, user.id))
-    .leftJoin(payments, eq(documents.paymentId, payments.id))
-    .leftJoin(meetings, eq(documents.meetingId, meetings.id))
+    // Filtre `deletedAt` dans la condition de jointure (pas dans le WHERE) :
+    // un document rattaché à un paiement/une réunion supprimé(e) reste listé,
+    // seules les colonnes `linked*` passent à null — le lien disparaît au lieu
+    // de pointer vers une page 404.
+    .leftJoin(payments, and(eq(documents.paymentId, payments.id), isNull(payments.deletedAt)))
+    .leftJoin(meetings, and(eq(documents.meetingId, meetings.id), isNull(meetings.deletedAt)))
     .where(and(...conditions))
     .orderBy(desc(documents.createdAt));
 }
