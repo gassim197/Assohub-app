@@ -45,7 +45,12 @@ export function SectionNav() {
 
   useEffect(() => {
     const list = listRef.current;
-    if (!list || !active) return;
+    if (!list) return;
+    // Retour au hero (aucune grappe active) : barre ramenée au début.
+    if (!active) {
+      list.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
     const link = list.querySelector<HTMLAnchorElement>(`a[href="#${active}"]`);
     if (!link) return;
     // Défilement horizontal de la barre seulement (jamais de la page).
