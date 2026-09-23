@@ -1540,160 +1540,159 @@
       "register": "Create an account"
     },
     "hero": {
-      "title": "Managing your association, finally simple.",
-      "subtitle": "Members, dues, meetings, finances — all in one place. Built for African organizations: Orange Money, MTN, PayCard, Soutra Money and WhatsApp sharing.",
-      "ctaPrimary": "Create my free account",
-      "ctaSecondary": "Discover the features",
-      "mockup": {
-        "orgName": "Kaloum Youth Association",
-        "subtitle": "Dashboard",
-        "activeMembers": "Active members",
-        "outstanding": "Outstanding",
-        "netBalance": "Balance",
-        "nextMeeting": "Next meeting",
-        "nextMeetingValue": "General Assembly"
-      }
+      "title": "Run your association without notebooks or spreadsheets",
+      "subtitle": "Members, contributions, meetings and documents together in one place, designed for associations and NGOs in West Africa.",
+      "ctaPrimary": "Create my association",
+      "ctaSecondary": "Sign in",
+      "mediaAlt": "An association's AssoHub dashboard: active members, outstanding contributions, financial balance and upcoming meetings"
     },
-    "problem": {
-      "title": "Running an association shouldn't be a headache.",
-      "pains": {
-        "notebook": "A notebook, texts, your memory — and it can all disappear overnight.",
-        "tracking": "Who paid their dues? Who's late? Impossible to know without recounting everything.",
-        "trust": "Without transparency, trust erodes between members."
-      }
+    "nav": {
+      "label": "Features",
+      "membres": "Members",
+      "cotisations": "Contributions",
+      "reunions": "Meetings",
+      "documents": "Documents",
+      "pilotage": "Insights"
     },
-    "beforeAfter": {
-      "title": "From scrambling to peace of mind.",
-      "without": {
-        "label": "Without AssoHub",
-        "item1": "Notebooks and files scattered around, lost at the first mishap.",
-        "item2": "\"Who paid?\" — hours spent recounting everything by hand.",
-        "item3": "Follow-ups one by one, member by member.",
-        "item4": "A financial summary improvised in a panic before the AGM.",
-        "item5": "Everything relies on one person's memory.",
-        "item6": "Doubts and tension over transparency."
+    "clusters": {
+      "membres": {
+        "title": "A member directory that stays up to date",
+        "features": {
+          "liste": {
+            "title": "All your members in one place",
+            "description": "Statuses, roles and instant search.",
+            "alt": "An association's member list, with each member's status, role and a search bar"
+          },
+          "fiche": {
+            "title": "A complete profile for everyone",
+            "description": "Contact details, membership date, occupation: everything is one click away.",
+            "alt": "A member's profile: contact details, membership date and occupation"
+          },
+          "ajout": {
+            "title": "Add a member in seconds",
+            "description": "One by one, by import or with an invitation link.",
+            "alt": "The \"New member\" form with identity, contact, role and status fields"
+          }
+        }
       },
-      "with": {
-        "label": "With AssoHub",
-        "item1": "All your data centralized and secure.",
-        "item2": "Who paid, who's late: visible at a glance.",
-        "item3": "Bulk follow-up by email or WhatsApp in one click.",
-        "item4": "Financial PDF report ready in seconds.",
-        "item5": "Continuity guaranteed, even when the board changes.",
-        "item6": "Transparency that builds trust."
-      }
-    },
-    "solution": {
-      "title": "AssoHub brings together everything your association needs.",
-      "modules": {
-        "members": {
-          "title": "Members",
-          "description": "Your complete directory. Invite members by email or a simple WhatsApp link."
-        },
-        "cotisations": {
-          "title": "Dues",
-          "description": "Track who's paid, collect via Orange Money, MTN, PayCard or Soutra Money, follow up with latecomers in one click."
-        },
-        "meetings": {
-          "title": "Meetings & Minutes",
-          "description": "Schedule meetings, track attendance, write up your minutes."
-        },
-        "reports": {
-          "title": "Financial reports",
-          "description": "Revenue, expenses, balance — and a PDF report ready for your AGM or funders."
-        },
-        "dashboard": {
-          "title": "Dashboard",
-          "description": "Everything essential about your association at a glance."
+      "cotisations": {
+        "title": "Contributions tracked, reminders never forgotten",
+        "features": {
+          "vue": {
+            "title": "Collected, still outstanding: everything is clear",
+            "description": "See at a glance where your association's contributions stand.",
+            "alt": "Contributions overview: amount collected, amount outstanding and overdue contributions"
+          },
+          "relances": {
+            "title": "Remind late members in one click",
+            "description": "A single message per member, by email or WhatsApp.",
+            "alt": "List of due contributions with the date of the last reminder sent to each member"
+          },
+          "moyens": {
+            "title": "Every payment method your members use",
+            "description": "Cash, Orange Money, MTN MoMo, PayCard, Soutra Money, bank transfer.",
+            "alt": "Payment recording form with the list of payment methods open"
+          }
         }
-      }
-    },
-    "whyUs": {
-      "title": "Built here, for our realities.",
-      "reasons": {
-        "mobileMoney": {
-          "title": "Mobile money built in",
-          "description": "Orange Money, MTN MoMo, PayCard, Soutra Money."
-        },
-        "whatsapp": {
-          "title": "WhatsApp at the core",
-          "description": "Invite and follow up through the channel everyone already uses."
-        },
-        "mobileFirst": {
-          "title": "Built mobile-first",
-          "description": "Manage your association from your phone."
-        },
-        "security": {
-          "title": "Your data, secure",
-          "description": "No more notebooks that can get lost."
+      },
+      "reunions": {
+        "title": "Meetings prepared, decisions on record",
+        "features": {
+          "liste": {
+            "title": "Plan your meetings",
+            "description": "A shared calendar, always up to date.",
+            "alt": "An association's meeting list next to the monthly calendar"
+          },
+          "pv": {
+            "title": "Write and publish your minutes",
+            "description": "Agenda, decisions, action items: nothing gets lost.",
+            "alt": "A general assembly page: member attendance and published minutes with the agenda and decisions"
+          },
+          "presence": {
+            "title": "Track attendance",
+            "description": "The turnout of every meeting, in real time.",
+            "alt": "A meeting's \"Attendance\" block: turnout rate and member responses"
+          }
         }
-      }
-    },
-    "stats": {
-      "items": {
-        "modules": { "value": "5 modules", "label": "All-in-one" },
-        "payments": { "value": "4 mobile payment methods", "label": "Orange Money, MTN, PayCard, Soutra Money" },
-        "french": { "value": "100% French", "label": "" },
-        "free": { "value": "Free", "label": "At launch" }
-      }
-    },
-    "howItWorks": {
-      "title": "Get started in 3 steps.",
-      "steps": {
-        "createOrg": {
-          "title": "Create your organization",
-          "description": "Sign up and create your association's space."
-        },
-        "addMembers": {
-          "title": "Add your members",
-          "description": "By email or a shareable WhatsApp link."
-        },
-        "manage": {
-          "title": "Manage with peace of mind",
-          "description": "Dues, meetings, finances — it all becomes simple."
+      },
+      "documents": {
+        "title": "Your documents, finally organized",
+        "badge": "New",
+        "features": {
+          "espace": {
+            "title": "A secure space for all your documents",
+            "description": "Bylaws, minutes, receipts, reports: sorted into six categories.",
+            "alt": ""
+          },
+          "justificatifs": {
+            "title": "Every supporting document in its place",
+            "description": "Attach a receipt to its payment, minutes to their meeting.",
+            "alt": ""
+          }
+        }
+      },
+      "pilotage": {
+        "title": "A clear view of your finances",
+        "features": {
+          "rapports": {
+            "title": "Income, expenses and balance, month by month",
+            "description": "Reports ready to present at your general assembly.",
+            "alt": "An association's financial report: income, expenses and balance month by month"
+          },
+          "tableau": {
+            "title": "Your association's dashboard",
+            "description": "Upcoming meetings, late payments, balance: the essentials as soon as you log in.",
+            "alt": "An association's dashboard: upcoming meetings, overdue contributions and balance"
+          },
+          "organisations": {
+            "title": "Several organizations, one account",
+            "description": "Switch from one association to another in one click.",
+            "alt": "Dashboard with the organization switcher open, to move from one association to another"
+          }
         }
       }
     },
     "faq": {
-      "title": "Frequently asked questions.",
+      "title": "Frequently asked questions",
       "questions": {
-        "q1": {
-          "question": "Is AssoHub really free?",
-          "answer": "Yes, AssoHub is entirely free at launch. You can create your organization, add your members, and manage your dues at no cost."
+        "securite": {
+          "question": "Who can see my association's data?",
+          "answer": "Only the people you have added to your organization. One association's data is never visible from another."
         },
-        "q2": {
-          "question": "Is my data secure?",
-          "answer": "Your data is stored securely and only accessible to authorized members of your organization. You stay in full control and can delete it at any time."
+        "simplicite": {
+          "question": "Do I need technical skills?",
+          "answer": "No. AssoHub runs in the browser on your computer or phone, with nothing to install."
         },
-        "q3": {
-          "question": "Is it complicated to use?",
-          "answer": "Not at all. AssoHub is designed to be simple, even without technical skills. If you know how to use WhatsApp, you'll know how to use AssoHub."
-        },
-        "q4": {
+        "organisations": {
           "question": "Can I manage several associations?",
-          "answer": "Yes. You can create and manage several organizations from a single account, and switch between them in one click."
+          "answer": "Yes. You can create and manage several organizations from a single account and switch between them in one click."
         },
-        "q5": {
-          "question": "How do my members pay their dues?",
-          "answer": "You record payments received via Orange Money, MTN MoMo, PayCard, Soutra Money, cash, or bank transfer. AssoHub automatically tracks who's paid and who's late."
+        "paiements": {
+          "question": "How do my members pay their contributions?",
+          "answer": "Just as they do today: in cash to the treasurer, via Orange Money, MTN MoMo, PayCard, Soutra Money or by bank transfer. No money goes through AssoHub: you record each payment received, and AssoHub automatically tracks who has paid and who is late."
         }
       }
     },
     "finalCta": {
-      "title": "Ready to simplify your association's management?",
-      "subtitle": "Join the associations going digital with AssoHub.",
-      "cta": "Create my free account"
+      "title": "Your association deserves better than a notebook",
+      "subtitle": "Set up your association's space in a few minutes.",
+      "cta": "Create my association"
     },
     "footer": {
       "tagline": "The digital infrastructure for African organizations",
       "login": "Sign in",
       "register": "Create an account",
+      "faq": "FAQ",
       "copyright": "© {year} AssoHub. All rights reserved.",
       "legal": {
         "mentionsLegales": "Legal notice",
         "confidentialite": "Privacy policy",
         "conditionsUtilisation": "Terms of use"
       }
+    },
+    "meta": {
+      "title": "AssoHub — Association and NGO management in West Africa",
+      "ogAlt": "AssoHub dashboard: an association's members, contributions, meetings and finances"
     }
   }
 }

@@ -1540,160 +1540,159 @@
       "register": "Créer un compte"
     },
     "hero": {
-      "title": "La gestion de votre association, enfin simple.",
-      "subtitle": "Membres, cotisations, réunions, finances — tout au même endroit. Pensé pour les associations africaines : Orange Money, MTN, PayCard, Soutra Money et partage WhatsApp.",
-      "ctaPrimary": "Créer mon compte gratuitement",
-      "ctaSecondary": "Découvrir les fonctionnalités",
-      "mockup": {
-        "orgName": "Association des Jeunes de Kaloum",
-        "subtitle": "Tableau de bord",
-        "activeMembers": "Membres actifs",
-        "outstanding": "À percevoir",
-        "netBalance": "Solde",
-        "nextMeeting": "Prochaine réunion",
-        "nextMeetingValue": "Assemblée Générale"
-      }
+      "title": "Gérez votre association sans cahier ni tableur",
+      "subtitle": "Membres, cotisations, réunions et documents réunis dans un seul espace, pensé pour les associations et ONG d'Afrique de l'Ouest.",
+      "ctaPrimary": "Créer mon association",
+      "ctaSecondary": "Se connecter",
+      "mediaAlt": "Tableau de bord d'une association dans AssoHub : membres actifs, cotisations à percevoir, solde financier et prochaines réunions"
     },
-    "problem": {
-      "title": "Gérer une association ne devrait pas être un casse-tête.",
-      "pains": {
-        "notebook": "Un cahier, des SMS, votre mémoire — et tout peut disparaître du jour au lendemain.",
-        "tracking": "Qui a payé sa cotisation ? Qui est en retard ? Impossible de le savoir sans tout recompter.",
-        "trust": "Sans transparence, la confiance s'érode entre les membres."
-      }
+    "nav": {
+      "label": "Fonctionnalités",
+      "membres": "Membres",
+      "cotisations": "Cotisations",
+      "reunions": "Réunions",
+      "documents": "Documents",
+      "pilotage": "Pilotage"
     },
-    "beforeAfter": {
-      "title": "De la débrouille à la sérénité.",
-      "without": {
-        "label": "Sans AssoHub",
-        "item1": "Cahiers et fichiers éparpillés, perdus au moindre incident.",
-        "item2": "« Qui a payé ? » — des heures à recompter à la main.",
-        "item3": "Relances une par une, membre par membre.",
-        "item4": "Bilan financier improvisé dans la panique avant l'AG.",
-        "item5": "Tout repose sur la mémoire d'une seule personne.",
-        "item6": "Des doutes et des tensions sur la transparence."
+    "clusters": {
+      "membres": {
+        "title": "Un annuaire toujours à jour",
+        "features": {
+          "liste": {
+            "title": "Tous vos membres au même endroit",
+            "description": "Statuts, rôles et recherche instantanée.",
+            "alt": "Liste des membres d'une association, avec leur statut, leur rôle et une barre de recherche"
+          },
+          "fiche": {
+            "title": "Une fiche complète pour chacun",
+            "description": "Coordonnées, date d'adhésion, profession : tout est retrouvable en un clic.",
+            "alt": "Fiche d'une membre : coordonnées, date d'adhésion et profession"
+          },
+          "ajout": {
+            "title": "Ajoutez un membre en quelques secondes",
+            "description": "Un par un, par import ou avec un lien d'invitation.",
+            "alt": "Formulaire « Nouveau membre » avec les champs d'identité, de contact, de rôle et de statut"
+          }
+        }
       },
-      "with": {
-        "label": "Avec AssoHub",
-        "item1": "Toutes vos données centralisées et en sécurité.",
-        "item2": "Qui a payé, qui est en retard : visible en un coup d'œil.",
-        "item3": "Relance groupée par email ou WhatsApp en un clic.",
-        "item4": "Rapport financier PDF prêt en quelques secondes.",
-        "item5": "La continuité assurée, même quand le bureau change.",
-        "item6": "Une transparence qui renforce la confiance."
-      }
-    },
-    "solution": {
-      "title": "AssoHub réunit tout ce dont votre association a besoin.",
-      "modules": {
-        "members": {
-          "title": "Membres",
-          "description": "Votre annuaire complet. Invitez vos membres par email ou par un simple lien WhatsApp."
-        },
-        "cotisations": {
-          "title": "Cotisations",
-          "description": "Suivez qui a payé, encaissez via Orange Money, MTN, PayCard ou Soutra Money, relancez les retardataires en un clic."
-        },
-        "meetings": {
-          "title": "Réunions & PV",
-          "description": "Planifiez vos réunions, suivez les présences, rédigez vos procès-verbaux."
-        },
-        "reports": {
-          "title": "Rapports financiers",
-          "description": "Revenus, dépenses, solde — et un rapport PDF prêt pour votre AG ou vos bailleurs."
-        },
-        "dashboard": {
-          "title": "Tableau de bord",
-          "description": "Tout l'essentiel de votre association en un coup d'œil."
+      "cotisations": {
+        "title": "Des cotisations suivies, sans relances oubliées",
+        "features": {
+          "vue": {
+            "title": "Encaissé, restant à percevoir : tout est clair",
+            "description": "Voyez en un coup d'œil où en sont les cotisations de votre association.",
+            "alt": "Vue d'ensemble des cotisations : montant encaissé, restant à percevoir et cotisations en retard"
+          },
+          "relances": {
+            "title": "Relancez les retardataires en un clic",
+            "description": "Un seul message par membre, par email ou par WhatsApp.",
+            "alt": "Liste des cotisations dues avec la date du dernier rappel envoyé à chaque membre"
+          },
+          "moyens": {
+            "title": "Tous les moyens de paiement de vos membres",
+            "description": "Espèces, Orange Money, MTN MoMo, PayCard, Soutra Money, virement.",
+            "alt": "Formulaire d'enregistrement d'un paiement, avec la liste des moyens de paiement ouverte"
+          }
         }
-      }
-    },
-    "whyUs": {
-      "title": "Conçu ici, pour nos réalités.",
-      "reasons": {
-        "mobileMoney": {
-          "title": "Mobile money intégré",
-          "description": "Orange Money, MTN MoMo, PayCard, Soutra Money."
-        },
-        "whatsapp": {
-          "title": "WhatsApp au cœur",
-          "description": "Invitez et relancez par le canal que tout le monde utilise."
-        },
-        "mobileFirst": {
-          "title": "Pensé mobile d'abord",
-          "description": "Gérez votre association depuis votre téléphone."
-        },
-        "security": {
-          "title": "Vos données en sécurité",
-          "description": "Fini le cahier qu'on peut perdre."
+      },
+      "reunions": {
+        "title": "Des réunions préparées, des décisions archivées",
+        "features": {
+          "liste": {
+            "title": "Planifiez vos réunions",
+            "description": "Un calendrier partagé, toujours à jour.",
+            "alt": "Liste des réunions d'une association à côté du calendrier du mois"
+          },
+          "pv": {
+            "title": "Rédigez et publiez vos procès-verbaux",
+            "description": "Ordre du jour, décisions, actions à mener : rien ne se perd.",
+            "alt": "Fiche d'une assemblée générale : présence des membres et procès-verbal publié avec l'ordre du jour et les décisions"
+          },
+          "presence": {
+            "title": "Suivez les présences",
+            "description": "Le taux de participation de chaque réunion, en temps réel.",
+            "alt": "Bloc « Présence » d'une réunion : taux de participation et réponses des membres"
+          }
         }
-      }
-    },
-    "stats": {
-      "items": {
-        "modules": { "value": "5 modules", "label": "Tout-en-un" },
-        "payments": { "value": "4 moyens de paiement mobile", "label": "Orange Money, MTN, PayCard, Soutra Money" },
-        "french": { "value": "100% en français", "label": "" },
-        "free": { "value": "Gratuit", "label": "Au lancement" }
-      }
-    },
-    "howItWorks": {
-      "title": "Commencez en 3 étapes.",
-      "steps": {
-        "createOrg": {
-          "title": "Créez votre organisation",
-          "description": "Inscrivez-vous et créez l'espace de votre association."
-        },
-        "addMembers": {
-          "title": "Ajoutez vos membres",
-          "description": "Par email ou lien WhatsApp partageable."
-        },
-        "manage": {
-          "title": "Gérez en toute sérénité",
-          "description": "Cotisations, réunions, finances — tout devient simple."
+      },
+      "documents": {
+        "title": "Vos documents enfin rangés",
+        "badge": "Nouveau",
+        "features": {
+          "espace": {
+            "title": "Un espace sécurisé pour tous vos documents",
+            "description": "Statuts, procès-verbaux, reçus, rapports : classés en six catégories.",
+            "alt": ""
+          },
+          "justificatifs": {
+            "title": "Chaque justificatif à sa place",
+            "description": "Rattachez un reçu à son paiement, un procès-verbal à sa réunion.",
+            "alt": ""
+          }
+        }
+      },
+      "pilotage": {
+        "title": "Une vision claire de vos finances",
+        "features": {
+          "rapports": {
+            "title": "Recettes, dépenses et solde, mois par mois",
+            "description": "Des rapports prêts à présenter en assemblée générale.",
+            "alt": "Rapport financier d'une association : recettes, dépenses et solde mois par mois"
+          },
+          "tableau": {
+            "title": "Le tableau de bord de votre association",
+            "description": "Réunions à venir, retards, solde : l'essentiel dès la connexion.",
+            "alt": "Tableau de bord d'une association : réunions à venir, cotisations en retard et solde"
+          },
+          "organisations": {
+            "title": "Plusieurs organisations, un seul compte",
+            "description": "Passez d'une association à l'autre en un clic.",
+            "alt": "Tableau de bord avec le sélecteur d'organisations ouvert, pour passer d'une association à l'autre"
+          }
         }
       }
     },
     "faq": {
-      "title": "Questions fréquentes.",
+      "title": "Questions fréquentes",
       "questions": {
-        "q1": {
-          "question": "AssoHub est-il vraiment gratuit ?",
-          "answer": "Oui, AssoHub est entièrement gratuit au lancement. Vous pouvez créer votre organisation, ajouter vos membres et gérer vos cotisations sans aucun frais."
+        "securite": {
+          "question": "Qui peut voir les données de mon association ?",
+          "answer": "Uniquement les personnes que vous avez ajoutées à votre organisation. Les données d'une association ne sont jamais visibles depuis une autre."
         },
-        "q2": {
-          "question": "Mes données sont-elles en sécurité ?",
-          "answer": "Vos données sont stockées de manière sécurisée et ne sont accessibles qu'aux membres autorisés de votre organisation. Vous gardez le contrôle total et pouvez les supprimer à tout moment."
+        "simplicite": {
+          "question": "Faut-il des compétences techniques ?",
+          "answer": "Non. AssoHub fonctionne dans le navigateur de votre ordinateur ou de votre téléphone, sans rien installer."
         },
-        "q3": {
-          "question": "Est-ce compliqué à utiliser ?",
-          "answer": "Pas du tout. AssoHub est pensé pour être simple, même sans compétences techniques. Si vous savez utiliser WhatsApp, vous saurez utiliser AssoHub."
-        },
-        "q4": {
+        "organisations": {
           "question": "Puis-je gérer plusieurs associations ?",
           "answer": "Oui. Vous pouvez créer et gérer plusieurs organisations depuis un même compte, et basculer de l'une à l'autre en un clic."
         },
-        "q5": {
+        "paiements": {
           "question": "Comment mes membres paient-ils leurs cotisations ?",
-          "answer": "Vous enregistrez les paiements reçus via Orange Money, MTN MoMo, PayCard, Soutra Money, espèces ou virement. AssoHub suit automatiquement qui a payé et qui est en retard."
+          "answer": "Comme d'habitude : en espèces auprès du trésorier, par Orange Money, MTN MoMo, PayCard, Soutra Money ou par virement. Aucun argent ne transite par AssoHub : vous enregistrez chaque paiement reçu, et AssoHub suit automatiquement qui a payé et qui est en retard."
         }
       }
     },
     "finalCta": {
-      "title": "Prêt à simplifier la gestion de votre association ?",
-      "subtitle": "Rejoignez les associations qui passent au numérique avec AssoHub.",
-      "cta": "Créer mon compte gratuitement"
+      "title": "Votre association mérite mieux qu'un cahier",
+      "subtitle": "Créez l'espace de votre association en quelques minutes.",
+      "cta": "Créer mon association"
     },
     "footer": {
       "tagline": "L'infrastructure numérique des organisations africaines",
       "login": "Connexion",
       "register": "Créer un compte",
+      "faq": "Questions fréquentes",
       "copyright": "© {year} AssoHub. Tous droits réservés.",
       "legal": {
         "mentionsLegales": "Mentions légales",
         "confidentialite": "Politique de confidentialité",
         "conditionsUtilisation": "Conditions d'utilisation"
       }
+    },
+    "meta": {
+      "title": "AssoHub — Gestion d'associations et d'ONG en Afrique de l'Ouest",
+      "ogAlt": "Tableau de bord AssoHub : membres, cotisations, réunions et finances d'une association"
     }
   },
   "legal": {

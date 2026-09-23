@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button";
 /**
  * Header de la landing publique — pas de menu de navigation (les études de
  * conversion montrent qu'un menu distrait de l'objectif) : logo + un lien +
- * un CTA, rien d'autre.
+ * un CTA, rien d'autre. Hauteur fixe (`h-14`) : la barre d'ancres de la
+ * landing (`SectionNav`) se colle juste en dessous (`top-14`).
  */
 export async function LandingHeader() {
   const t = await getTranslations("landing.header");
 
   return (
     <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
           <Logo variant="full" />
         </Link>

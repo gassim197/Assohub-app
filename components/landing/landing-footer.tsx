@@ -2,9 +2,15 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { Logo } from "@/components/ui/logo";
+import { CLUSTER_IDS } from "./landing-content";
 
+/**
+ * Footer partagé par la landing et les pages légales : les liens vers les
+ * sections passent par `/#…` pour fonctionner depuis ces deux contextes.
+ */
 export async function LandingFooter() {
   const t = await getTranslations("landing.footer");
+  const tNav = await getTranslations("landing.nav");
   const year = new Date().getFullYear();
 
   return (
@@ -27,6 +33,20 @@ export async function LandingFooter() {
           <p className="text-xs text-muted-foreground">{t("copyright", { year })}</p>
         </div>
       </div>
+
+      <nav
+        aria-label={tNav("label")}
+        className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 pb-8 text-sm sm:justify-start sm:px-6 lg:px-8"
+      >
+        {CLUSTER_IDS.map((id) => (
+          <Link key={id} href={`/#${id}`} className="text-muted-foreground hover:text-foreground">
+            {tNav(id)}
+          </Link>
+        ))}
+        <Link href="/#faq" className="text-muted-foreground hover:text-foreground">
+          {t("faq")}
+        </Link>
+      </nav>
 
       <div className="border-t border-foreground/10">
         <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 py-4 text-xs text-muted-foreground sm:px-6 lg:px-8">
