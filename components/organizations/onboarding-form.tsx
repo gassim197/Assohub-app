@@ -117,9 +117,11 @@ export function OnboardingForm({ cancelHref }: { cancelHref?: string }) {
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue
-                          placeholder={t("onboarding.orgTypePlaceholder")}
-                        />
+                        <SelectValue>
+                          {field.value
+                            ? t(`onboarding.orgTypes.${field.value}`)
+                            : t("onboarding.orgTypePlaceholder")}
+                        </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

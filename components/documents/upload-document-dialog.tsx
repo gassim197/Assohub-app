@@ -192,7 +192,7 @@ export function UploadDocumentDialog({ orgSlug }: { orgSlug: string }) {
               onValueChange={(value) => setCategory(value as DocumentCategory)}
             >
               <SelectTrigger id="document-category" className="w-full">
-                <SelectValue />
+                <SelectValue>{tCategories(category)}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {DOCUMENT_CATEGORIES.map((value) => (

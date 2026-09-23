@@ -101,7 +101,7 @@ export function OrganizationSettingsForm({
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>{tOnboarding(`orgTypes.${field.value}`)}</SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

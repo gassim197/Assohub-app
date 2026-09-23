@@ -71,6 +71,8 @@ export default async function DashboardHomePage({
     month: "long",
     year: "numeric",
   }).format(new Date());
+  // Seule la première lettre de la phrase prend une majuscule (« Mercredi 23 septembre 2026 »).
+  const todayLabelSentence = todayLabel.charAt(0).toLocaleUpperCase(locale) + todayLabel.slice(1);
 
   return (
     <div className="space-y-6">
@@ -78,7 +80,7 @@ export default async function DashboardHomePage({
         <h1 className="text-2xl font-semibold tracking-tight">
           {t("greeting", { firstName })}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground capitalize">{todayLabel}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{todayLabelSentence}</p>
       </div>
 
       <QuickActions orgSlug={orgSlug} />

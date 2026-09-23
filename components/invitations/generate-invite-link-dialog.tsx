@@ -160,7 +160,7 @@ export function GenerateInviteLinkDialog({ orgSlug }: { orgSlug: string }) {
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>{tRoles(`roles.${field.value}`)}</SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

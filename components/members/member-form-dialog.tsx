@@ -256,7 +256,7 @@ export function MemberFormDialog({
                     >
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>{t(`roles.${field.value}`)}</SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -284,7 +284,7 @@ export function MemberFormDialog({
                     >
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>{t(`status.${STATUS_I18N_KEY[field.value]}`)}</SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

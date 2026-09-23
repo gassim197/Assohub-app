@@ -204,7 +204,7 @@ export function MeetingFormDialog({
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>{t(`types.${field.value}`)}</SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -229,7 +229,7 @@ export function MeetingFormDialog({
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue />
+                          <SelectValue>{t(`status.${field.value}`)}</SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

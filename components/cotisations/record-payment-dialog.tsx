@@ -278,7 +278,7 @@ export function RecordPaymentDialog({
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>{tMethod(field.value)}</SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

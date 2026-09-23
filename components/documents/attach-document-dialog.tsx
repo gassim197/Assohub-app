@@ -220,7 +220,7 @@ export function AttachDocumentDialog({
                 onValueChange={(value) => setCategory(value as DocumentCategory)}
               >
                 <SelectTrigger id="attach-category" className="w-full">
-                  <SelectValue />
+                  <SelectValue>{tCategories(category)}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {DOCUMENT_CATEGORIES.map((value) => (
@@ -259,7 +259,7 @@ export function AttachDocumentDialog({
                 onValueChange={(value) => setSelectedExistingId(value ?? undefined)}
               >
                 <SelectTrigger id="attach-existing" className="w-full">
-                  <SelectValue />
+                  <SelectValue>{existingDocuments.find((doc) => doc.id === selectedExistingId)?.displayName}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {existingDocuments.map((doc) => (

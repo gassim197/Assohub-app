@@ -100,7 +100,7 @@ export function MeetingMinutesStatusDialog({
             onValueChange={(value) => setStatus(value as MinutesStatus)}
           >
             <SelectTrigger className="w-full">
-              <SelectValue />
+              <SelectValue>{t(`status.${status}`)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {MINUTES_STATUSES.map((s) => (

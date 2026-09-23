@@ -198,7 +198,7 @@ export function ManualRevenueFormDialog({
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>{tCategory(field.value)}</SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

@@ -189,7 +189,7 @@ export function ExpenseFormDialog({
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>{tCategory(field.value)}</SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

@@ -118,7 +118,7 @@ export function StatusChangeDialog({
             onValueChange={(value) => setStatus(value as MemberStatus)}
           >
             <SelectTrigger className="w-full">
-              <SelectValue />
+              <SelectValue>{t(`status.${STATUS_I18N_KEY[status]}`)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {MEMBER_STATUSES.map((s) => (
