@@ -11,16 +11,20 @@ import {
   associationMembers,
   cotisationTypes,
   cotisations,
+  documents,
   meetingAttendance,
   meetings,
   minutes,
   organization,
   organizationInviteLinks,
+  organizationStorageUsage,
   paymentReminders,
   payments,
   pendingInvitations,
   transactions,
 } from "@/lib/db/schema";
+import { deleteDocumentBlobs } from "@/lib/documents/blob";
+import { listDocumentBlobPathnamesForOrganization } from "@/lib/documents/queries";
 import { deleteOrganizationSchema } from "./schema";
 import { getMemberRole, getUserOrganizations } from "./queries";
 
@@ -66,16 +70,25 @@ export type DeleteOrganizationResult =
  * Supprime définitivement une organisation (hard delete, chantier
  * "suppression d'organisation") — seul le `owner` peut le faire.
  *
- * Deux phases, comme `lib/settings/actions.ts::deleteMyAccount` :
- *  - Phase A, atomique (`db.batch`) : les 11 tables métier portant
+ * Trois phases, comme `lib/settings/actions.ts::deleteMyAccount` :
+ *  - Phase A0, avant toute suppression : on relève les `blob_pathname` de
+ *    tous les documents de l'organisation (chantier Documents) — une fois les
+ *    lignes `documents` supprimées en phase A, cette information est perdue.
+ *  - Phase A, atomique (`db.batch`) : les 13 tables métier portant
  *    `organization_id`, dans l'ordre topologique de leurs FK (les plus
  *    dépendantes d'abord — présences avant réunions, paiements avant
- *    cotisations, etc.). Aucune n'a de FK en cascade vers `organization` ;
- *    si on supprimait l'organisation avant d'avoir vidé ces tables, Postgres
+ *    cotisations, documents avant paiements/réunions qu'ils référencent,
+ *    etc.). Aucune n'a de FK en cascade vers `organization` ; si on
+ *    supprimait l'organisation avant d'avoir vidé ces tables, Postgres
  *    rejetterait la suppression pour violation de contrainte.
- *  - Phase B, après le commit de A : `auth.api.deleteOrganization`, qui
- *    supprime déjà lui-même, en interne, toutes les lignes `member` et
- *    `invitation` de l'organisation avant l'organisation elle-même
+ *  - Phase A1, après le commit de A : purge des blobs Vercel relevés en A0
+ *    (`deleteDocumentBlobs`, best-effort — les lignes `documents` sont de
+ *    toute façon déjà supprimées, un échec ne laisse rien à "réessayer"
+ *    proprement ; au pire un blob orphelin reste facturé, cas résiduel non
+ *    traité en V1, cf. plan validé).
+ *  - Phase B, après A1 : `auth.api.deleteOrganization`, qui supprime déjà
+ *    lui-même, en interne, toutes les lignes `member` et `invitation` de
+ *    l'organisation avant l'organisation elle-même
  *    (`node_modules/better-auth/dist/plugins/organization/adapter.mjs`) —
  *    rien à supprimer nous-mêmes sur `member`.
  *
@@ -111,8 +124,14 @@ export async function deleteOrganization(
     return { ok: false, error: "validation" };
   }
 
+  const documentBlobPathnames = await listDocumentBlobPathnamesForOrganization(organizationId);
+
   try {
     await db.batch([
+      db.delete(documents).where(eq(documents.organizationId, organizationId)),
+      db
+        .delete(organizationStorageUsage)
+        .where(eq(organizationStorageUsage.organizationId, organizationId)),
       db.delete(meetingAttendance).where(eq(meetingAttendance.organizationId, organizationId)),
       db.delete(minutes).where(eq(minutes.organizationId, organizationId)),
       db.delete(paymentReminders).where(eq(paymentReminders.organizationId, organizationId)),
@@ -130,6 +149,12 @@ export async function deleteOrganization(
   } catch {
     return { ok: false, error: "unknown" };
   }
+
+  // Best-effort : les lignes `documents` sont déjà supprimées, un échec ici
+  // laisse au pire un blob orphelin (facturé mais non recensé) plutôt que de
+  // faire échouer toute la suppression de l'organisation pour ce nettoyage
+  // secondaire.
+  await deleteDocumentBlobs(documentBlobPathnames);
 
   const requestHeaders = await headers();
   try {

@@ -6,3 +6,4 @@ export * from "./members-schema";
 export * from "./cotisations-schema";
 export * from "./meetings-schema";
 export * from "./transactions-schema";
+export * from "./documents-schema";
