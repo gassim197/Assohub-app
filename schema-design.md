@@ -470,6 +470,20 @@ CREATE UNIQUE INDEX idx_cotisations_type_period_member
 > ("Juillet 2026" / "July 2026") est calculé à la lecture par
 > `lib/cotisations/generation.ts`.
 
+> **Convention — cotisations ponctuelles (`one_time`, ex. droit d'adhésion)**
+> (septembre 2026, validée avec le fondateur) — Jamais générées par le mécanisme
+> lazy ; aucun écran de création n'existe encore, le futur écran doit respecter :
+>
+> | Champ | Valeur |
+> |---|---|
+> | `period_start` | date d'adhésion du membre (`association_members.joined_at`) |
+> | `period_end` | identique à `period_start` |
+> | `due_date` | `period_start` + 15 jours |
+> | `period_label` | forme canonique `YYYY-MM-DD` (= `period_start`) |
+>
+> L'affichage localisé (`formatPeriodLabel`, branche `one_time`) rend la date
+> longue ("20 mai 2026"). Première utilisation : `scripts/seed-demo.ts`.
+
 **Enum `status` (calculé) :**
 
 | Valeur | Condition |
