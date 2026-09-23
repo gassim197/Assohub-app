@@ -61,7 +61,7 @@ export async function DashboardKpis({
             {formatCurrency(cotisationKpis.outstanding, locale)}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t("lateCount", { count: cotisationKpis.lateCount })}
+            {t("lateCount", { count: cotisationKpis.lateMemberCount })}
           </p>
         </CardContent>
       </Card>

@@ -92,7 +92,10 @@ export interface CotisationKpis {
   collectedThisMonth: number;
   /** Somme (due_amount - paid_amount) des cotisations en_attente + partiel + en_retard. */
   outstanding: number;
+  /** Nombre de cotisations `en_retard`. */
   lateCount: number;
+  /** Nombre de membres distincts ayant au moins une cotisation `en_retard` (« retardataires »). */
+  lateMemberCount: number;
   upToDateCount: number;
 }
 
@@ -108,6 +111,7 @@ export async function getCotisationKpis(
     .select({
       outstanding: sql<string>`COALESCE(SUM(${cotisations.dueAmount} - ${cotisations.paidAmount}), 0)`,
       lateCount: sql<string>`COUNT(*) FILTER (WHERE ${cotisations.status} = 'en_retard')`,
+      lateMemberCount: sql<string>`COUNT(DISTINCT ${cotisations.memberId}) FILTER (WHERE ${cotisations.status} = 'en_retard')`,
     })
     .from(cotisations)
     .where(
@@ -138,6 +142,7 @@ export async function getCotisationKpis(
     collectedThisMonth: Number(collectedRow?.collected ?? 0),
     outstanding: Number(outstandingRow?.outstanding ?? 0),
     lateCount: Number(outstandingRow?.lateCount ?? 0),
+    lateMemberCount: Number(outstandingRow?.lateMemberCount ?? 0),
     upToDateCount: Number(paidResult?.value ?? 0),
   };
 }

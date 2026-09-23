@@ -11,10 +11,12 @@ import {
   sendBulkPaymentReminderEmails,
   sendPaymentReminderEmail,
   type BulkReminderRecipient,
+  type MultiPaymentReminderEmailParams,
   type PaymentReminderEmailParams,
 } from "@/lib/email/reminder-email";
 import { isCotisationFrequency } from "./constants";
 import { formatPeriodLabel } from "./period";
+import { groupRemindableByMember, type RemindableMemberGroup } from "./reminder-groups";
 import {
   getRemindableCotisationById,
   getRemindableCotisations,
@@ -54,6 +56,35 @@ function buildReminderParams(
     dueAmountLabel: formatCurrency(row.dueAmount, "fr"),
     remainingAmountLabel: formatCurrency(remaining, "fr"),
     paidAmountLabel: row.paidAmount > 0 ? formatCurrency(row.paidAmount, "fr") : null,
+  };
+}
+
+/**
+ * Paramètres de l'email de relance groupée d'un membre : l'email individuel
+ * habituel s'il n'a qu'une cotisation relançable, sinon un récapitulatif de
+ * toutes ses cotisations relançables en un seul email.
+ */
+function buildMemberReminderParams(
+  group: RemindableMemberGroup,
+  organizationName: string,
+): PaymentReminderEmailParams | MultiPaymentReminderEmailParams {
+  if (group.cotisations.length === 1) {
+    return buildReminderParams(group.cotisations[0]!, organizationName);
+  }
+
+  return {
+    to: group.memberEmail!,
+    memberFullName: group.memberFullName,
+    organizationName,
+    lines: group.cotisations.map((row) => {
+      const frequency = isCotisationFrequency(row.frequency) ? row.frequency : "monthly";
+      return {
+        cotisationTypeName: row.typeName,
+        periodLabel: formatPeriodLabel(row.periodStart, frequency, "fr"),
+        remainingAmountLabel: formatCurrency(Math.max(0, row.dueAmount - row.paidAmount), "fr"),
+      };
+    }),
+    totalRemainingLabel: formatCurrency(group.remainingTotal, "fr"),
   };
 }
 
@@ -108,15 +139,18 @@ export async function sendPaymentReminder(
 }
 
 /**
- * Envoie un rappel à toutes les cotisations relançables ayant un email
- * (session 5C §4, checkpoint 2). Récupère systématiquement l'état frais des
+ * Envoie un rappel à chaque membre ayant au moins une cotisation relançable
+ * et un email (session 5C §4, checkpoint 2) — un seul email par membre,
+ * récapitulant toutes ses cotisations relançables. Les compteurs renvoyés
+ * sont des nombres de membres. Récupère systématiquement l'état frais des
  * cotisations relançables (jamais une liste fournie par le client) : aucun
  * paramètre autre que `orgSlug`, par construction.
  *
  * N'écrit une ligne `payment_reminders` que pour les envois confirmés
  * réussis (cf. `sendBulkPaymentReminderEmails` pour la logique de lot/échecs
  * partiels) — un seul `INSERT` multi-lignes, atomique nativement en Postgres
- * pour ce lot de succès.
+ * pour ce lot de succès. Une ligne par cotisation couverte par l'email : l'historique
+ * de relance reste consultable cotisation par cotisation.
  */
 export async function sendBulkPaymentReminders(
   orgSlug: string,
@@ -130,16 +164,17 @@ export async function sendBulkPaymentReminders(
     return { ok: false, error: "unknown" };
   }
 
-  const withEmail = remindable.filter((row) => row.memberEmail);
-  const noEmailCount = remindable.length - withEmail.length;
+  const groups = groupRemindableByMember(remindable);
+  const withEmail = groups.filter((group) => group.memberEmail);
+  const noEmailCount = groups.length - withEmail.length;
 
   if (withEmail.length === 0) {
     return { ok: true, sentCount: 0, failedCount: 0, noEmailCount };
   }
 
-  const recipients: BulkReminderRecipient[] = withEmail.map((row) => ({
-    ...buildReminderParams(row, organization.name),
-    cotisationId: row.id,
+  const recipients: BulkReminderRecipient[] = withEmail.map((group) => ({
+    memberId: group.memberId,
+    email: buildMemberReminderParams(group, organization.name),
   }));
 
   let outcomes;
@@ -153,12 +188,11 @@ export async function sendBulkPaymentReminders(
   const failedCount = outcomes.length - succeeded.length;
 
   if (succeeded.length > 0) {
-    const byId = new Map(withEmail.map((row) => [row.id, row]));
+    const byMemberId = new Map(withEmail.map((group) => [group.memberId, group]));
     try {
       await db.insert(paymentReminders).values(
         succeeded
-          .map((outcome) => byId.get(outcome.cotisationId))
-          .filter((row): row is RemindableCotisationRow => Boolean(row))
+          .flatMap((outcome) => byMemberId.get(outcome.memberId)?.cotisations ?? [])
           .map((row) => ({
             id: newId(),
             organizationId,

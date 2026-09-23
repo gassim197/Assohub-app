@@ -8,6 +8,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { sendBulkPaymentReminders } from "@/lib/cotisations/reminder-actions";
 import { isCotisationFrequency } from "@/lib/cotisations/constants";
 import { formatPeriodLabel } from "@/lib/cotisations/period";
+import {
+  groupRemindableByMember,
+  type RemindableMemberGroup,
+} from "@/lib/cotisations/reminder-groups";
 import type { RemindableCotisationRow } from "@/lib/cotisations/reminder-queries";
 import { formatCurrency } from "@/lib/currency";
 import { formatPhone } from "@/lib/phone";
@@ -39,6 +43,9 @@ function firstName(fullName: string): string {
  * `sendBulkPaymentReminders` ne prend aucun paramètre de liste : elle
  * revérifie systématiquement l'état frais côté serveur, jamais confiance
  * dans cette liste potentiellement périmée entre le chargement et le clic.
+ *
+ * Les cotisations sont regroupées par membre : un retardataire = un membre
+ * (quel que soit son nombre de cotisations en retard) = un seul rappel.
  */
 export function BulkReminderTrigger({
   orgSlug,
@@ -55,9 +62,10 @@ export function BulkReminderTrigger({
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const count = remindable.length;
-  const withEmail = remindable.filter((row) => row.memberEmail);
-  const withoutEmail = remindable.filter((row) => !row.memberEmail);
+  const groups = groupRemindableByMember(remindable);
+  const count = groups.length;
+  const withEmail = groups.filter((group) => group.memberEmail);
+  const withoutEmail = groups.filter((group) => !group.memberEmail);
 
   if (count === 0) return null;
 
@@ -91,6 +99,29 @@ export function BulkReminderTrigger({
     return formatPeriodLabel(row.periodStart, frequency, locale);
   }
 
+  function whatsappMessageFor(group: RemindableMemberGroup): string {
+    const name = firstName(group.memberFullName);
+    if (group.cotisations.length === 1) {
+      const row = group.cotisations[0]!;
+      return t("dialog.whatsappMessage", {
+        name,
+        type: row.typeName,
+        period: periodLabelFor(row),
+        amount: remainingLabelFor(row),
+        orgName: organizationName,
+      });
+    }
+    return t("dialog.whatsappMessageMultiple", {
+      name,
+      count: group.cotisations.length,
+      amount: formatCurrency(group.remainingTotal, locale),
+      lines: group.cotisations
+        .map((row) => `- ${row.typeName} ${periodLabelFor(row)} : ${remainingLabelFor(row)}`)
+        .join("\n"),
+      orgName: organizationName,
+    });
+  }
+
   return (
     <>
       <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
@@ -112,14 +143,14 @@ export function BulkReminderTrigger({
                   {t("dialog.willReceiveTitle", { count: withEmail.length })}
                 </p>
                 <ul className="space-y-1.5">
-                  {withEmail.map((row) => (
+                  {withEmail.map((group) => (
                     <li
-                      key={row.id}
+                      key={group.memberId}
                       className="flex items-center justify-between gap-2 rounded-md border border-foreground/10 px-3 py-2 text-sm"
                     >
-                      <span className="text-foreground">{row.memberFullName}</span>
+                      <span className="text-foreground">{group.memberFullName}</span>
                       <span className="text-muted-foreground tabular-nums">
-                        {remainingLabelFor(row)}
+                        {formatCurrency(group.remainingTotal, locale)}
                       </span>
                     </li>
                   ))}
@@ -134,24 +165,20 @@ export function BulkReminderTrigger({
                   {t("dialog.noEmailTitle", { count: withoutEmail.length })}
                 </p>
                 <ul className="space-y-1.5">
-                  {withoutEmail.map((row) => {
-                    const message = t("dialog.whatsappMessage", {
-                      name: firstName(row.memberFullName),
-                      type: row.typeName,
-                      period: periodLabelFor(row),
-                      amount: remainingLabelFor(row),
-                      orgName: organizationName,
-                    });
-                    const whatsappUrl = buildWhatsAppUrl(row.memberPhone, message);
+                  {withoutEmail.map((group) => {
+                    const whatsappUrl = buildWhatsAppUrl(
+                      group.memberPhone,
+                      whatsappMessageFor(group),
+                    );
                     return (
                       <li
-                        key={row.id}
+                        key={group.memberId}
                         className="flex items-center justify-between gap-2 rounded-md border border-foreground/10 px-3 py-2 text-sm"
                       >
                         <div>
-                          <span className="block text-foreground">{row.memberFullName}</span>
+                          <span className="block text-foreground">{group.memberFullName}</span>
                           <span className="block text-xs text-muted-foreground">
-                            {formatPhone(row.memberPhone)}
+                            {formatPhone(group.memberPhone)}
                           </span>
                         </div>
                         <a

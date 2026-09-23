@@ -18,6 +18,28 @@ export interface PaymentReminderEmailParams {
   paidAmountLabel: string | null;
 }
 
+/** Une ligne du récapitulatif d'un rappel portant sur plusieurs cotisations. */
+export interface ReminderEmailLine {
+  cotisationTypeName: string;
+  /** Déjà formaté et localisé côté appelant (ex. "Juillet 2026"). */
+  periodLabel: string;
+  /** Montant déjà formaté (ex. "20 000 GNF"). */
+  remainingAmountLabel: string;
+}
+
+/**
+ * Rappel unique récapitulant plusieurs cotisations d'un même membre (relance
+ * groupée : un seul email par membre, jamais un par cotisation).
+ */
+export interface MultiPaymentReminderEmailParams {
+  to: string;
+  memberFullName: string;
+  organizationName: string;
+  lines: ReminderEmailLine[];
+  /** Total restant dû, déjà formaté. */
+  totalRemainingLabel: string;
+}
+
 /**
  * Textes FR (défaut V1) et EN (préparé, non câblé — aucune préférence de
  * langue par organisation n'existe encore ; session 5C §5, point 6 : bake
@@ -30,9 +52,12 @@ const STRINGS = {
     greeting: (firstName: string) => `Bonjour ${firstName},`,
     body: (type: string, period: string, amount: string, orgName: string) =>
       `Nous espérons que vous allez bien. Nous vous rappelons que votre cotisation <strong>${type}</strong> pour <strong>${period}</strong> d'un montant de <strong>${amount}</strong> reste à régler.<br /><br />Merci de votre engagement envers ${orgName}.`,
+    bodyMultiple: (count: number, amount: string, orgName: string) =>
+      `Nous espérons que vous allez bien. Nous vous rappelons que <strong>${count} cotisations</strong> restent à régler, pour un total de <strong>${amount}</strong>.<br /><br />Merci de votre engagement envers ${orgName}.`,
     dueAmount: "Montant dû",
     paidAmount: "Déjà payé",
     remaining: "Restant à régler",
+    totalRemaining: "Total restant à régler",
     period: "Période",
     signature: (orgName: string) => `À bientôt,<br />L'équipe de ${orgName}`,
     footer: "AssoHub — L'infrastructure numérique des organisations africaines",
@@ -43,9 +68,12 @@ const STRINGS = {
     greeting: (firstName: string) => `Hello ${firstName},`,
     body: (type: string, period: string, amount: string, orgName: string) =>
       `We hope you are doing well. This is a reminder that your <strong>${type}</strong> contribution for <strong>${period}</strong>, amounting to <strong>${amount}</strong>, is still outstanding.<br /><br />Thank you for your commitment to ${orgName}.`,
+    bodyMultiple: (count: number, amount: string, orgName: string) =>
+      `We hope you are doing well. This is a reminder that <strong>${count} contributions</strong> are still outstanding, for a total of <strong>${amount}</strong>.<br /><br />Thank you for your commitment to ${orgName}.`,
     dueAmount: "Amount due",
     paidAmount: "Already paid",
     remaining: "Remaining balance",
+    totalRemaining: "Total remaining",
     period: "Period",
     signature: (orgName: string) => `See you soon,<br />The ${orgName} team`,
     footer: "AssoHub — The digital infrastructure for African organizations",
@@ -59,27 +87,32 @@ function firstName(fullName: string): string {
   return fullName.trim().split(/\s+/)[0] ?? fullName;
 }
 
+/** Ligne libellé / valeur de l'encart informatif. Arguments déjà échappés. */
+function detailRow(label: string, value: string, valueColor?: string): string {
+  const color = valueColor ? `color:${valueColor};` : "";
+  return `<tr>
+                          <td style="padding:4px 0;color:#64748b;">${label}</td>
+                          <td style="padding:4px 0;text-align:right;font-weight:bold;${color}">${value}</td>
+                        </tr>`;
+}
+
 /**
- * Template de l'email de relance (session 5C §5), même patron visuel que
+ * Gabarit de l'email de relance (session 5C §5), même patron visuel que
  * l'email d'invitation (`invitation-email.ts`) : header navy + logo texte,
  * corps clair, encart informatif, footer AssoHub. Volontairement **sans**
  * CTA « payer en ligne » — le paiement en ligne n'existe pas en V1, le
- * rappel informe, il n'encaisse pas.
+ * rappel informe, il n'encaisse pas. `bodyHtml` et `rowsHtml` sont déjà
+ * échappés par l'appelant.
  */
-function reminderEmailHtml(
-  params: PaymentReminderEmailParams,
+function reminderEmailShell(
   locale: ReminderLocale,
+  memberFullName: string,
+  organizationName: string,
+  bodyHtml: string,
+  rowsHtml: string,
 ): string {
   const s = STRINGS[locale];
-  const memberFirstName = escapeHtml(firstName(params.memberFullName));
-  const organizationName = escapeHtml(params.organizationName);
-  const cotisationTypeName = escapeHtml(params.cotisationTypeName);
-  const periodLabel = escapeHtml(params.periodLabel);
-  const remainingAmountLabel = escapeHtml(params.remainingAmountLabel);
-  const dueAmountLabel = escapeHtml(params.dueAmountLabel);
-  const paidAmountLabel = params.paidAmountLabel
-    ? escapeHtml(params.paidAmountLabel)
-    : null;
+  const memberFirstName = escapeHtml(firstName(memberFullName));
 
   return `
 <!doctype html>
@@ -107,32 +140,13 @@ function reminderEmailHtml(
                   ${s.greeting(memberFirstName)}
                 </p>
                 <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#334155;font-family:${FONT_STACK};">
-                  ${s.body(cotisationTypeName, periodLabel, remainingAmountLabel, organizationName)}
+                  ${bodyHtml}
                 </p>
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;background-color:#f8fafc;border-radius:6px;">
                   <tr>
                     <td style="padding:16px 18px;">
                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;font-family:${FONT_STACK};color:#334155;">
-                        <tr>
-                          <td style="padding:4px 0;color:#64748b;">${s.period}</td>
-                          <td style="padding:4px 0;text-align:right;font-weight:bold;">${periodLabel}</td>
-                        </tr>
-                        <tr>
-                          <td style="padding:4px 0;color:#64748b;">${s.dueAmount}</td>
-                          <td style="padding:4px 0;text-align:right;font-weight:bold;">${dueAmountLabel}</td>
-                        </tr>
-                        ${
-                          paidAmountLabel
-                            ? `<tr>
-                          <td style="padding:4px 0;color:#64748b;">${s.paidAmount}</td>
-                          <td style="padding:4px 0;text-align:right;font-weight:bold;">${paidAmountLabel}</td>
-                        </tr>`
-                            : ""
-                        }
-                        <tr>
-                          <td style="padding:4px 0;color:#64748b;">${s.remaining}</td>
-                          <td style="padding:4px 0;text-align:right;font-weight:bold;color:#10B981;">${remainingAmountLabel}</td>
-                        </tr>
+                        ${rowsHtml}
                       </table>
                     </td>
                   </tr>
@@ -153,6 +167,63 @@ function reminderEmailHtml(
     </table>
   </body>
 </html>`;
+}
+
+/** Email de relance portant sur une seule cotisation. */
+function reminderEmailHtml(
+  params: PaymentReminderEmailParams,
+  locale: ReminderLocale,
+): string {
+  const s = STRINGS[locale];
+  const organizationName = escapeHtml(params.organizationName);
+  const cotisationTypeName = escapeHtml(params.cotisationTypeName);
+  const periodLabel = escapeHtml(params.periodLabel);
+  const remainingAmountLabel = escapeHtml(params.remainingAmountLabel);
+
+  const rows = [
+    detailRow(s.period, periodLabel),
+    detailRow(s.dueAmount, escapeHtml(params.dueAmountLabel)),
+    params.paidAmountLabel
+      ? detailRow(s.paidAmount, escapeHtml(params.paidAmountLabel))
+      : "",
+    detailRow(s.remaining, remainingAmountLabel, "#10B981"),
+  ].join("");
+
+  return reminderEmailShell(
+    locale,
+    params.memberFullName,
+    organizationName,
+    s.body(cotisationTypeName, periodLabel, remainingAmountLabel, organizationName),
+    rows,
+  );
+}
+
+/** Email de relance récapitulant plusieurs cotisations d'un même membre. */
+function multiReminderEmailHtml(
+  params: MultiPaymentReminderEmailParams,
+  locale: ReminderLocale,
+): string {
+  const s = STRINGS[locale];
+  const organizationName = escapeHtml(params.organizationName);
+  const totalRemainingLabel = escapeHtml(params.totalRemainingLabel);
+
+  const rows = [
+    ...params.lines.map((line) =>
+      detailRow(
+        `${escapeHtml(line.cotisationTypeName)} — ${escapeHtml(line.periodLabel)}`,
+        escapeHtml(line.remainingAmountLabel),
+      ),
+    ),
+    detailRow(s.totalRemaining, totalRemainingLabel, "#10B981"),
+  ].join("");
+
+  return reminderEmailShell(
+    locale,
+    params.memberFullName,
+    organizationName,
+    s.bodyMultiple(params.lines.length, totalRemainingLabel, organizationName),
+    rows,
+  );
 }
 
 /**
@@ -177,14 +248,29 @@ export async function sendPaymentReminderEmail(
   }
 }
 
-export interface BulkReminderRecipient extends PaymentReminderEmailParams {
+/**
+ * Un destinataire de la relance groupée = un membre (un seul email par
+ * membre). `email` porte soit une seule cotisation, soit le récapitulatif de
+ * plusieurs (`lines`).
+ */
+export interface BulkReminderRecipient {
   /** Sert à faire correspondre le succès/échec de chaque envoi à son destinataire d'origine. */
-  cotisationId: string;
+  memberId: string;
+  email: PaymentReminderEmailParams | MultiPaymentReminderEmailParams;
 }
 
 export interface BulkSendOutcome {
-  cotisationId: string;
+  memberId: string;
   ok: boolean;
+}
+
+function bulkRecipientHtml(
+  recipient: BulkReminderRecipient,
+  locale: ReminderLocale,
+): string {
+  return "lines" in recipient.email
+    ? multiReminderEmailHtml(recipient.email, locale)
+    : reminderEmailHtml(recipient.email, locale);
 }
 
 /**
@@ -250,9 +336,9 @@ export async function sendBulkPaymentReminderEmails(
       const { data, error } = await resend.batch.send(
         batch.map((recipient) => ({
           from: EMAIL_FROM,
-          to: recipient.to,
-          subject: STRINGS[locale].subject(recipient.organizationName),
-          html: reminderEmailHtml(recipient, locale),
+          to: recipient.email.to,
+          subject: STRINGS[locale].subject(recipient.email.organizationName),
+          html: bulkRecipientHtml(recipient, locale),
         })),
         { batchValidation: "permissive" },
       );
@@ -268,20 +354,20 @@ export async function sendBulkPaymentReminderEmails(
         // Échec du lot entier (ex. clé API invalide) : tous les destinataires
         // de ce lot sont marqués en échec, les autres lots continuent.
         for (const recipient of batch) {
-          outcomes.push({ cotisationId: recipient.cotisationId, ok: false });
+          outcomes.push({ memberId: recipient.memberId, ok: false });
         }
       } else {
         const failedIndexes = new Set((data?.errors ?? []).map((e) => e.index));
         batch.forEach((recipient, index) => {
           outcomes.push({
-            cotisationId: recipient.cotisationId,
+            memberId: recipient.memberId,
             ok: !failedIndexes.has(index),
           });
         });
       }
     } catch {
       for (const recipient of batch) {
-        outcomes.push({ cotisationId: recipient.cotisationId, ok: false });
+        outcomes.push({ memberId: recipient.memberId, ok: false });
       }
     }
 

@@ -729,6 +729,7 @@
           "willReceiveTitle": "Recevront un rappel par email ({count})",
           "noEmailTitle": "{count} membres n'ont pas d'adresse email et ne peuvent pas être relancés par ce moyen. Contactez-les par WhatsApp ou téléphone :",
           "whatsappMessage": "Bonjour {name},\n\nNous vous rappelons que votre cotisation *{type}* pour *{period}* d'un montant de *{amount}* reste à régler.\n\nMerci de votre engagement envers {orgName}.",
+          "whatsappMessageMultiple": "Bonjour {name},\n\nNous vous rappelons que {count} cotisations restent à régler, pour un total de *{amount}* :\n{lines}\n\nMerci de votre engagement envers {orgName}.",
           "whatsappButton": "WhatsApp",
           "cancel": "Annuler",
           "submit": "Envoyer les {count} rappels",
@@ -756,7 +757,7 @@
           "wave": "Référence Wave",
           "mtn_momo": "ID transaction MTN MoMo",
           "paycard": "Référence Paycard",
-          "soutra_money": "Référence SoutraMoney"
+          "soutra_money": "Référence Soutra Money"
         },
         "paidAt": "Date de paiement",
         "note": "Note",
@@ -907,7 +908,7 @@
       "wave": "Wave",
       "mtn_momo": "MTN Mobile Money",
       "paycard": "Paycard",
-      "soutra_money": "SoutraMoney",
+      "soutra_money": "Soutra Money",
       "virement_bancaire": "Virement bancaire",
       "cheque": "Chèque",
       "autre": "Autre"

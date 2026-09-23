@@ -729,6 +729,7 @@
           "willReceiveTitle": "Will receive an email reminder ({count})",
           "noEmailTitle": "{count} members have no email address and cannot be reminded this way. Contact them via WhatsApp or phone:",
           "whatsappMessage": "Hello {name},\n\nThis is a reminder that your *{type}* contribution for *{period}*, amounting to *{amount}*, is still outstanding.\n\nThank you for your commitment to {orgName}.",
+          "whatsappMessageMultiple": "Hello {name},\n\nThis is a reminder that {count} contributions are still outstanding, for a total of *{amount}*:\n{lines}\n\nThank you for your commitment to {orgName}.",
           "whatsappButton": "WhatsApp",
           "cancel": "Cancel",
           "submit": "Send {count} reminders",
@@ -756,7 +757,7 @@
           "wave": "Wave reference",
           "mtn_momo": "MTN MoMo transaction ID",
           "paycard": "Paycard reference",
-          "soutra_money": "SoutraMoney reference"
+          "soutra_money": "Soutra Money reference"
         },
         "paidAt": "Payment date",
         "note": "Note",
@@ -907,7 +908,7 @@
       "wave": "Wave",
       "mtn_momo": "MTN Mobile Money",
       "paycard": "Paycard",
-      "soutra_money": "SoutraMoney",
+      "soutra_money": "Soutra Money",
       "virement_bancaire": "Bank transfer",
       "cheque": "Cheque",
       "autre": "Other"
