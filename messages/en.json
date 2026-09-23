@@ -1669,7 +1669,7 @@
         },
         "paiements": {
           "question": "How do my members pay their contributions?",
-          "answer": "You record payments received in cash, via Orange Money, MTN MoMo, PayCard, Soutra Money or by bank transfer. AssoHub automatically tracks who has paid and who is late."
+          "answer": "Just as they do today: in cash to the treasurer, via Orange Money, MTN MoMo, PayCard, Soutra Money or by bank transfer. No money goes through AssoHub: you record each payment received, and AssoHub automatically tracks who has paid and who is late."
         }
       }
     },

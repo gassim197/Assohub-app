@@ -1669,7 +1669,7 @@
         },
         "paiements": {
           "question": "Comment mes membres paient-ils leurs cotisations ?",
-          "answer": "Vous enregistrez les paiements reçus en espèces, par Orange Money, MTN MoMo, PayCard, Soutra Money ou par virement. AssoHub suit automatiquement qui a payé et qui est en retard."
+          "answer": "Comme d'habitude : en espèces auprès du trésorier, par Orange Money, MTN MoMo, PayCard, Soutra Money ou par virement. Aucun argent ne transite par AssoHub : vous enregistrez chaque paiement reçu, et AssoHub suit automatiquement qui a payé et qui est en retard."
         }
       }
     },
