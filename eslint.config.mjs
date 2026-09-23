@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // gstack (clone local, non suivi) :
+    "gstack-main/**",
+    ".gstack/**",
   ]),
 ]);
 
