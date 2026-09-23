@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Base des URL absolues (Open Graph, Twitter) : domaine de production.
+  metadataBase: new URL("https://assohub-gn.com"),
   title: "AssoHub",
   description: "L'infrastructure numérique des organisations africaines.",
 };
