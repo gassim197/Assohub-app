@@ -8,6 +8,7 @@ import {
   CreditCard,
   Calendar,
   BarChart2,
+  FolderOpen,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { key: "cotisations", icon: CreditCard, path: "/cotisations" },
   { key: "meetings", icon: Calendar, path: "/meetings" },
   { key: "reports", icon: BarChart2, path: "/reports" },
+  { key: "documents", icon: FolderOpen, path: "/documents" },
 ] as const;
 
 interface SidebarContentProps {
@@ -105,7 +107,7 @@ export function SidebarContent({
               )}
             >
               <Icon className="size-4 shrink-0" />
-              {t(key as "home" | "members" | "cotisations" | "meetings" | "reports")}
+              {t(key as "home" | "members" | "cotisations" | "meetings" | "reports" | "documents")}
             </Link>
           );
         })}

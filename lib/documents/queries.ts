@@ -1,7 +1,9 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/lib/db";
+import { user } from "@/lib/db/auth-schema";
 import { documents } from "@/lib/db/documents-schema";
+import type { DocumentCategory } from "./constants";
 
 export type DocumentRow = typeof documents.$inferSelect;
 
@@ -47,4 +49,47 @@ export async function listDocumentBlobPathnamesForOrganization(
     .where(eq(documents.organizationId, organizationId));
 
   return rows.map((row) => row.blobPathname);
+}
+
+export interface DocumentWithUploaderRow {
+  id: string;
+  displayName: string;
+  fileName: string;
+  category: string;
+  mimeType: string;
+  sizeBytes: number;
+  createdAt: Date;
+  uploadedByName: string;
+}
+
+/**
+ * Liste des documents de l'organisation, plus récents d'abord. `category`
+ * filtre en plus (chips/select de la page) sans jamais remplacer le
+ * filtrage multi-tenant. Pas de pagination en V1 (volume attendu faible,
+ * borné par le quota de 200 Mo) — même décision que `listMeetingDatesForCalendar`.
+ */
+export async function listDocuments(
+  organizationId: string,
+  category?: DocumentCategory,
+): Promise<DocumentWithUploaderRow[]> {
+  const conditions = [eq(documents.organizationId, organizationId), isNull(documents.deletedAt)];
+  if (category) {
+    conditions.push(eq(documents.category, category));
+  }
+
+  return db
+    .select({
+      id: documents.id,
+      displayName: documents.displayName,
+      fileName: documents.fileName,
+      category: documents.category,
+      mimeType: documents.mimeType,
+      sizeBytes: documents.sizeBytes,
+      createdAt: documents.createdAt,
+      uploadedByName: user.name,
+    })
+    .from(documents)
+    .innerJoin(user, eq(documents.uploadedByUserId, user.id))
+    .where(and(...conditions))
+    .orderBy(desc(documents.createdAt));
 }

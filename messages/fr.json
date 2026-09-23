@@ -125,6 +125,7 @@
     "cotisations": "Cotisations",
     "meetings": "Réunions",
     "reports": "Rapports",
+    "documents": "Documents",
     "settings": "Paramètres",
     "underConstruction": "Module en construction",
     "underConstructionDesc": "Ce module sera disponible prochainement.",
@@ -1317,6 +1318,86 @@
       "noTransactions": "Aucune transaction sur cette période.",
       "footerPrefix": "Généré par AssoHub",
       "filenamePrefix": "rapport-financier"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "subtitle": "Statuts, procès-verbaux, reçus et autres documents de votre organisation.",
+    "addButton": "Ajouter un document",
+    "quota": {
+      "label": "{used} Mo utilisés sur {total} Mo",
+      "nearLimit": "Limite bientôt atteinte"
+    },
+    "filters": {
+      "all": "Toutes catégories"
+    },
+    "categories": {
+      "statuts_reglements": "Statuts et règlements",
+      "proces_verbaux": "Procès-verbaux",
+      "recus_justificatifs": "Reçus et justificatifs",
+      "rapports": "Rapports",
+      "correspondance": "Correspondance",
+      "autres": "Autres"
+    },
+    "empty": {
+      "title": "Aucun document",
+      "description": "Aucun document n'a encore été ajouté pour cette organisation.",
+      "cta": "Ajouter le premier document"
+    },
+    "table": {
+      "name": "Nom",
+      "category": "Catégorie",
+      "size": "Taille",
+      "date": "Ajouté le",
+      "uploadedBy": "Ajouté par"
+    },
+    "sizeInMb": "{size} Mo",
+    "rowActions": {
+      "label": "Actions",
+      "download": "Télécharger",
+      "rename": "Renommer",
+      "delete": "Supprimer"
+    },
+    "renameDialog": {
+      "title": "Renommer le document",
+      "description": "Modifiez le nom affiché de ce document.",
+      "fieldLabel": "Nom d'affichage",
+      "cancel": "Annuler",
+      "submit": "Enregistrer",
+      "submitting": "Enregistrement…",
+      "success": "Document renommé.",
+      "error": "Le document n'a pas pu être renommé. Veuillez réessayer."
+    },
+    "deleteDialog": {
+      "title": "Supprimer ce document ?",
+      "description": "Cette action supprime définitivement « {name} », y compris son fichier. Cette action est irréversible.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer le document",
+      "submitting": "Suppression…",
+      "success": "Document supprimé.",
+      "error": "Le document n'a pas pu être supprimé. Veuillez réessayer.",
+      "errorBlobDeleteFailed": "Le fichier n'a pas pu être retiré du stockage. Le document n'a pas été supprimé — veuillez réessayer."
+    },
+    "upload": {
+      "title": "Ajouter un document",
+      "description": "PDF, JPG, PNG, Word ou Excel — 10 Mo maximum par fichier.",
+      "dropzoneLabel": "Glissez-déposez un fichier ici",
+      "dropzoneHint": "ou cliquez pour parcourir vos fichiers",
+      "categoryLabel": "Catégorie",
+      "displayNameLabel": "Nom d'affichage",
+      "cancel": "Annuler",
+      "submit": "Ajouter",
+      "submitting": "Envoi…",
+      "success": "Document ajouté.",
+      "errors": {
+        "fileMissing": "Veuillez sélectionner un fichier.",
+        "fileTooLarge": "Fichier trop volumineux (maximum 10 Mo).",
+        "invalidType": "Ce type de fichier n'est pas accepté.",
+        "quotaExceeded": "Votre organisation a atteint sa limite de stockage.",
+        "forbidden": "Vous n'avez pas la permission d'ajouter un document.",
+        "validation": "Veuillez vérifier les informations saisies.",
+        "unknown": "Une erreur est survenue. Veuillez réessayer."
+      }
     }
   },
   "settings": {
