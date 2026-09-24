@@ -2011,5 +2011,13 @@ main()
   .then(() => process.exit(0))
   .catch((err) => {
     console.error("❌ Échec du seed :", err instanceof Error ? err.message : err);
+    // Drizzle enveloppe l'erreur du driver (« Failed query: … ») : la vraie
+    // cause (message et code Postgres/réseau) est dans `error.cause`.
+    const cause = err instanceof Error ? err.cause : undefined;
+    if (cause !== undefined) {
+      const message = cause instanceof Error ? cause.message : String(cause);
+      const code = typeof cause === "object" && cause !== null && "code" in cause ? String(cause.code) : "—";
+      console.error(`   Cause : ${message} (code : ${code})`);
+    }
     process.exit(1);
   });
