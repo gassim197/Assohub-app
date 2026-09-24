@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import { requireOrgAccess } from "@/lib/auth/org";
 import { getDocumentBlob } from "@/lib/documents/blob";
+import { contentDisposition } from "@/lib/documents/content-disposition";
 import { getDocumentById } from "@/lib/documents/queries";
 
 // Le SDK Blob et le flux de lecture ont besoin des API Node — jamais exécutable
@@ -44,12 +45,12 @@ export async function GET(
 
   const isPreview = request.nextUrl.searchParams.get("preview") === "1";
   const extension = extractExtension(document.fileName);
-  const downloadFileName = `${document.displayName}${extension}`.replace(/"/g, "");
+  const downloadFileName = `${document.displayName}${extension}`;
 
   return new Response(blob.stream, {
     headers: {
       "Content-Type": document.mimeType,
-      "Content-Disposition": `${isPreview ? "inline" : "attachment"}; filename="${downloadFileName}"`,
+      "Content-Disposition": contentDisposition(isPreview ? "inline" : "attachment", downloadFileName),
       "Cache-Control": "private, max-age=3600",
     },
   });

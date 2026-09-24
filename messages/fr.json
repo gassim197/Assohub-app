@@ -1331,7 +1331,7 @@
     "subtitle": "Statuts, procès-verbaux, reçus et autres documents de votre organisation.",
     "addButton": "Ajouter un document",
     "quota": {
-      "label": "{used} Mo utilisés sur {total} Mo",
+      "label": "{used} utilisés sur {total}",
       "nearLimit": "Limite bientôt atteinte"
     },
     "filters": {
@@ -1357,7 +1357,10 @@
       "date": "Ajouté le",
       "uploadedBy": "Ajouté par"
     },
-    "sizeInMb": "{size} Mo",
+    "size": {
+      "kb": "{size} Ko",
+      "mb": "{size} Mo"
+    },
     "linkedTo": {
       "payment": "Lié au paiement du {date}",
       "meeting": "Lié à la réunion du {date}"

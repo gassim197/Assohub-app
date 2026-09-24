@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ORGANIZATION_STORAGE_QUOTA_BYTES } from "@/lib/documents/quota";
-import { formatSizeMbValue } from "@/lib/documents/format";
+import { formatSize } from "@/lib/documents/format";
 import { Progress } from "@/components/ui/progress";
 
 /**
@@ -10,21 +10,25 @@ import { Progress } from "@/components/ui/progress";
  * (lecture O(1), cf. `lib/documents/quota.ts`), jamais recalculé ici.
  */
 export async function DocumentsQuotaBar({ usedBytes }: { usedBytes: number }) {
-  const [t, locale] = await Promise.all([
+  const [t, tSize, locale] = await Promise.all([
     getTranslations("documents.quota"),
+    getTranslations("documents.size"),
     getLocale(),
   ]);
 
   const percentUsed = Math.min(100, (usedBytes / ORGANIZATION_STORAGE_QUOTA_BYTES) * 100);
   const isNearLimit = percentUsed >= 90;
+  // Même unité adaptative que la colonne Taille : « 45 Ko utilisés sur 200 Mo ».
+  const used = formatSize(usedBytes, locale);
+  const total = formatSize(ORGANIZATION_STORAGE_QUOTA_BYTES, locale);
 
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>
           {t("label", {
-            used: formatSizeMbValue(usedBytes, locale),
-            total: formatSizeMbValue(ORGANIZATION_STORAGE_QUOTA_BYTES, locale),
+            used: tSize(used.unit, { size: used.value }),
+            total: tSize(total.unit, { size: total.value }),
           })}
         </span>
         {isNearLimit ? (

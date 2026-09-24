@@ -1331,7 +1331,7 @@
     "subtitle": "Bylaws, minutes, receipts and other documents for your organization.",
     "addButton": "Add a document",
     "quota": {
-      "label": "{used} MB used out of {total} MB",
+      "label": "{used} used out of {total}",
       "nearLimit": "Limit almost reached"
     },
     "filters": {
@@ -1357,7 +1357,10 @@
       "date": "Added on",
       "uploadedBy": "Added by"
     },
-    "sizeInMb": "{size} MB",
+    "size": {
+      "kb": "{size} KB",
+      "mb": "{size} MB"
+    },
     "linkedTo": {
       "payment": "Linked to the payment of {date}",
       "meeting": "Linked to the meeting of {date}"

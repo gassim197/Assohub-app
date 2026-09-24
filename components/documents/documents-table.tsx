@@ -6,7 +6,7 @@ import {
   DOCUMENT_CATEGORY_BADGE_VARIANT,
   isDocumentCategory,
 } from "@/lib/documents/constants";
-import { formatSizeMbValue } from "@/lib/documents/format";
+import { formatSize } from "@/lib/documents/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -37,12 +37,17 @@ export async function DocumentsTable({
   canManage: boolean;
   locale: string;
 }) {
-  const [t, tCategories] = await Promise.all([
+  const [t, tCategories, tSize] = await Promise.all([
     getTranslations("documents"),
     getTranslations("documents.categories"),
+    getTranslations("documents.size"),
   ]);
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
+  const formatDocumentSize = (bytes: number) => {
+    const size = formatSize(bytes, locale);
+    return tSize(size.unit, { size: size.value });
+  };
 
   if (documents.length === 0) {
     return (
@@ -67,7 +72,7 @@ export async function DocumentsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.name")}</TableHead>
+            <TableHead className="w-full">{t("table.name")}</TableHead>
             <TableHead>{t("table.category")}</TableHead>
             <TableHead>{t("table.size")}</TableHead>
             <TableHead>{t("table.date")}</TableHead>
@@ -80,7 +85,14 @@ export async function DocumentsTable({
         <TableBody>
           {documents.map((document) => (
             <TableRow key={document.id}>
-              <TableCell>
+              {/*
+                Colonne Nom : prend tout l'espace laissé par les autres colonnes
+                (w-full sur l'en-tête). `max-w-0` empêche la longueur du nom de
+                dicter la largeur du tableau — la troncature n'intervient que si
+                l'espace restant manque ; `min-w-48` garde une largeur lisible
+                sur mobile, où le tableau défile horizontalement.
+              */}
+              <TableCell className="w-full max-w-0 min-w-48">
                 <div className="flex items-center gap-3">
                   <DocumentThumbnail
                     orgSlug={orgSlug}
@@ -89,7 +101,10 @@ export async function DocumentsTable({
                     displayName={document.displayName}
                   />
                   <div className="min-w-0">
-                    <span className="block max-w-56 truncate font-medium text-foreground">
+                    <span
+                      className="block truncate font-medium text-foreground"
+                      title={document.displayName}
+                    >
                       {document.displayName}
                     </span>
                     {document.paymentId && document.linkedPaymentCotisationId ? (
@@ -131,7 +146,7 @@ export async function DocumentsTable({
                 </Badge>
               </TableCell>
               <TableCell className="text-muted-foreground tabular-nums">
-                {t("sizeInMb", { size: formatSizeMbValue(document.sizeBytes, locale) })}
+                {formatDocumentSize(document.sizeBytes)}
               </TableCell>
               <TableCell className="text-muted-foreground tabular-nums">
                 {dateFormatter.format(document.createdAt)}
