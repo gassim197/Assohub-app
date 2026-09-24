@@ -28,15 +28,29 @@
  * HTTP) — reset éventuel + seed, tout ou rien. Jamais `db.transaction()`
  * (non supporté par neon-http, cf. ADR-0002).
  *
+ * Documents (REFEM uniquement) : les 19 fichiers de `scripts/demo-files/`
+ * sont envoyés vers le store Blob de DEV (garde-fou dédié), puis insérés en un
+ * seul `db.batch()` avec la mise à jour de `organization_storage_usage`.
+ *
  * Usage :
  *   npm run seed:demo              → refuse si l'org contient déjà des données
- *   npm run seed:demo -- --reset   → supprime les données métier des deux orgs puis re-seed
+ *   npm run seed:demo -- --reset   → supprime les données métier des deux orgs (documents
+ *                                    et blobs de REFEM compris) puis re-seed
+ *   npm run seed:demo -- --dry-run → assertions + contrôle des fichiers et des rattachements,
+ *                                    sans connexion DB ni upload
  */
+import { readFileSync, statSync } from "node:fs";
+import path from "node:path";
+
 import { config } from "dotenv";
 
 import type { BatchItem } from "drizzle-orm/batch";
 
+import frMessages from "@/messages/fr.json";
 import { formatPeriodLabel } from "@/lib/cotisations/period";
+import { isDocumentCategory, MAX_FILE_SIZE_BYTES, MAX_ORGANIZATION_STORAGE_BYTES } from "@/lib/documents/constants";
+import type { DocumentCategory } from "@/lib/documents/constants";
+import { detectAcceptedMimeType } from "@/lib/documents/file-validation";
 import type { CotisationFrequency } from "@/lib/cotisations/constants";
 import type { PaymentMethod } from "@/lib/cotisations/payment-constants";
 import type { MemberRole, MemberStatus } from "@/lib/members/constants";
@@ -54,6 +68,7 @@ import type {
   meetings,
   minutes,
 } from "@/lib/db/meetings-schema";
+import type { documents } from "@/lib/db/documents-schema";
 
 // Charger les variables d'env AVANT tout import qui ouvre la connexion DB
 // (lib/db lit process.env.DATABASE_URL à l'évaluation du module) — lecture
@@ -96,6 +111,39 @@ function assertDevDatabase(): void {
 }
 
 assertDevDatabase();
+
+// ─── Garde-fou Vercel Blob ────────────────────────────────────────────────────
+// Seul le store de DEV (assohub-app-blob-Dev) est accepté ; le store de prod
+// (tAxcYk7P45ZGQvvs) est ainsi exclu. `@vercel/blob` préfère l'OIDC
+// (VERCEL_OIDC_TOKEN + BLOB_STORE_ID) au token read-write : un jeton OIDC
+// présent contournerait le contrôle du token, il est donc refusé aussi.
+
+const DEV_BLOB_STORE_ID = "31BebZGDLFbWJbbd";
+
+/** Problèmes de configuration Blob — liste vide = store de DEV garanti. */
+function blobStoreProblems(): string[] {
+  const problems: string[] = [];
+  const token = process.env.BLOB_READ_WRITE_TOKEN ?? "";
+
+  if (!token.includes(DEV_BLOB_STORE_ID)) {
+    problems.push(`BLOB_READ_WRITE_TOKEN ne contient pas l'identifiant du store de DEV (${DEV_BLOB_STORE_ID}).`);
+  }
+  // Même lecture que le SDK (`vercel_blob_rw_<storeId>_<secret>`).
+  const tokenStoreId = token.split("_")[3] ?? "";
+  if (tokenStoreId !== DEV_BLOB_STORE_ID) {
+    // Jamais d'extrait du token dans les logs : un token mal formé pourrait
+    // placer une partie du secret à cet emplacement.
+    problems.push("le store lu depuis BLOB_READ_WRITE_TOKEN (format vercel_blob_rw_<store>_<secret>) n'est pas le store de DEV.");
+  }
+  if (process.env.VERCEL_OIDC_TOKEN) {
+    problems.push("VERCEL_OIDC_TOKEN est défini : le SDK Blob l'utiliserait à la place du token vérifié.");
+  }
+  const blobStoreId = process.env.BLOB_STORE_ID;
+  if (blobStoreId && !blobStoreId.includes(DEV_BLOB_STORE_ID)) {
+    problems.push("BLOB_STORE_ID ne désigne pas le store de DEV.");
+  }
+  return problems;
+}
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
@@ -1343,27 +1391,360 @@ function buildDonka(ctx: OrgContext): OrgPlan {
 
 // ─── Documents ────────────────────────────────────────────────────────────────
 
+// Source : `scripts/demo-files/manifest.json` et les 19 fichiers du dossier.
+// `uploaded_by_user_id` = compte propriétaire (Mariama) pour tous les
+// documents — le champ `uploaded_by` du manifest est ignoré, aucun compte
+// n'est créé.
+
+type DocumentInsert = typeof documents.$inferInsert;
+
+const DEMO_FILES_DIR = path.join("scripts", "demo-files");
+const EXPECTED_DOCUMENT_COUNT = 19;
+
+interface ManifestMeetingTarget {
+  type: "meeting";
+  ref: string;
+  date: string;
+  meeting_type: string;
+}
+
+interface ManifestPaymentTarget {
+  type: "payment";
+  ref: string;
+  member: string;
+  object: "cotisation" | "droit_adhesion";
+  period: string | null;
+  amount_gnf: number;
+  method: string;
+  transaction_ref: string;
+}
+
+interface ManifestDocument {
+  file: string;
+  title: string;
+  category: string;
+  uploaded_at: string;
+  size_bytes: number;
+  attach_to: ManifestMeetingTarget | ManifestPaymentTarget | null;
+}
+
 /**
- * À compléter dans un prochain commit, à partir de `scripts/demo-files/`
- * (manifest.json) : upload via le wrapper Blob de l'application, rattachement
- * aux réunions M01/M03/M04/M06/M07 et aux paiements P01–P05, mise à jour de
- * `organization_storage_usage`. `uploaded_by_user_id` = compte propriétaire
- * (Mariama) pour tous les documents — le champ `uploaded_by` du manifest est
- * ignoré, aucun compte n'est créé.
+ * Types de réunion du manifest → types de l'application (MEETING_TYPES). Le
+ * manifest distingue AG ordinaire et réunion extraordinaire ; l'application
+ * n'a qu'un type `ag`, sous lequel le seed crée M01 et M04.
  */
-async function seedDocuments(): Promise<void> {
-  // Volontairement vide.
+const MANIFEST_MEETING_TYPES: Record<string, string> = {
+  assemblee_generale_ordinaire: "ag",
+  extraordinaire: "ag",
+  bureau: "bureau",
+};
+
+/** Libellé exact du manifest → slug stocké en base, d'après messages/fr.json. */
+function categoryFromLabel(label: string): DocumentCategory | null {
+  const entry = Object.entries(frMessages.documents.categories).find(([, value]) => value === label);
+  return entry && isDocumentCategory(entry[0]) ? entry[0] : null;
+}
+
+/** Réunion candidate au rattachement (date UTC = Africa/Conakry). */
+interface MeetingCandidate {
+  id: string;
+  date: string;
+  type: string;
+}
+
+/** Paiement candidat au rattachement ; `amount` en centimes, comme en base. */
+interface PaymentCandidate {
+  id: string;
+  memberName: string;
+  frequency: string;
+  periodStart: string;
+  method: string;
+  amount: number;
+  reference: string | null;
+}
+
+interface PreparedDocument {
+  file: string;
+  content: Buffer;
+  mimeType: string;
+  category: DocumentCategory;
+  displayName: string;
+  uploadedAt: string;
+  meetingId: string | null;
+  paymentId: string | null;
+}
+
+/** Une cible doit correspondre à exactement une ligne : zéro ou plusieurs = erreur. */
+function resolveTarget(
+  target: ManifestMeetingTarget | ManifestPaymentTarget,
+  meetingCandidates: MeetingCandidate[],
+  paymentCandidates: PaymentCandidate[],
+): { meetingId: string | null; paymentId: string | null } | string {
+  if (target.type === "meeting") {
+    const appType = MANIFEST_MEETING_TYPES[target.meeting_type];
+    if (!appType) return `${target.ref} : type de réunion inconnu « ${target.meeting_type} ».`;
+    const found = meetingCandidates.filter((m) => m.date === target.date && m.type === appType);
+    if (found.length !== 1) {
+      return `${target.ref} : ${found.length} réunion(s) du ${target.date} de type ${appType} (1 attendue).`;
+    }
+    return { meetingId: found[0]?.id ?? null, paymentId: null };
+  }
+
+  const frequency = target.object === "droit_adhesion" ? "one_time" : "monthly";
+  if (frequency === "monthly" && !target.period) return `${target.ref} : période absente pour une cotisation.`;
+  const found = paymentCandidates.filter(
+    (p) =>
+      p.memberName === target.member &&
+      p.frequency === frequency &&
+      (frequency === "one_time" || p.periodStart === `${target.period}-01`) &&
+      p.method === target.method &&
+      p.amount === gnf(target.amount_gnf) &&
+      p.reference === target.transaction_ref,
+  );
+  if (found.length !== 1) {
+    return (
+      `${target.ref} : ${found.length} paiement(s) pour ${target.member}, ${target.object} ${target.period ?? ""}, ` +
+      `${target.amount_gnf} GNF, ${target.method}, réf. ${target.transaction_ref} (1 attendu).`
+    );
+  }
+  return { meetingId: null, paymentId: found[0]?.id ?? null };
+}
+
+/**
+ * Lit le manifest et contrôle chaque fichier (présence, taille < 10 Mo et
+ * égale au manifest, type réel par magic bytes — même détection que
+ * `uploadDocument`), sa catégorie et sa cible de rattachement. Ne lève
+ * jamais : toutes les erreurs sont collectées pour être listées d'un coup.
+ */
+async function prepareDocuments(
+  meetingCandidates: MeetingCandidate[],
+  paymentCandidates: PaymentCandidate[],
+): Promise<{ prepared: PreparedDocument[]; errors: string[] }> {
+  const errors: string[] = [];
+  const prepared: PreparedDocument[] = [];
+
+  let manifest: { documents: ManifestDocument[] };
+  try {
+    manifest = JSON.parse(readFileSync(path.join(DEMO_FILES_DIR, "manifest.json"), "utf8"));
+  } catch (err) {
+    return { prepared, errors: [`manifest.json illisible : ${err instanceof Error ? err.message : err}`] };
+  }
+
+  if (manifest.documents.length !== EXPECTED_DOCUMENT_COUNT) {
+    errors.push(`manifest : ${manifest.documents.length} documents (${EXPECTED_DOCUMENT_COUNT} attendus).`);
+  }
+
+  for (const doc of manifest.documents) {
+    const filePath = path.join(DEMO_FILES_DIR, doc.file);
+    let size: number;
+    try {
+      size = statSync(filePath).size;
+    } catch {
+      errors.push(`${doc.file} : fichier absent.`);
+      continue;
+    }
+    if (size === 0 || size > MAX_FILE_SIZE_BYTES) {
+      errors.push(`${doc.file} : taille ${size} octets hors limites (0 < taille ≤ ${MAX_FILE_SIZE_BYTES}).`);
+    }
+    if (size !== doc.size_bytes) {
+      errors.push(`${doc.file} : ${size} octets sur disque, ${doc.size_bytes} dans le manifest.`);
+    }
+
+    const content = readFileSync(filePath);
+    const mimeType = await detectAcceptedMimeType(content, doc.file);
+    if (!mimeType) errors.push(`${doc.file} : type réel non accepté par l'application.`);
+
+    const category = categoryFromLabel(doc.category);
+    if (!category) errors.push(`${doc.file} : catégorie inconnue « ${doc.category} ».`);
+
+    let target: { meetingId: string | null; paymentId: string | null } = { meetingId: null, paymentId: null };
+    if (doc.attach_to) {
+      const resolved = resolveTarget(doc.attach_to, meetingCandidates, paymentCandidates);
+      if (typeof resolved === "string") errors.push(`${doc.file} : ${resolved}`);
+      else target = resolved;
+    }
+
+    if (mimeType && category) {
+      prepared.push({
+        file: doc.file,
+        content,
+        mimeType,
+        category,
+        displayName: doc.title,
+        uploadedAt: doc.uploaded_at,
+        ...target,
+      });
+    }
+  }
+
+  const totalBytes = prepared.reduce((sum, d) => sum + d.content.length, 0);
+  if (totalBytes > MAX_ORGANIZATION_STORAGE_BYTES) {
+    errors.push(`total ${totalBytes} octets au-delà du quota de ${MAX_ORGANIZATION_STORAGE_BYTES} octets.`);
+  }
+
+  return { prepared, errors };
+}
+
+/** Candidats tirés du plan REFEM (dry-run : mêmes données que celles écrites par le seed). */
+function candidatesFromPlan(plan: OrgPlan): { meetings: MeetingCandidate[]; payments: PaymentCandidate[] } {
+  const memberNames = new Map(plan.members.map((m) => [m.id, m.fullName]));
+  const cotisationsById = new Map(plan.cotisations.map((c) => [c.id, c]));
+  const frequencies = new Map(plan.cotisationTypes.map((t) => [t.id, t.frequency]));
+
+  return {
+    meetings: plan.meetings.map((m) => ({
+      id: m.id ?? "",
+      date: m.scheduledAt.toISOString().slice(0, 10),
+      type: m.type,
+    })),
+    payments: plan.payments.map((p) => {
+      const cotisation = cotisationsById.get(p.cotisationId);
+      return {
+        id: p.id ?? "",
+        memberName: memberNames.get(p.memberId) ?? "",
+        frequency: (cotisation && frequencies.get(cotisation.cotisationTypeId)) ?? "",
+        periodStart: cotisation?.periodStart ?? "",
+        method: p.paymentMethod,
+        amount: p.amount,
+        reference: p.paymentReference ?? null,
+      };
+    }),
+  };
+}
+
+/**
+ * Seed des documents REFEM : contrôles complets, uploads (wrapper Blob de
+ * l'application, accès privé), puis un seul `db.batch()` — insertions dans
+ * `documents` + incrément de `organization_storage_usage`. Tout échec après
+ * le premier upload supprime les blobs déjà envoyés.
+ */
+async function seedDocuments(ctx: OrgContext): Promise<void> {
+  const { db } = await import("@/lib/db");
+  const { and, count, eq, isNull, sql } = await import("drizzle-orm");
+  const { associationMembers } = await import("@/lib/db/members-schema");
+  const cot = await import("@/lib/db/cotisations-schema");
+  const mtg = await import("@/lib/db/meetings-schema");
+  const docs = await import("@/lib/db/documents-schema");
+  const { deleteDocumentBlobs, uploadDocumentBlob } = await import("@/lib/documents/blob");
+  const { organizationId } = ctx;
+
+  const [existing] = await db
+    .select({ n: count() })
+    .from(docs.documents)
+    .where(eq(docs.documents.organizationId, organizationId));
+  if ((existing?.n ?? 0) > 0) {
+    console.log(`⏭️  REFEM : ${existing?.n} document(s) déjà présent(s) — aucun document ajouté.`);
+    return;
+  }
+
+  const meetingRows = await db
+    .select({ id: mtg.meetings.id, scheduledAt: mtg.meetings.scheduledAt, type: mtg.meetings.type })
+    .from(mtg.meetings)
+    .where(and(eq(mtg.meetings.organizationId, organizationId), isNull(mtg.meetings.deletedAt)));
+  const paymentRows = await db
+    .select({
+      id: cot.payments.id,
+      memberName: associationMembers.fullName,
+      frequency: cot.cotisationTypes.frequency,
+      periodStart: cot.cotisations.periodStart,
+      method: cot.payments.paymentMethod,
+      amount: cot.payments.amount,
+      reference: cot.payments.paymentReference,
+    })
+    .from(cot.payments)
+    .innerJoin(cot.cotisations, eq(cot.payments.cotisationId, cot.cotisations.id))
+    .innerJoin(cot.cotisationTypes, eq(cot.cotisations.cotisationTypeId, cot.cotisationTypes.id))
+    .innerJoin(associationMembers, eq(cot.payments.memberId, associationMembers.id))
+    .where(and(eq(cot.payments.organizationId, organizationId), isNull(cot.payments.deletedAt)));
+
+  const { prepared, errors } = await prepareDocuments(
+    meetingRows.map((m) => ({ id: m.id, date: m.scheduledAt.toISOString().slice(0, 10), type: m.type })),
+    paymentRows,
+  );
+  if (errors.length > 0) {
+    throw new Error(`documents REFEM non seedés, aucun upload effectué :\n  - ${errors.join("\n  - ")}`);
+  }
+
+  const totalBytes = prepared.reduce((sum, d) => sum + d.content.length, 0);
+  const [usage] = await db
+    .select({ usedBytes: docs.organizationStorageUsage.usedBytes })
+    .from(docs.organizationStorageUsage)
+    .where(eq(docs.organizationStorageUsage.organizationId, organizationId));
+  if ((usage?.usedBytes ?? 0) + totalBytes > MAX_ORGANIZATION_STORAGE_BYTES) {
+    throw new Error("documents REFEM non seedés : quota de stockage de l'organisation dépassé.");
+  }
+
+  const rows: DocumentInsert[] = [];
+  try {
+    for (const doc of prepared) {
+      const documentId = newId();
+      const blob = await uploadDocumentBlob({
+        organizationId,
+        documentId,
+        fileName: doc.file,
+        content: doc.content,
+        mimeType: doc.mimeType,
+      });
+      const createdAt = at(doc.uploadedAt, 10);
+      rows.push({
+        id: documentId,
+        organizationId,
+        uploadedByUserId: ctx.ownerUserId,
+        fileName: doc.file,
+        displayName: doc.displayName,
+        category: doc.category,
+        mimeType: doc.mimeType,
+        sizeBytes: doc.content.length,
+        blobUrl: blob.url,
+        blobPathname: blob.pathname,
+        paymentId: doc.paymentId,
+        meetingId: doc.meetingId,
+        createdAt,
+        updatedAt: createdAt,
+      });
+    }
+
+    await db.batch([
+      db.insert(docs.documents).values(rows),
+      db
+        .insert(docs.organizationStorageUsage)
+        .values({ organizationId, usedBytes: totalBytes })
+        .onConflictDoUpdate({
+          target: docs.organizationStorageUsage.organizationId,
+          set: {
+            usedBytes: sql`${docs.organizationStorageUsage.usedBytes} + ${totalBytes}`,
+            updatedAt: new Date(),
+          },
+        }),
+    ]);
+  } catch (err) {
+    const cleanup = await deleteDocumentBlobs(rows.map((r) => r.blobPathname));
+    const detail = cleanup.ok
+      ? `${rows.length} blob(s) déjà envoyé(s) supprimé(s)`
+      : `ÉCHEC de la suppression de ${rows.length} blob(s) — nettoyage manuel du store de DEV requis`;
+    throw new Error(`documents REFEM : ${err instanceof Error ? err.message : err} (${detail}).`);
+  }
+
+  const attached = rows.filter((r) => r.meetingId || r.paymentId).length;
+  console.log(
+    `✅ REFEM — ${rows.length} documents (${(totalBytes / 1024 / 1024).toFixed(2)} Mo), ${attached} rattachés ` +
+      `(${rows.filter((r) => r.meetingId).length} réunions, ${rows.filter((r) => r.paymentId).length} paiements)`,
+  );
 }
 
 // ─── Exécution ────────────────────────────────────────────────────────────────
 
 /**
  * `--dry-run` : construit les plans et exécute toutes les assertions de
- * cohérence sans jamais ouvrir de connexion (contexte fictif).
+ * cohérence sans jamais ouvrir de connexion (contexte fictif), puis contrôle
+ * les 19 documents REFEM (fichiers, types, tailles, cibles de rattachement
+ * résolues dans le plan) et le garde-fou Blob. Aucun upload.
  */
-function dryRun(): void {
+async function dryRun(): Promise<void> {
+  let refemPlan: OrgPlan | undefined;
   for (const [label, build] of [["REFEM", buildRefem], ["Amicale de Donka", buildDonka]] as const) {
     const plan = build({ organizationId: "dry-run", ownerUserId: "dry-run", founderMemberId: "dry-run" });
+    if (label === "REFEM") refemPlan = plan;
     const monthly = plan.cotisations.filter((c) => c.cotisationTypeId === plan.cotisationTypes[0]?.id);
     const due = monthly.reduce((s, c) => s + c.dueAmount, 0);
     const monthlyIds = new Set(monthly.map((c) => c.id));
@@ -1379,11 +1760,42 @@ function dryRun(): void {
       `   moyens : ${[...methods].map(([m, n]) => `${m} ${((n / plan.payments.length) * 100).toFixed(0)} %`).join(", ")}`,
     );
   }
+
+  if (!refemPlan) throw new Error("plan REFEM non construit.");
+  const candidates = candidatesFromPlan(refemPlan);
+  const { prepared, errors } = await prepareDocuments(candidates.meetings, candidates.payments);
+  const refs = new Map<string | undefined, string | null | undefined>([
+    ...refemPlan.meetings.map((m) => [m.id, m.title] as const),
+    ...refemPlan.payments.map((p) => [p.id, p.paymentReference] as const),
+  ]);
+  for (const doc of prepared) {
+    const link = doc.meetingId ? `→ réunion « ${refs.get(doc.meetingId)} »` : doc.paymentId ? `→ paiement ${refs.get(doc.paymentId)}` : "";
+    console.log(`   📄 ${doc.file} — ${doc.mimeType}, ${doc.content.length} o, ${doc.category} ${link}`);
+  }
+  const totalBytes = prepared.reduce((sum, d) => sum + d.content.length, 0);
+  console.log(
+    `🧪 Documents REFEM — ${prepared.length}/${EXPECTED_DOCUMENT_COUNT} fichiers valides (${(totalBytes / 1024 / 1024).toFixed(2)} Mo), ` +
+      `${prepared.filter((d) => d.meetingId).length} réunions et ${prepared.filter((d) => d.paymentId).length} paiements rattachés`,
+  );
+
+  const problems = [...errors, ...blobStoreProblems().map((p) => `garde-fou Blob : ${p}`)];
+  if (problems.length > 0) {
+    throw new Error(`dry-run : ${problems.length} problème(s)\n  - ${problems.join("\n  - ")}`);
+  }
+  console.log("🧪 Garde-fou Blob : store de DEV confirmé. Aucun upload effectué (dry-run).");
 }
 
 async function main() {
   const reset = process.argv.includes("--reset");
   if (process.argv.includes("--dry-run")) return dryRun();
+
+  // Avant toute écriture : le seed se termine toujours par les uploads de
+  // documents, et --reset supprime des blobs.
+  const blobProblems = blobStoreProblems();
+  if (blobProblems.length > 0) {
+    console.error(`⛔ Seed refusé (garde-fou Blob) :\n  - ${blobProblems.join("\n  - ")}`);
+    process.exit(1);
+  }
 
   const { db } = await import("@/lib/db");
   const { and, count, eq, isNull, sql } = await import("drizzle-orm");
@@ -1392,7 +1804,8 @@ async function main() {
   const cot = await import("@/lib/db/cotisations-schema");
   const { transactions } = await import("@/lib/db/transactions-schema");
   const mtg = await import("@/lib/db/meetings-schema");
-  const { documents } = await import("@/lib/db/documents-schema");
+  const { documents, organizationStorageUsage } = await import("@/lib/db/documents-schema");
+  const { deleteDocumentBlobs } = await import("@/lib/documents/blob");
 
   type Query = BatchItem<"pg">;
   const CHUNK = 100;
@@ -1442,9 +1855,13 @@ async function main() {
       .select({ n: count() })
       .from(documents)
       .where(eq(documents.organizationId, organizationId));
-    if ((docs?.n ?? 0) > 0) {
+    // REFEM : --reset supprime ses documents et leurs blobs (cf. resetDocumentQueries).
+    const docsHandledByReset = reset && organizationId === REFEM_ORG_ID;
+    if ((docs?.n ?? 0) > 0 && !docsHandledByReset) {
       throw new Error(
-        `${name} : ${docs?.n} document(s) présent(s). Le reset ne supprime pas les blobs — suppression manuelle requise avant de re-seeder.`,
+        organizationId === REFEM_ORG_ID
+          ? `${name} : ${docs?.n} document(s) présent(s). Relancer avec --reset (supprime aussi les documents et leurs blobs).`
+          : `${name} : ${docs?.n} document(s) présent(s). Le reset ne supprime pas les blobs — suppression manuelle requise avant de re-seeder.`,
       );
     }
     if (reset) return;
@@ -1523,14 +1940,58 @@ async function main() {
     { organizationId: DONKA_ORG_ID, build: buildDonka },
   ];
 
+  /**
+   * --reset de REFEM : documents (actifs ET soft-deleted) supprimés avant les
+   * paiements/réunions qu'ils référencent (FK), compteur de stockage remis à
+   * zéro — dans le même batch que le reste du reset.
+   */
+  function resetDocumentQueries(organizationId: string): Query[] {
+    return [
+      db.delete(documents).where(eq(documents.organizationId, organizationId)),
+      db
+        .update(organizationStorageUsage)
+        .set({ usedBytes: 0, updatedAt: new Date() })
+        .where(eq(organizationStorageUsage.organizationId, organizationId)),
+    ];
+  }
+
+  let refemCtx: OrgContext | undefined;
+
   for (const target of targets) {
     const { ctx, name } = await resolveContext(target.organizationId);
     await assertCanWrite(ctx.organizationId, name);
     const plan = target.build(ctx);
+    if (target.organizationId === REFEM_ORG_ID) refemCtx = ctx;
 
-    const [first, ...rest] = [...(reset ? resetQueries(ctx.organizationId) : []), ...writeQueries(ctx, plan)];
+    const resetsDocuments = reset && target.organizationId === REFEM_ORG_ID;
+    // Relevés avant le batch (les lignes n'existeront plus après), purgés après son commit.
+    const blobPathnames = resetsDocuments
+      ? (
+          await db
+            .select({ blobPathname: documents.blobPathname })
+            .from(documents)
+            .where(eq(documents.organizationId, ctx.organizationId))
+        ).map((row) => row.blobPathname)
+      : [];
+
+    const [first, ...rest] = [
+      ...(resetsDocuments ? resetDocumentQueries(ctx.organizationId) : []),
+      ...(reset ? resetQueries(ctx.organizationId) : []),
+      ...writeQueries(ctx, plan),
+    ];
     if (!first) continue;
     await db.batch([first, ...rest]);
+
+    if (blobPathnames.length > 0) {
+      // Best-effort, comme deleteOrganization : les lignes sont déjà supprimées,
+      // un échec laisse au pire des blobs orphelins dans le store de DEV.
+      const purge = await deleteDocumentBlobs(blobPathnames);
+      console.log(
+        purge.ok
+          ? `🗑️  ${name} — ${blobPathnames.length} document(s) et leurs blobs supprimés`
+          : `⚠️  ${name} — ${blobPathnames.length} document(s) supprimés, mais échec partiel de la purge des blobs (store de DEV)`,
+      );
+    }
 
     const revenue = plan.transactions.filter((t) => t.type === "revenue").reduce((s, t) => s + t.amount, 0) / 100;
     const expense = plan.transactions.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0) / 100;
@@ -1542,7 +2003,8 @@ async function main() {
     );
   }
 
-  await seedDocuments();
+  if (!refemCtx) throw new Error("contexte REFEM non résolu.");
+  await seedDocuments(refemCtx);
 }
 
 main()

@@ -1,0 +1,398 @@
+{
+  "organization": "REFEM",
+  "note": "Fichiers fictifs. Les réunions et paiements référencés doivent exister dans le seed avec exactement ces valeurs.",
+  "meetings": [
+    {
+      "ref": "M01",
+      "date": "2026-01-17",
+      "type": "assemblee_generale_ordinaire",
+      "title": "Assemblée générale ordinaire 2026",
+      "status": "terminee"
+    },
+    {
+      "ref": "M02",
+      "date": "2026-02-14",
+      "type": "bureau",
+      "title": "Réunion de bureau — février",
+      "status": "terminee"
+    },
+    {
+      "ref": "M03",
+      "date": "2026-03-14",
+      "type": "bureau",
+      "title": "Réunion de bureau — mars",
+      "status": "terminee"
+    },
+    {
+      "ref": "M04",
+      "date": "2026-04-25",
+      "type": "extraordinaire",
+      "title": "Réunion extraordinaire — fonds de crédit rotatif",
+      "status": "terminee"
+    },
+    {
+      "ref": "M05",
+      "date": "2026-05-16",
+      "type": "bureau",
+      "title": "Réunion de bureau — mai",
+      "status": "terminee"
+    },
+    {
+      "ref": "M06",
+      "date": "2026-06-13",
+      "type": "bureau",
+      "title": "Réunion de bureau — juin",
+      "status": "terminee"
+    },
+    {
+      "ref": "M07",
+      "date": "2026-07-11",
+      "type": "bureau",
+      "title": "Réunion de bureau — juillet",
+      "status": "terminee"
+    },
+    {
+      "ref": "M08",
+      "date": "2026-08-08",
+      "type": "bureau",
+      "title": "Réunion de bureau — août",
+      "status": "annulee"
+    },
+    {
+      "ref": "M09",
+      "date": "2026-10-10",
+      "type": "bureau",
+      "title": "Réunion de bureau — octobre",
+      "status": "planifiee"
+    }
+  ],
+  "payments_with_receipt": [
+    {
+      "type": "payment",
+      "ref": "P01",
+      "member": "Aïssatou Camara",
+      "object": "cotisation",
+      "period": "2026-03",
+      "amount_gnf": 50000,
+      "method": "orange_money",
+      "paid_at": "2026-03-05",
+      "transaction_ref": "PP260305.1422.A48213"
+    },
+    {
+      "type": "payment",
+      "ref": "P02",
+      "member": "Hawa Keïta",
+      "object": "cotisation",
+      "period": "2026-04",
+      "amount_gnf": 50000,
+      "method": "mtn_momo",
+      "paid_at": "2026-04-08",
+      "transaction_ref": "MP260408.0917.K20561"
+    },
+    {
+      "type": "payment",
+      "ref": "P03",
+      "member": "Djénabou Sow",
+      "object": "droit_adhesion",
+      "period": null,
+      "amount_gnf": 100000,
+      "method": "orange_money",
+      "paid_at": "2026-05-20",
+      "transaction_ref": "PP260520.1803.S77402"
+    },
+    {
+      "type": "payment",
+      "ref": "P04",
+      "member": "M'Mah Soumah",
+      "object": "cotisation",
+      "period": "2026-06",
+      "amount_gnf": 50000,
+      "method": "especes",
+      "paid_at": "2026-06-06",
+      "transaction_ref": "RC-2026-061"
+    },
+    {
+      "type": "payment",
+      "ref": "P05",
+      "member": "Fatoumata Condé",
+      "object": "cotisation",
+      "period": "2026-08",
+      "amount_gnf": 50000,
+      "method": "especes",
+      "paid_at": "2026-08-07",
+      "transaction_ref": "RC-2026-084"
+    }
+  ],
+  "documents": [
+    {
+      "file": "01_statuts-refem.pdf",
+      "title": "Statuts de l'association",
+      "category": "Statuts et règlements",
+      "uploaded_at": "2026-01-19",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 91297,
+      "attach_to": null
+    },
+    {
+      "file": "02_reglement-interieur-refem.docx",
+      "title": "Règlement intérieur",
+      "category": "Statuts et règlements",
+      "uploaded_at": "2026-01-19",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 11969,
+      "attach_to": null
+    },
+    {
+      "file": "03_pv-ag-ordinaire-2026-01-17.pdf",
+      "title": "PV — AG ordinaire du 17 janvier 2026",
+      "category": "Procès-verbaux",
+      "uploaded_at": "2026-01-20",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 786524,
+      "attach_to": {
+        "type": "meeting",
+        "ref": "M01",
+        "date": "2026-01-17",
+        "meeting_type": "assemblee_generale_ordinaire",
+        "title": "Assemblée générale ordinaire 2026"
+      }
+    },
+    {
+      "file": "04_pv-bureau-2026-03-14.pdf",
+      "title": "PV — Réunion de bureau du 14 mars 2026",
+      "category": "Procès-verbaux",
+      "uploaded_at": "2026-03-16",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 707496,
+      "attach_to": {
+        "type": "meeting",
+        "ref": "M03",
+        "date": "2026-03-14",
+        "meeting_type": "bureau",
+        "title": "Réunion de bureau — mars"
+      }
+    },
+    {
+      "file": "05_pv-extraordinaire-2026-04-25.pdf",
+      "title": "PV — Réunion extraordinaire du 25 avril 2026",
+      "category": "Procès-verbaux",
+      "uploaded_at": "2026-04-27",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 711370,
+      "attach_to": {
+        "type": "meeting",
+        "ref": "M04",
+        "date": "2026-04-25",
+        "meeting_type": "extraordinaire",
+        "title": "Réunion extraordinaire — fonds de crédit rotatif"
+      }
+    },
+    {
+      "file": "06_pv-bureau-2026-06-13.pdf",
+      "title": "PV — Réunion de bureau du 13 juin 2026",
+      "category": "Procès-verbaux",
+      "uploaded_at": "2026-06-15",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 665437,
+      "attach_to": {
+        "type": "meeting",
+        "ref": "M06",
+        "date": "2026-06-13",
+        "meeting_type": "bureau",
+        "title": "Réunion de bureau — juin"
+      }
+    },
+    {
+      "file": "07_pv-bureau-2026-07-11.pdf",
+      "title": "PV — Réunion de bureau du 11 juillet 2026",
+      "category": "Procès-verbaux",
+      "uploaded_at": "2026-07-13",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 668935,
+      "attach_to": {
+        "type": "meeting",
+        "ref": "M07",
+        "date": "2026-07-11",
+        "meeting_type": "bureau",
+        "title": "Réunion de bureau — juillet"
+      }
+    },
+    {
+      "file": "08_recu-orange-money-aissatou-camara-mars-2026.png",
+      "title": "Reçu Orange Money — A. Camara — mars 2026",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-03-05",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 81814,
+      "attach_to": {
+        "type": "payment",
+        "ref": "P01",
+        "member": "Aïssatou Camara",
+        "object": "cotisation",
+        "period": "2026-03",
+        "amount_gnf": 50000,
+        "method": "orange_money",
+        "paid_at": "2026-03-05",
+        "transaction_ref": "PP260305.1422.A48213"
+      }
+    },
+    {
+      "file": "09_recu-mtn-momo-hawa-keita-avril-2026.png",
+      "title": "Reçu MTN MoMo — H. Keïta — avril 2026",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-04-08",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 84647,
+      "attach_to": {
+        "type": "payment",
+        "ref": "P02",
+        "member": "Hawa Keïta",
+        "object": "cotisation",
+        "period": "2026-04",
+        "amount_gnf": 50000,
+        "method": "mtn_momo",
+        "paid_at": "2026-04-08",
+        "transaction_ref": "MP260408.0917.K20561"
+      }
+    },
+    {
+      "file": "10_recu-orange-money-djenabou-sow-adhesion.png",
+      "title": "Reçu Orange Money — D. Sow — adhésion",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-05-20",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 98899,
+      "attach_to": {
+        "type": "payment",
+        "ref": "P03",
+        "member": "Djénabou Sow",
+        "object": "droit_adhesion",
+        "period": null,
+        "amount_gnf": 100000,
+        "method": "orange_money",
+        "paid_at": "2026-05-20",
+        "transaction_ref": "PP260520.1803.S77402"
+      }
+    },
+    {
+      "file": "11_recu-caisse-mmah-soumah-juin-2026.pdf",
+      "title": "Reçu de caisse RC-2026-061 — M. Soumah",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-06-06",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 44909,
+      "attach_to": {
+        "type": "payment",
+        "ref": "P04",
+        "member": "M'Mah Soumah",
+        "object": "cotisation",
+        "period": "2026-06",
+        "amount_gnf": 50000,
+        "method": "especes",
+        "paid_at": "2026-06-06",
+        "transaction_ref": "RC-2026-061"
+      }
+    },
+    {
+      "file": "12_recu-caisse-fatoumata-conde-aout-2026.pdf",
+      "title": "Reçu de caisse RC-2026-084 — F. Condé",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-08-07",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 45001,
+      "attach_to": {
+        "type": "payment",
+        "ref": "P05",
+        "member": "Fatoumata Condé",
+        "object": "cotisation",
+        "period": "2026-08",
+        "amount_gnf": 50000,
+        "method": "especes",
+        "paid_at": "2026-08-07",
+        "transaction_ref": "RC-2026-084"
+      }
+    },
+    {
+      "file": "13_facture-location-salle-ag.pdf",
+      "title": "Facture location de salle — AG 2026",
+      "category": "Reçus et justificatifs",
+      "uploaded_at": "2026-01-19",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 45365,
+      "attach_to": null
+    },
+    {
+      "file": "14_rapport-activite-2025.pdf",
+      "title": "Rapport d'activité 2025",
+      "category": "Rapports",
+      "uploaded_at": "2026-01-12",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 88804,
+      "attach_to": null
+    },
+    {
+      "file": "15_rapport-financier-s1-2026.xlsx",
+      "title": "Rapport financier — 1er semestre 2026",
+      "category": "Rapports",
+      "uploaded_at": "2026-07-06",
+      "uploaded_by": "Fatoumata Binta Bah",
+      "size_bytes": 11466,
+      "attach_to": null
+    },
+    {
+      "file": "16_courrier-mairie-matoto.pdf",
+      "title": "Demande de salle — Mairie de Matoto",
+      "category": "Correspondance",
+      "uploaded_at": "2026-07-03",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 87718,
+      "attach_to": null
+    },
+    {
+      "file": "17_lettre-partenariat-mecsm.docx",
+      "title": "Proposition de partenariat — MECSM",
+      "category": "Correspondance",
+      "uploaded_at": "2026-06-22",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 11425,
+      "attach_to": null
+    },
+    {
+      "file": "18_liste-presence-ag-2026-01-17.jpg",
+      "title": "Liste de présence — AG du 17 janvier 2026",
+      "category": "Autres",
+      "uploaded_at": "2026-01-20",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 812094,
+      "attach_to": null
+    },
+    {
+      "file": "19_modele-carte-membre-2026.png",
+      "title": "Modèle de carte de membre 2026",
+      "category": "Autres",
+      "uploaded_at": "2026-02-02",
+      "uploaded_by": "Kadiatou Sylla",
+      "size_bytes": 31190,
+      "attach_to": null
+    }
+  ],
+  "cotisations_targets_gnf": {
+    "note": "Totaux perçus par mois, cohérents avec 15_rapport-financier-s1-2026.xlsx et les PV",
+    "cotisations": {
+      "2026-01": 1350000,
+      "2026-02": 1500000,
+      "2026-03": 1550000,
+      "2026-04": 1500000,
+      "2026-05": 1600000,
+      "2026-06": 1600000
+    },
+    "droits_adhesion": {
+      "2026-01": 200000,
+      "2026-02": 100000,
+      "2026-03": 0,
+      "2026-04": 100000,
+      "2026-05": 200000,
+      "2026-06": 100000
+    }
+  }
+}
