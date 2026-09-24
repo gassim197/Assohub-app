@@ -1625,12 +1625,12 @@
           "espace": {
             "title": "Un espace sécurisé pour tous vos documents",
             "description": "Statuts, procès-verbaux, reçus, rapports : classés en six catégories.",
-            "alt": ""
+            "alt": "Page Documents : jauge de stockage, filtres par catégorie et liste des documents avec catégorie, taille, date d'ajout et rattachement à un paiement ou une réunion"
           },
           "justificatifs": {
             "title": "Chaque justificatif à sa place",
             "description": "Rattachez un reçu à son paiement, un procès-verbal à sa réunion.",
-            "alt": ""
+            "alt": "Documents filtrés sur Reçus et justificatifs : chaque reçu est lié au paiement correspondant"
           }
         }
       },

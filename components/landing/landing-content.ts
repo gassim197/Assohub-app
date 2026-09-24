@@ -17,8 +17,7 @@ export interface FeatureImage {
 
 export interface Feature {
   key: string;
-  /** `null` : capture pas encore disponible, un placeholder 16:10 la remplace. */
-  image: FeatureImage | null;
+  image: FeatureImage;
 }
 
 export interface Cluster {
@@ -63,8 +62,8 @@ export const CLUSTERS: Cluster[] = [
     id: "documents",
     badge: true,
     features: [
-      { key: "espace", image: null },
-      { key: "justificatifs", image: null },
+      { key: "espace", image: screen("documents-page") },
+      { key: "justificatifs", image: screen("documents-rattachement") },
     ],
   },
   {

@@ -1625,12 +1625,12 @@
           "espace": {
             "title": "A secure space for all your documents",
             "description": "Bylaws, minutes, receipts, reports: sorted into six categories.",
-            "alt": ""
+            "alt": "Documents page: storage gauge, category filters and document list with category, size, upload date and link to a payment or meeting"
           },
           "justificatifs": {
             "title": "Every supporting document in its place",
             "description": "Attach a receipt to its payment, minutes to their meeting.",
-            "alt": ""
+            "alt": "Documents filtered on Receipts and supporting documents: each receipt is linked to its payment"
           }
         }
       },

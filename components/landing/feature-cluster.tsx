@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { FeatureRow } from "./feature-row";
 import type { Cluster } from "./landing-content";
 import { Screenshot } from "./screenshot-frame";
-import { ScreenshotPlaceholder } from "./screenshot-placeholder";
 
 /**
  * Une grappe de fonctionnalités (Membres, Cotisations…) : ancre de la barre
@@ -49,16 +48,12 @@ export async function FeatureCluster({
               description={t(`features.${feature.key}.description`)}
               reversed={index % 2 === 1}
               media={
-                feature.image ? (
-                  <Screenshot
-                    src={feature.image.src}
-                    alt={t(`features.${feature.key}.alt`)}
-                    width={feature.image.width}
-                    height={feature.image.height}
-                  />
-                ) : (
-                  <ScreenshotPlaceholder />
-                )
+                <Screenshot
+                  src={feature.image.src}
+                  alt={t(`features.${feature.key}.alt`)}
+                  width={feature.image.width}
+                  height={feature.image.height}
+                />
               }
             />
           ))}
