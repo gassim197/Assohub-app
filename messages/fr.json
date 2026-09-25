@@ -1555,12 +1555,22 @@
       "register": "Créer un compte"
     },
     "hero": {
-      "title": "Gérez votre association sans cahier ni tableur",
+      "badge": "Pensé pour les associations d'Afrique de l'Ouest",
+      "titleLead": "Gérez votre association",
+      "titleAccent": "sans cahier ni tableur",
       "subtitle": "Membres, cotisations, réunions et documents réunis dans un seul espace, pensé pour les associations et ONG d'Afrique de l'Ouest.",
-      "ctaPrimary": "Créer mon association",
-      "ctaSecondary": "Se connecter",
+      "ctaPrimary": "Créer mon association gratuitement",
+      "ctaDemo": "Voir la démo",
+      "args": {
+        "free": "Gratuit pendant le lancement",
+        "noCard": "Sans carte bancaire",
+        "noInstall": "Rien à installer"
+      },
       "mediaAlt": "Tableau de bord d'une association dans AssoHub : membres actifs, cotisations à percevoir, solde financier et prochaines réunions",
-      "freeNote": "Gratuit pendant le lancement · Sans carte bancaire"
+      "bubbles": {
+        "dues": "Cotisations suivies",
+        "reminders": "Relances en un clic"
+      }
     },
     "nav": {
       "label": "Fonctionnalités",

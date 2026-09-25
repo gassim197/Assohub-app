@@ -1555,12 +1555,22 @@
       "register": "Create an account"
     },
     "hero": {
-      "title": "Run your association without notebooks or spreadsheets",
+      "badge": "Designed for associations in West Africa",
+      "titleLead": "Run your association",
+      "titleAccent": "without notebooks or spreadsheets",
       "subtitle": "Members, contributions, meetings and documents together in one place, designed for associations and NGOs in West Africa.",
-      "ctaPrimary": "Create my association",
-      "ctaSecondary": "Sign in",
+      "ctaPrimary": "Create my association for free",
+      "ctaDemo": "Watch the demo",
+      "args": {
+        "free": "Free during launch",
+        "noCard": "No credit card required",
+        "noInstall": "Nothing to install"
+      },
       "mediaAlt": "An association's AssoHub dashboard: active members, outstanding contributions, financial balance and upcoming meetings",
-      "freeNote": "Free during launch · No credit card required"
+      "bubbles": {
+        "dues": "Contributions tracked",
+        "reminders": "One-click reminders"
+      }
     },
     "nav": {
       "label": "Features",
