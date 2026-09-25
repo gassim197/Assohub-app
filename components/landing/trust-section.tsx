@@ -117,7 +117,7 @@ export async function TrustSection() {
             >
               {t("title")}
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-pretty text-muted-foreground sm:text-lg">
+            <p className="mt-4 text-base leading-relaxed text-balance text-muted-foreground sm:text-lg">
               {t("subtitle")}
             </p>
           </div>
