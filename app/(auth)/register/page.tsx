@@ -10,6 +10,8 @@ import { useTranslations } from "next-intl";
 
 import { signUp, sendVerificationEmail } from "@/lib/auth/client";
 import { buildVerifyEmailCallbackURL } from "@/lib/auth/verify-email";
+import { callAuth, requestErrorMessageKey } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -44,6 +46,16 @@ const registerSchema = z.object({
 
 type RegisterValues = z.infer<typeof registerSchema>;
 
+/** Codes Better-Auth couverts par le message actuel ; tout autre code = panne. */
+const REGISTER_ERROR_CODES = [
+  "USER_ALREADY_EXISTS",
+  "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL",
+  "INVALID_EMAIL",
+  "PASSWORD_TOO_SHORT",
+  "PASSWORD_TOO_LONG",
+  "VALIDATION_ERROR",
+] as const;
+
 export default function RegisterPage() {
   const t = useTranslations();
   const router = useRouter();
@@ -56,13 +68,16 @@ export default function RegisterPage() {
 
   async function onSubmit(values: RegisterValues) {
     setServerError(null);
-    const result = await signUp.email({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
-    if (result.error) {
-      setServerError(t("auth.genericError"));
+    const result = await callAuth(
+      () => signUp.email({ name: values.name, email: values.email, password: values.password }),
+      REGISTER_ERROR_CODES,
+    );
+    if (!result.ok) {
+      setServerError(
+        result.kind === "auth"
+          ? t("auth.genericError")
+          : t(`common.${requestErrorMessageKey(result.kind)}`),
+      );
       return;
     }
     // `sendOnSignUp: false` (lib/auth/index.ts) : l'envoi de l'email de
@@ -147,6 +162,7 @@ export default function RegisterPage() {
                 ? t("common.loading")
                 : t("auth.signUp")}
             </Button>
+            <SlowRequestHint pending={form.formState.isSubmitting} className="text-center" />
             <p className="text-center text-xs text-muted-foreground">
               {t("auth.legalConsent.prefix")}{" "}
               <Link

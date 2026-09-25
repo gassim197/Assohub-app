@@ -5,6 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { UploadCloud } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { uploadDocument } from "@/lib/documents/actions";
 import {
   ACCEPTED_FILE_EXTENSIONS,
@@ -55,6 +57,7 @@ function stripExtension(fileName: string): string {
  */
 export function UploadDocumentDialog({ orgSlug }: { orgSlug: string }) {
   const t = useTranslations("documents.upload");
+  const tCommon = useTranslations("common");
   const tCategories = useTranslations("documents.categories");
   const router = useRouter();
   const pathname = usePathname();
@@ -114,7 +117,7 @@ export function UploadDocumentDialog({ orgSlug }: { orgSlug: string }) {
     }, 150);
 
     startTransition(async () => {
-      const result = await uploadDocument(orgSlug, formData);
+      const result = await runAction(() => uploadDocument(orgSlug, formData));
       clearInterval(progressTimer);
 
       if (result.ok) {
@@ -126,7 +129,11 @@ export function UploadDocumentDialog({ orgSlug }: { orgSlug: string }) {
       }
 
       setProgress(0);
-      toast.error(t(`errors.${result.error}`));
+      toast.error(
+        isRequestFailure(result.error)
+          ? tCommon(requestErrorMessageKey(result.error))
+          : t(`errors.${result.error}`),
+      );
     });
   }
 
@@ -228,6 +235,7 @@ export function UploadDocumentDialog({ orgSlug }: { orgSlug: string }) {
               {isPending ? t("submitting") : t("submit")}
             </Button>
           </DialogFooter>
+          <SlowRequestHint pending={isPending} className="text-right" />
         </form>
       </DialogContent>
     </Dialog>

@@ -11,7 +11,19 @@
     "export": "Exporter",
     "import": "Importer",
     "actions": "Actions",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "slowConnection": "La connexion est lente, merci de patienter…",
+    "errors": {
+      "network": "Connexion internet instable. Vérifiez votre réseau et réessayez.",
+      "server": "Service momentanément indisponible. Réessayez dans un instant.",
+      "rate_limit": "Trop de tentatives. Patientez quelques minutes avant de réessayer."
+    },
+    "errorPage": {
+      "networkTitle": "Connexion interrompue",
+      "serverTitle": "Service momentanément indisponible",
+      "retry": "Réessayer",
+      "home": "Retour à l'accueil"
+    }
   },
   "auth": {
     "tagline": "L'infrastructure numérique des organisations africaines.",

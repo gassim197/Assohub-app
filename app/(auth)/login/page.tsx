@@ -9,6 +9,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { signIn } from "@/lib/auth/client";
+import { callAuth, requestErrorMessageKey } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { buildVerifyEmailCallbackURL } from "@/lib/auth/verify-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +41,17 @@ const loginSchema = z.object({
 
 type LoginValues = z.infer<typeof loginSchema>;
 
+/** Codes Better-Auth expliqués par ce formulaire ; tout autre code = panne. */
+const LOGIN_ERROR_CODES = [
+  "INVALID_EMAIL_OR_PASSWORD",
+  "INVALID_EMAIL",
+  "INVALID_PASSWORD",
+  "USER_NOT_FOUND",
+  "CREDENTIAL_ACCOUNT_NOT_FOUND",
+  "EMAIL_NOT_VERIFIED",
+  "VALIDATION_ERROR",
+] as const;
+
 /**
  * `redirect` vient de l'URL (lien "Se connecter et rejoindre" d'une
  * invitation, volet 2 de la 4B) : on n'accepte qu'un chemin relatif interne
@@ -68,12 +81,15 @@ export default function LoginPage() {
   async function onSubmit(values: LoginValues) {
     setServerError(null);
     setUnverifiedEmail(null);
-    const result = await signIn.email({
-      email: values.email,
-      password: values.password,
-    });
-    if (result.error) {
-      if (result.error.code === "EMAIL_NOT_VERIFIED") {
+    const result = await callAuth(
+      () => signIn.email({ email: values.email, password: values.password }),
+      LOGIN_ERROR_CODES,
+    );
+    if (!result.ok) {
+      if (result.kind !== "auth") {
+        // Panne réseau ou serveur : ne jamais laisser croire à un mauvais mot de passe.
+        setServerError(t(`common.${requestErrorMessageKey(result.kind)}`));
+      } else if (result.code === "EMAIL_NOT_VERIFIED") {
         setUnverifiedEmail(values.email);
       } else {
         setServerError(t("auth.invalidCredentials"));
@@ -158,6 +174,7 @@ export default function LoginPage() {
                 ? t("common.loading")
                 : t("auth.signIn")}
             </Button>
+            <SlowRequestHint pending={form.formState.isSubmitting} className="text-center" />
           </form>
         </Form>
       </CardContent>

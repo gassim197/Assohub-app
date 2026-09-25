@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { inviteMember } from "@/lib/invitations/actions";
 import { buildInviteMemberSchema } from "@/lib/invitations/schema";
 import { INVITATION_ROLES, type InvitationRole } from "@/lib/invitations/constants";
@@ -63,6 +65,7 @@ function buildDefaults(): InviteMemberFormValues {
  */
 export function InviteMemberDialog({ orgSlug }: { orgSlug: string }) {
   const t = useTranslations("invitations");
+  const tCommon = useTranslations("common");
   // Les libellés de rôle sont partagés avec le CRUD membres (namespace "members").
   const tRoles = useTranslations("members");
   const router = useRouter();
@@ -100,13 +103,18 @@ export function InviteMemberDialog({ orgSlug }: { orgSlug: string }) {
 
   function onSubmit(values: InviteMemberFormValues) {
     startTransition(async () => {
-      const result = await inviteMember(orgSlug, values);
+      const result = await runAction(() => inviteMember(orgSlug, values));
 
       if (result.ok) {
         toast.success(t("dialog.success"));
         form.reset(buildDefaults());
         closeDialog();
         router.refresh();
+        return;
+      }
+
+      if (isRequestFailure(result.error)) {
+        toast.error(tCommon(requestErrorMessageKey(result.error)));
         return;
       }
 
@@ -248,6 +256,7 @@ export function InviteMemberDialog({ orgSlug }: { orgSlug: string }) {
                 {isPending ? t("dialog.submitting") : t("dialog.submit")}
               </Button>
             </DialogFooter>
+            <SlowRequestHint pending={isPending} className="text-right" />
           </form>
         </Form>
       </DialogContent>

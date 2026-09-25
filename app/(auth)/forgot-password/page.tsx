@@ -9,6 +9,8 @@ import { useTranslations } from "next-intl";
 import { MailCheck } from "lucide-react";
 
 import { requestPasswordReset } from "@/lib/auth/client";
+import { callAuth, requestErrorMessageKey, type RequestFailureKind } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,7 +46,9 @@ type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
  */
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth.forgotPasswordPage");
+  const tCommon = useTranslations("common");
   const [sent, setSent] = useState(false);
+  const [failure, setFailure] = useState<RequestFailureKind | null>(null);
 
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -52,12 +56,19 @@ export default function ForgotPasswordPage() {
   });
 
   async function onSubmit(values: ForgotPasswordValues) {
-    // On ignore volontairement `result.error` : le message affiché est
-    // neutre dans tous les cas pour ne pas révéler l'existence du compte.
-    await requestPasswordReset({
-      email: values.email,
-      redirectTo: "/reset-password",
-    });
+    setFailure(null);
+    // Les erreurs métier restent ignorées : le message affiché est neutre
+    // pour ne pas révéler l'existence du compte. Une panne réseau ou serveur,
+    // elle, est signalée — sinon on annoncerait un email jamais envoyé (et
+    // une panne ne dépend pas du compte, elle ne révèle rien).
+    const result = await callAuth(
+      () => requestPasswordReset({ email: values.email, redirectTo: "/reset-password" }),
+      ["INVALID_EMAIL", "VALIDATION_ERROR"],
+    );
+    if (!result.ok && result.kind !== "auth") {
+      setFailure(result.kind);
+      return;
+    }
     setSent(true);
   }
 
@@ -106,6 +117,9 @@ export default function ForgotPasswordPage() {
                 </FormItem>
               )}
             />
+            {failure ? (
+              <p className="text-destructive text-sm">{tCommon(requestErrorMessageKey(failure))}</p>
+            ) : null}
             <Button
               type="submit"
               className="w-full"
@@ -113,6 +127,7 @@ export default function ForgotPasswordPage() {
             >
               {form.formState.isSubmitting ? t("sending") : t("submit")}
             </Button>
+            <SlowRequestHint pending={form.formState.isSubmitting} className="text-center" />
           </form>
         </Form>
       </CardContent>

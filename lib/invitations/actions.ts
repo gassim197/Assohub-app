@@ -4,9 +4,23 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq, gt, isNull, sql } from "drizzle-orm";
+import { APIError } from "better-auth/api";
 import { getTranslations } from "next-intl/server";
 
 import { auth } from "@/lib/auth";
+
+/**
+ * Vrai seulement si `signUpEmail` a refusé parce que l'email existe déjà.
+ * Toute autre erreur (base injoignable, panne…) doit remonter en `unknown`,
+ * jamais en « email déjà utilisé ».
+ */
+function isUserAlreadyExistsError(error: unknown): boolean {
+  return (
+    error instanceof APIError &&
+    (error.body?.code === "USER_ALREADY_EXISTS" ||
+      error.body?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL")
+  );
+}
 import { requireOrgAccess } from "@/lib/auth/org";
 import { db } from "@/lib/db";
 import { newId } from "@/lib/db/id";
@@ -335,8 +349,8 @@ export async function registerAndJoin(
       },
     });
     newUserId = result.user.id;
-  } catch {
-    return { ok: false, error: "emailTaken" };
+  } catch (error) {
+    return { ok: false, error: isUserAlreadyExistsError(error) ? "emailTaken" : "unknown" };
   }
 
   // Vérifiée d'office (chantier 3) : l'invité a déjà reçu et cliqué le lien
@@ -723,8 +737,8 @@ export async function registerAndJoinViaLink(
       },
     });
     newUserId = result.user.id;
-  } catch {
-    return { ok: false, error: "emailAlreadyExists" };
+  } catch (error) {
+    return { ok: false, error: isUserAlreadyExistsError(error) ? "emailAlreadyExists" : "unknown" };
   }
 
   const acceptanceMode = isInviteLinkAcceptanceMode(link.acceptanceMode)

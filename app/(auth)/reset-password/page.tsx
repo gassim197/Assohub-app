@@ -10,6 +10,8 @@ import { useTranslations } from "next-intl";
 import { KeyRound, ShieldAlert } from "lucide-react";
 
 import { resetPassword } from "@/lib/auth/client";
+import { callAuth, requestErrorMessageKey, type RequestFailureKind } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import {
@@ -55,6 +57,8 @@ type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
  */
 export default function ResetPasswordPage() {
   const t = useTranslations("auth.resetPasswordPage");
+  const tCommon = useTranslations("common");
+  const [failure, setFailure] = useState<RequestFailureKind | null>(null);
   const searchParams = useSearchParams();
   const [success, setSuccess] = useState(false);
   const [invalidToken, setInvalidToken] = useState(false);
@@ -72,12 +76,15 @@ export default function ResetPasswordPage() {
       setInvalidToken(true);
       return;
     }
-    const result = await resetPassword({
-      newPassword: values.newPassword,
-      token,
-    });
-    if (result.error) {
-      if (result.error.code === "INVALID_TOKEN") {
+    setFailure(null);
+    const result = await callAuth(
+      () => resetPassword({ newPassword: values.newPassword, token }),
+      ["INVALID_TOKEN", "TOKEN_EXPIRED", "PASSWORD_TOO_SHORT", "PASSWORD_TOO_LONG", "VALIDATION_ERROR"],
+    );
+    if (!result.ok) {
+      if (result.kind !== "auth") {
+        setFailure(result.kind);
+      } else if (result.code === "INVALID_TOKEN" || result.code === "TOKEN_EXPIRED") {
         setInvalidToken(true);
       } else {
         form.setError("newPassword", { message: t("genericError") });
@@ -167,6 +174,9 @@ export default function ResetPasswordPage() {
                 </FormItem>
               )}
             />
+            {failure ? (
+              <p className="text-destructive text-sm">{tCommon(requestErrorMessageKey(failure))}</p>
+            ) : null}
             <Button
               type="submit"
               className="w-full"
@@ -174,6 +184,7 @@ export default function ResetPasswordPage() {
             >
               {form.formState.isSubmitting ? t("submitting") : t("submit")}
             </Button>
+            <SlowRequestHint pending={form.formState.isSubmitting} className="text-center" />
           </form>
         </Form>
       </CardContent>

@@ -6,6 +6,8 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { createMinutes, updateMinutes } from "@/lib/meetings/minutes-actions";
 import { buildMinutesSchema, type MinutesFormValues } from "@/lib/meetings/minutes-schema";
 import type { MinutesRow } from "@/lib/meetings/minutes-queries";
@@ -73,6 +75,7 @@ export function MeetingMinutesFormDialog({
   minutes?: MinutesRow;
 }) {
   const t = useTranslations("meetings.minutes");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -111,15 +114,21 @@ export function MeetingMinutesFormDialog({
 
   function onSubmit(values: MinutesFormValues) {
     startTransition(async () => {
-      const result =
+      const result = await runAction(() =>
         minutes !== undefined
-          ? await updateMinutes(orgSlug, minutes.id, values)
-          : await createMinutes(orgSlug, meetingId, values);
+          ? updateMinutes(orgSlug, minutes.id, values)
+          : createMinutes(orgSlug, meetingId, values),
+      );
 
       if (result.ok) {
         toast.success(isEdit ? t("form.successEdit") : t("form.successCreate"));
         closeDialog();
         router.refresh();
+        return;
+      }
+
+      if (isRequestFailure(result.error)) {
+        toast.error(tCommon(requestErrorMessageKey(result.error)));
         return;
       }
 
@@ -239,6 +248,7 @@ export function MeetingMinutesFormDialog({
                     : t("form.submitCreate")}
               </Button>
             </DialogFooter>
+            <SlowRequestHint pending={isPending} className="text-right" />
           </form>
         </Form>
       </DialogContent>

@@ -6,6 +6,8 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { recordPayment, updatePayment } from "@/lib/cotisations/payment-actions";
 import { buildPaymentSchema } from "@/lib/cotisations/payment-schema";
 import {
@@ -105,6 +107,7 @@ export function RecordPaymentDialog({
   payment?: PaymentRow;
 }) {
   const t = useTranslations("cotisations.payments");
+  const tCommon = useTranslations("common");
   const tMethod = useTranslations("cotisations.paymentMethod");
   const locale = useLocale();
   const router = useRouter();
@@ -166,10 +169,11 @@ export function RecordPaymentDialog({
 
   function onSubmit(values: PaymentFormValues) {
     startTransition(async () => {
-      const result =
+      const result = await runAction(() =>
         isEdit && payment
-          ? await updatePayment(orgSlug, payment.id, values)
-          : await recordPayment(orgSlug, cotisation.id, values);
+          ? updatePayment(orgSlug, payment.id, values)
+          : recordPayment(orgSlug, cotisation.id, values),
+      );
 
       if (result.ok) {
         toast.success(
@@ -182,6 +186,11 @@ export function RecordPaymentDialog({
         );
         closeDialog();
         router.refresh();
+        return;
+      }
+
+      if (isRequestFailure(result.error)) {
+        toast.error(tCommon(requestErrorMessageKey(result.error)));
         return;
       }
 
@@ -364,6 +373,7 @@ export function RecordPaymentDialog({
                     : t("form.submit")}
               </Button>
             </DialogFooter>
+            <SlowRequestHint pending={isPending} className="text-right" />
           </form>
         </Form>
       </DialogContent>

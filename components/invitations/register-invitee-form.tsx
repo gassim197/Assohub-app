@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { registerAndJoin } from "@/lib/invitations/actions";
 import { buildRegisterInviteeSchema } from "@/lib/invitations/schema";
 import { Button } from "@/components/ui/button";
@@ -48,6 +50,7 @@ export function RegisterInviteeForm({
   defaultFullName: string;
 }) {
   const t = useTranslations("invitations.accept.register");
+  const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -79,9 +82,14 @@ export function RegisterInviteeForm({
     setServerError(null);
     setEmailTaken(false);
     startTransition(async () => {
-      const result = await registerAndJoin(token, values);
+      const result = await runAction(() => registerAndJoin(token, values));
       // Le succès ne revient jamais ici (redirect serveur) : à ce point,
       // `result` est nécessairement une erreur.
+      if (isRequestFailure(result.error)) {
+        setServerError(tCommon(requestErrorMessageKey(result.error)));
+        return;
+      }
+
       if (result.error === "phoneInvalid") {
         form.setError("phoneNumber", { message: t("errors.phoneInvalid") });
       } else if (result.error === "emailTaken") {
@@ -182,6 +190,7 @@ export function RegisterInviteeForm({
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? t("submitting") : t("submit")}
             </Button>
+            <SlowRequestHint pending={isPending} className="text-center" />
           </form>
         </Form>
       </CardContent>

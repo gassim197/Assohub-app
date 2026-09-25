@@ -11,7 +11,19 @@
     "export": "Export",
     "import": "Import",
     "actions": "Actions",
-    "noResults": "No results"
+    "noResults": "No results",
+    "slowConnection": "The connection is slow, please wait…",
+    "errors": {
+      "network": "Unstable internet connection. Check your network and try again.",
+      "server": "Service temporarily unavailable. Try again in a moment.",
+      "rate_limit": "Too many attempts. Wait a few minutes before trying again."
+    },
+    "errorPage": {
+      "networkTitle": "Connection interrupted",
+      "serverTitle": "Service temporarily unavailable",
+      "retry": "Try again",
+      "home": "Back to home"
+    }
   },
   "auth": {
     "tagline": "The digital backbone of African organizations.",

@@ -6,6 +6,8 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { createMember, updateMember } from "@/lib/members/actions";
 import { buildCreateMemberSchema } from "@/lib/members/schema";
 import {
@@ -112,6 +114,7 @@ export function MemberFormDialog({
   member?: MemberRow;
 }) {
   const t = useTranslations("members");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -162,15 +165,21 @@ export function MemberFormDialog({
 
   function onSubmit(values: MemberFormValues) {
     startTransition(async () => {
-      const result =
+      const result = await runAction(() =>
         member !== undefined
-          ? await updateMember(orgSlug, member.id, values)
-          : await createMember(orgSlug, values);
+          ? updateMember(orgSlug, member.id, values)
+          : createMember(orgSlug, values),
+      );
 
       if (result.ok) {
         toast.success(isEdit ? t("editForm.success") : t("form.success"));
         closeDialog();
         router.refresh();
+        return;
+      }
+
+      if (isRequestFailure(result.error)) {
+        toast.error(tCommon(requestErrorMessageKey(result.error)));
         return;
       }
 
@@ -433,6 +442,7 @@ export function MemberFormDialog({
                     : t("form.submit")}
               </Button>
             </DialogFooter>
+            <SlowRequestHint pending={isPending} className="text-right" />
           </form>
         </Form>
       </DialogContent>

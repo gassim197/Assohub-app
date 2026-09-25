@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { registerAndJoinViaLink } from "@/lib/invitations/actions";
 import { buildRegisterViaLinkSchema } from "@/lib/invitations/schema";
 import { Button } from "@/components/ui/button";
@@ -38,6 +40,7 @@ interface RegisterViaLinkFormValues {
  */
 export function RegisterViaLinkForm({ token }: { token: string }) {
   const t = useTranslations("invitations.join");
+  const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -66,9 +69,14 @@ export function RegisterViaLinkForm({ token }: { token: string }) {
     setServerError(null);
     setEmailTaken(null);
     startTransition(async () => {
-      const result = await registerAndJoinViaLink(token, values);
+      const result = await runAction(() => registerAndJoinViaLink(token, values));
       // Le succès ne revient jamais ici (redirect serveur) : à ce point,
       // `result` est nécessairement une erreur.
+      if (isRequestFailure(result.error)) {
+        setServerError(tCommon(requestErrorMessageKey(result.error)));
+        return;
+      }
+
       if (result.error === "phoneInvalid") {
         form.setError("phoneNumber", { message: t("register.errors.phoneInvalid") });
       } else if (result.error === "emailAlreadyExists") {
@@ -174,6 +182,7 @@ export function RegisterViaLinkForm({ token }: { token: string }) {
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? t("cta.creating") : t("cta.registerAndJoin")}
             </Button>
+            <SlowRequestHint pending={isPending} className="text-center" />
           </form>
         </Form>
       </CardContent>

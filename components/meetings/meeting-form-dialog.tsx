@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 
+import { isRequestFailure, requestErrorMessageKey, runAction } from "@/lib/errors/request-error";
+import { SlowRequestHint } from "@/components/layout/slow-request-hint";
 import { createMeeting, updateMeeting } from "@/lib/meetings/actions";
 import { buildMeetingSchema } from "@/lib/meetings/schema";
 import {
@@ -102,6 +104,7 @@ export function MeetingFormDialog({
   meeting?: MeetingRow;
 }) {
   const t = useTranslations("meetings");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -145,15 +148,21 @@ export function MeetingFormDialog({
 
   function onSubmit(values: MeetingFormValues) {
     startTransition(async () => {
-      const result =
+      const result = await runAction(() =>
         meeting !== undefined
-          ? await updateMeeting(orgSlug, meeting.id, values)
-          : await createMeeting(orgSlug, values);
+          ? updateMeeting(orgSlug, meeting.id, values)
+          : createMeeting(orgSlug, values),
+      );
 
       if (result.ok) {
         toast.success(isEdit ? t("editForm.success") : t("form.success"));
         closeDialog();
         router.refresh();
+        return;
+      }
+
+      if (isRequestFailure(result.error)) {
+        toast.error(tCommon(requestErrorMessageKey(result.error)));
         return;
       }
 
@@ -357,6 +366,7 @@ export function MeetingFormDialog({
                     : t("form.submit")}
               </Button>
             </DialogFooter>
+            <SlowRequestHint pending={isPending} className="text-right" />
           </form>
         </Form>
       </DialogContent>

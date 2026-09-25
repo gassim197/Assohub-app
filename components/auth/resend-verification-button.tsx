@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { sendVerificationEmail } from "@/lib/auth/client";
+import { callAuth, requestErrorMessageKey, type AuthErrorKind } from "@/lib/errors/request-error";
 import { Button } from "@/components/ui/button";
 
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -17,10 +18,11 @@ export function ResendVerificationButton({
   callbackURL: string;
 }) {
   const t = useTranslations("auth.verifyEmail");
+  const tCommon = useTranslations("common");
   const [isPending, setIsPending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [sent, setSent] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failure, setFailure] = useState<AuthErrorKind | null>(null);
 
   function startCooldown() {
     setCooldown(RESEND_COOLDOWN_SECONDS);
@@ -38,11 +40,14 @@ export function ResendVerificationButton({
   async function handleResend() {
     setIsPending(true);
     setSent(false);
-    setFailed(false);
-    const result = await sendVerificationEmail({ email, callbackURL });
+    setFailure(null);
+    const result = await callAuth(
+      () => sendVerificationEmail({ email, callbackURL }),
+      ["EMAIL_ALREADY_VERIFIED", "USER_NOT_FOUND", "INVALID_EMAIL", "VALIDATION_ERROR"],
+    );
     setIsPending(false);
-    if (result.error) {
-      setFailed(true);
+    if (!result.ok) {
+      setFailure(result.kind);
       return;
     }
     setSent(true);
@@ -66,8 +71,10 @@ export function ResendVerificationButton({
       {sent && (
         <p className="text-sm text-muted-foreground">{t("resendSuccess")}</p>
       )}
-      {failed && (
-        <p className="text-sm text-destructive">{t("resendError")}</p>
+      {failure && (
+        <p className="text-sm text-destructive">
+          {failure === "auth" ? t("resendError") : tCommon(requestErrorMessageKey(failure))}
+        </p>
       )}
     </div>
   );

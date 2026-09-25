@@ -37,3 +37,39 @@
   - décider du sort de `documents.uploaded_by_user_id`, qui est `NOT NULL` : le rendre
     nullable + `SET NULL` (affiché « Utilisateur supprimé »), réattribuer à un
     utilisateur système, ou supprimer les documents de l'utilisateur.
+
+- **Barre de progression réelle pendant l'upload (connexions lentes).**
+  `components/documents/upload-document-dialog.tsx` affiche une progression *simulée*
+  (+10 % toutes les 150 ms, bloquée à 90 %, puis 100 % au résultat) : l'upload passe par
+  une Server Action, qui n'expose pas l'avancement. Sur une connexion lente, la barre
+  reste à 90 % pendant tout l'envoi. Pistes : upload direct navigateur → Vercel Blob
+  (`upload()` de `@vercel/blob/client`, `onUploadProgress`) avec une route de
+  validation/enregistrement côté serveur, ou `XMLHttpRequest` vers une route handler
+  (`upload.onprogress`).
+
+## Robustesse réseau
+
+- **Appliquer `runAction` aux autres composants qui appellent une Server Action.**
+  `lib/errors/request-error.ts` : sans `runAction`, un appel qui échoue (réseau coupé,
+  base injoignable) dans un `startTransition` remonte à l'error boundary
+  (`app/(dashboard)/[orgSlug]/error.tsx`) : la page est remplacée par l'écran d'erreur
+  et la saisie en cours est perdue. Déjà traités : formulaires membre, paiement,
+  réunion, PV, upload de document, invitation, inscription d'invité (lien nominatif et
+  lien d'organisation). Restent (même recette : `runAction` + `isRequestFailure` +
+  `SlowRequestHint` sur les formulaires) :
+  - cotisations : `archive-cotisation-type-dialog`, `bulk-reminder-dialog`,
+    `cotisation-type-form-dialog`, `delete-payment-dialog`, `send-reminder-dialog` ;
+  - documents : `attach-document-dialog`, `delete-document-dialog`,
+    `rename-document-dialog` ;
+  - invitations : `decline-invitation-dialog`, `generate-invite-link-dialog`,
+    `invitation-row-actions`, `invite-link-card`, `join-organization-button`,
+    `join-via-link-button` ;
+  - réunions : `delete-meeting-dialog`, `meeting-attendance-list`,
+    `meeting-attendance-view`, `meeting-minutes-status-dialog`, `meeting-status-dialog` ;
+  - membres : `archive-member-dialog`, `join-request-row-actions`,
+    `status-change-dialog` ;
+  - rapports : `delete-transaction-dialog`, `expense-form-dialog`,
+    `manual-revenue-form-dialog` ;
+  - paramètres et organisations : `change-password-form`, `delete-account-dialog`,
+    `delete-organization-dialog`, `organization-settings-form`,
+    `profile-settings-form`, `set-password-form`, `organization-switcher`.
