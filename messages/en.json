@@ -1576,17 +1576,20 @@
           "liste": {
             "title": "All your members in one place",
             "description": "Statuses, roles and instant search.",
-            "alt": "An association's member list, with each member's status, role and a search bar"
+            "alt": "Member directory: “Total members 46” and “Active members 42” cards, then the list with each member's name, email, phone and role",
+            "bubble": "42 active members"
           },
           "fiche": {
             "title": "A complete profile for everyone",
             "description": "Contact details, membership date, occupation: everything is one click away.",
-            "alt": "A member's profile: contact details, membership date and occupation"
+            "alt": "Aïssatou Camara's profile: contact details, role, Active status, joined on 11 March 2023 and date of birth",
+            "bubble": "Member since March 2023"
           },
           "ajout": {
             "title": "Add a member in seconds",
             "description": "One by one, by import or with an invitation link.",
-            "alt": "The \"New member\" form with identity, contact, role and status fields"
+            "alt": "“New member” form: full name, phone number in international format, role, status and optional email",
+            "bubble": "Member added ✓"
           }
         }
       },
@@ -1596,17 +1599,20 @@
           "vue": {
             "title": "Collected, still outstanding: everything is clear",
             "description": "See at a glance where your association's contributions stand.",
-            "alt": "Contributions overview: amount collected, amount outstanding and overdue contributions"
+            "alt": "Contributions overview: 1,525,000 GNF collected this month, 3,975,000 GNF still to collect, then the recent contributions",
+            "bubble": "Collected this month: 1 525 000 GNF"
           },
           "relances": {
             "title": "Remind late members in one click",
             "description": "A single message per member, by email or WhatsApp.",
-            "alt": "List of due contributions with the date of the last reminder sent to each member"
+            "alt": "“Remind all late payers (24)” button above the overdue contributions, with amount, status, due date and last reminder date",
+            "bubble": "One message per member"
           },
           "moyens": {
             "title": "Every payment method your members use",
             "description": "Cash, Orange Money, MTN MoMo, PayCard, Soutra Money, bank transfer.",
-            "alt": "Payment recording form with the list of payment methods open"
+            "alt": "Recording a 50,000 GNF payment: the payment method list is open, from Cash and Orange Money to Bank transfer and Cheque",
+            "bubble": "Payment recorded ✓"
           }
         }
       },
@@ -1616,17 +1622,20 @@
           "liste": {
             "title": "Plan your meetings",
             "description": "A shared calendar, always up to date.",
-            "alt": "An association's meeting list next to the monthly calendar"
+            "alt": "Next meeting “Réunion de bureau — octobre” on Saturday 10 October 2026 at 10:00, and the month calendar",
+            "bubble": "Saturday 10 October, 10:00"
           },
           "pv": {
             "title": "Write and publish your minutes",
             "description": "Agenda, decisions, action items: nothing gets lost.",
-            "alt": "A general assembly page: member attendance and published minutes with the agenda and decisions"
+            "alt": "Published minutes of the general assembly, with its six-item agenda",
+            "bubble": "Minutes published"
           },
           "presence": {
             "title": "Track attendance",
             "description": "The turnout of every meeting, in real time.",
-            "alt": "A meeting's \"Attendance\" block: turnout rate and member responses"
+            "alt": "General assembly attendance: 90%, 38 present out of 42 active members, then the published minutes",
+            "bubble": "38 present out of 42"
           }
         }
       },
@@ -1637,12 +1646,14 @@
           "espace": {
             "title": "A secure space for all your documents",
             "description": "Bylaws, minutes, receipts, reports: sorted into six categories.",
-            "alt": "Documents page: storage gauge, category filters and document list with category, size, upload date and link to a payment or meeting"
+            "alt": "Documents page: 4.9 MB used out of 200 MB, category filters and the first documents, linked to a payment or a meeting",
+            "bubble": "Filter by category"
           },
           "justificatifs": {
             "title": "Every supporting document in its place",
             "description": "Attach a receipt to its payment, minutes to their meeting.",
-            "alt": "Documents filtered on Receipts and supporting documents: each receipt is linked to its payment"
+            "alt": "Six receipts, each linked to its payment, including A. Camara's Orange Money receipt linked to the 5 March 2026 payment",
+            "bubble": "Linked to the 5 March 2026 payment"
           }
         }
       },
@@ -1652,18 +1663,39 @@
           "rapports": {
             "title": "Income, expenses and balance, month by month",
             "description": "Reports ready to present at your general assembly.",
-            "alt": "An association's financial report: income, expenses and balance month by month"
+            "alt": "Reports: 14,725,000 GNF of income and 3,520,000 GNF of expenses, then the monthly trend from January to September 2026",
+            "bubble": "Income: 14 725 000 GNF"
           },
           "tableau": {
             "title": "Your association's dashboard",
             "description": "Upcoming meetings, late payments, balance: the essentials as soon as you log in.",
-            "alt": "An association's dashboard: upcoming meetings, overdue contributions and balance"
+            "alt": "Dashboard: 42 active members, 3,975,000 GNF to collect from 24 late payers, and the next meeting",
+            "bubble": "24 late payers"
           },
           "organisations": {
             "title": "Several organizations, one account",
             "description": "Switch from one association to another in one click.",
-            "alt": "Dashboard with the organization switcher open, to move from one association to another"
+            "alt": "Organization menu open: Réseau des Femmes Entrepreneures and l’Amicale des Anciens du Lycée, in the same account",
+            "bubble": "Two associations, one account"
           }
+        }
+      }
+    },
+    "trust": {
+      "title": "Your data in good hands",
+      "subtitle": "AssoHub is built so that your association's information stays yours.",
+      "cards": {
+        "espaces": {
+          "title": "Each association in its own space",
+          "text": "Your association's information is only visible to its members."
+        },
+        "documents": {
+          "title": "Private documents",
+          "text": "Your files only open once you are signed in, never through a public link."
+        },
+        "paiements": {
+          "title": "No money goes through AssoHub",
+          "text": "Your members pay the way they always have. You record it, AssoHub keeps track."
         }
       }
     },

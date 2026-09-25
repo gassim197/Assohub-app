@@ -33,26 +33,20 @@ export function ScreenshotFrame({
   );
 }
 
-/**
- * Largeur d'affichage d'une capture dans une rangée de grappe : 3/5 de la
- * colonne `max-w-6xl` (≈ 620 px) à partir de `lg`, pleine largeur avant.
- */
-export const FEATURE_IMAGE_SIZES = "(min-width: 1024px) 620px, 100vw";
-
 /** Capture produit encadrée. Chargement différé par défaut (`next/image`). */
 export function Screenshot({
   src,
   alt,
   width,
   height,
-  sizes = FEATURE_IMAGE_SIZES,
+  sizes,
   preload = false,
 }: {
   src: string;
   alt: string;
   width: number;
   height: number;
-  sizes?: string;
+  sizes: string;
   preload?: boolean;
 }) {
   return (
