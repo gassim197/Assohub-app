@@ -2,14 +2,14 @@ import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { FeatureRow } from "./feature-row";
+import { FeatureAccordion } from "./feature-accordion";
 import type { Cluster } from "./landing-content";
-import { Screenshot } from "./screenshot-frame";
+import { ScrollReveal } from "./scroll-reveal";
 
 /**
  * Une grappe de fonctionnalités (Membres, Cotisations…) : ancre de la barre
- * de navigation (`id`), titre, puis ses sous-fonctionnalités en rangées
- * alternées (texte à gauche puis à droite).
+ * de navigation (`id`), titre, puis ses sous-fonctionnalités en accordéon
+ * (visuel à gauche, liste à droite sur desktop).
  * `scroll-mt-28` : header (56 px) + barre d'ancres (~50 px), pour que le
  * titre ne passe pas dessous au défilement.
  */
@@ -22,6 +22,14 @@ export async function FeatureCluster({
   shaded?: boolean;
 }) {
   const t = await getTranslations(`landing.clusters.${cluster.id}`);
+
+  const features = cluster.features.map((feature) => ({
+    key: feature.key,
+    title: t(`features.${feature.key}.title`),
+    description: t(`features.${feature.key}.description`),
+    image: { ...feature.image, alt: t(`features.${feature.key}.alt`) },
+    bubble: { ...feature.bubble, text: t(`features.${feature.key}.bubble`) },
+  }));
 
   return (
     <section
@@ -40,24 +48,9 @@ export async function FeatureCluster({
           {cluster.badge ? <Badge>{t("badge")}</Badge> : null}
         </div>
 
-        <div className="mt-12 space-y-16 sm:mt-16 sm:space-y-24">
-          {cluster.features.map((feature, index) => (
-            <FeatureRow
-              key={feature.key}
-              title={t(`features.${feature.key}.title`)}
-              description={t(`features.${feature.key}.description`)}
-              reversed={index % 2 === 1}
-              media={
-                <Screenshot
-                  src={feature.image.src}
-                  alt={t(`features.${feature.key}.alt`)}
-                  width={feature.image.width}
-                  height={feature.image.height}
-                />
-              }
-            />
-          ))}
-        </div>
+        <ScrollReveal className="mt-12 sm:mt-16">
+          <FeatureAccordion id={cluster.id} features={features} />
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -1576,17 +1576,20 @@
           "liste": {
             "title": "Tous vos membres au même endroit",
             "description": "Statuts, rôles et recherche instantanée.",
-            "alt": "Liste des membres d'une association, avec leur statut, leur rôle et une barre de recherche"
+            "alt": "Annuaire des membres : cartes « Total des membres 46 » et « Membres actifs 42 », puis la liste avec nom, email, téléphone et rôle de chaque membre",
+            "bubble": "42 membres actifs"
           },
           "fiche": {
             "title": "Une fiche complète pour chacun",
             "description": "Coordonnées, date d'adhésion, profession : tout est retrouvable en un clic.",
-            "alt": "Fiche d'une membre : coordonnées, date d'adhésion et profession"
+            "alt": "Fiche d'Aïssatou Camara : coordonnées, rôle, statut Actif, date d'adhésion 11 mars 2023 et date de naissance",
+            "bubble": "Membre depuis mars 2023"
           },
           "ajout": {
             "title": "Ajoutez un membre en quelques secondes",
             "description": "Un par un, par import ou avec un lien d'invitation.",
-            "alt": "Formulaire « Nouveau membre » avec les champs d'identité, de contact, de rôle et de statut"
+            "alt": "Formulaire « Nouveau membre » : nom complet, téléphone au format international, rôle, statut et email facultatif",
+            "bubble": "Membre ajouté ✓"
           }
         }
       },
@@ -1596,17 +1599,20 @@
           "vue": {
             "title": "Encaissé, restant à percevoir : tout est clair",
             "description": "Voyez en un coup d'œil où en sont les cotisations de votre association.",
-            "alt": "Vue d'ensemble des cotisations : montant encaissé, restant à percevoir et cotisations en retard"
+            "alt": "Vue d'ensemble des cotisations : 1 525 000 GNF collectés ce mois, 3 975 000 GNF restant à percevoir, puis les cotisations récentes",
+            "bubble": "Collecté ce mois : 1 525 000 GNF"
           },
           "relances": {
             "title": "Relancez les retardataires en un clic",
             "description": "Un seul message par membre, par email ou par WhatsApp.",
-            "alt": "Liste des cotisations dues avec la date du dernier rappel envoyé à chaque membre"
+            "alt": "Bouton « Relancer tous les retardataires (24) » au-dessus des cotisations en retard, avec montant, statut, échéance et date du dernier rappel",
+            "bubble": "Un seul message par membre"
           },
           "moyens": {
             "title": "Tous les moyens de paiement de vos membres",
             "description": "Espèces, Orange Money, MTN MoMo, PayCard, Soutra Money, virement.",
-            "alt": "Formulaire d'enregistrement d'un paiement, avec la liste des moyens de paiement ouverte"
+            "alt": "Enregistrement d'un paiement de 50 000 GNF : liste des moyens de paiement ouverte, d'Espèces et Orange Money à Virement bancaire et Chèque",
+            "bubble": "Paiement enregistré ✓"
           }
         }
       },
@@ -1616,17 +1622,20 @@
           "liste": {
             "title": "Planifiez vos réunions",
             "description": "Un calendrier partagé, toujours à jour.",
-            "alt": "Liste des réunions d'une association à côté du calendrier du mois"
+            "alt": "Prochaine réunion « Réunion de bureau — octobre », samedi 10 octobre 2026 à 10h00, et le calendrier du mois",
+            "bubble": "Samedi 10 octobre, 10h00"
           },
           "pv": {
             "title": "Rédigez et publiez vos procès-verbaux",
             "description": "Ordre du jour, décisions, actions à mener : rien ne se perd.",
-            "alt": "Fiche d'une assemblée générale : présence des membres et procès-verbal publié avec l'ordre du jour et les décisions"
+            "alt": "Procès-verbal publié de l'assemblée générale, avec son ordre du jour en six points",
+            "bubble": "PV publié"
           },
           "presence": {
             "title": "Suivez les présences",
             "description": "Le taux de participation de chaque réunion, en temps réel.",
-            "alt": "Bloc « Présence » d'une réunion : taux de participation et réponses des membres"
+            "alt": "Présence à l'assemblée générale : 90 %, 38 présents sur 42 membres actifs, puis le procès-verbal publié",
+            "bubble": "38 présents sur 42"
           }
         }
       },
@@ -1637,12 +1646,14 @@
           "espace": {
             "title": "Un espace sécurisé pour tous vos documents",
             "description": "Statuts, procès-verbaux, reçus, rapports : classés en six catégories.",
-            "alt": "Page Documents : jauge de stockage, filtres par catégorie et liste des documents avec catégorie, taille, date d'ajout et rattachement à un paiement ou une réunion"
+            "alt": "Page Documents : 4,9 Mo utilisés sur 200 Mo, filtres par catégorie et premiers documents, rattachés à un paiement ou une réunion",
+            "bubble": "Filtrez par catégorie"
           },
           "justificatifs": {
             "title": "Chaque justificatif à sa place",
             "description": "Rattachez un reçu à son paiement, un procès-verbal à sa réunion.",
-            "alt": "Documents filtrés sur Reçus et justificatifs : chaque reçu est lié au paiement correspondant"
+            "alt": "Six reçus, chacun lié au paiement correspondant, dont le reçu Orange Money d'A. Camara lié au paiement du 5 mars 2026",
+            "bubble": "Lié au paiement du 5 mars 2026"
           }
         }
       },
@@ -1652,17 +1663,20 @@
           "rapports": {
             "title": "Recettes, dépenses et solde, mois par mois",
             "description": "Des rapports prêts à présenter en assemblée générale.",
-            "alt": "Rapport financier d'une association : recettes, dépenses et solde mois par mois"
+            "alt": "Rapports : 14 725 000 GNF de revenus et 3 520 000 GNF de dépenses, puis l'évolution mensuelle de janvier à septembre 2026",
+            "bubble": "Recettes : 14 725 000 GNF"
           },
           "tableau": {
             "title": "Le tableau de bord de votre association",
             "description": "Réunions à venir, retards, solde : l'essentiel dès la connexion.",
-            "alt": "Tableau de bord d'une association : réunions à venir, cotisations en retard et solde"
+            "alt": "Tableau de bord : 42 membres actifs, 3 975 000 GNF à percevoir auprès de 24 retardataires, et la prochaine réunion",
+            "bubble": "24 retardataires"
           },
           "organisations": {
             "title": "Plusieurs organisations, un seul compte",
             "description": "Passez d'une association à l'autre en un clic.",
-            "alt": "Tableau de bord avec le sélecteur d'organisations ouvert, pour passer d'une association à l'autre"
+            "alt": "Menu des organisations ouvert : Réseau des Femmes Entrepreneures et l'Amicale des Anciens du Lycée, dans le même compte",
+            "bubble": "Deux associations, un seul compte"
           }
         }
       }

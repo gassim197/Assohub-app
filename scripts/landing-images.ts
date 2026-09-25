@@ -6,8 +6,6 @@
  * - `crops/*.png` : un recadrage 4:3 par sous-fonctionnalité (visuels des
  *   grappes en accordéon), à la résolution native — jamais agrandi ici,
  *   c'est l'affichage qui zoome sur la zone utile ;
- * - `reunions-presence.png` : recadrage 16:10 centré sur le bloc « Présence »
- *   de `reunions-pv.png` (ancienne mise en page, retiré avec elle) ;
  * - `og-image.png` : image Open Graph 1200 × 630 tirée de `dashboard.png`.
  *
  * À relancer si une capture source est refaite :
@@ -67,14 +65,6 @@ const CROPS: { name: string; source: string; left: number; top: number; width: n
   { name: "dashboard-switcher", source: "dashboard-switcher", left: 0, top: 112, width: 876 },
 ];
 
-/**
- * Coordonnées dans `reunions-pv.png` (2880 × 1800). Le bloc « Présence »
- * occupe environ x 495→2038, y 655→929 ; la fenêtre 16:10 (1600 × 1000)
- * est centrée dessus horizontalement, et calée verticalement entre le titre
- * de la réunion et une interligne du procès-verbal (aucun texte coupé).
- */
-const PRESENCE_CROP = { left: 467, top: 334, width: 1600, height: 1000 };
-
 async function main() {
   mkdirSync(CROPS_DIR, { recursive: true });
   for (const crop of CROPS) {
@@ -86,17 +76,12 @@ async function main() {
       .toFile(path.join(CROPS_DIR, `${crop.name}.png`));
   }
 
-  await sharp(path.join(DIR, "reunions-pv.png"))
-    .extract(PRESENCE_CROP)
-    .png({ compressionLevel: 9 })
-    .toFile(path.join(DIR, "reunions-presence.png"));
-
   await sharp(path.join(DIR, "dashboard.png"))
     .resize(1200, 630, { fit: "cover", position: "top" })
     .png({ compressionLevel: 9 })
     .toFile(path.join(DIR, "og-image.png"));
 
-  console.log(`${CROPS.length} recadrages dans public/landing/crops/, reunions-presence.png et og-image.png générés.`);
+  console.log(`${CROPS.length} recadrages dans public/landing/crops/ et og-image.png générés.`);
 }
 
 main().catch((error) => {
