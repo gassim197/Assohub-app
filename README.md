@@ -16,6 +16,8 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+`npm run dev` and the local `tsx` scripts (`seed:demo`, `reset:password`, `backfill:founders`) run through `scripts/with-ipv4first.mjs`, which adds `--dns-result-order=ipv4first` to `NODE_OPTIONS` so Node doesn't stall ~10 s on networks without working IPv6 (`build` and `start` are unaffected).
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
