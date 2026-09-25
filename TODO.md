@@ -73,3 +73,17 @@
   - paramètres et organisations : `change-password-form`, `delete-account-dialog`,
     `delete-organization-dialog`, `organization-settings-form`,
     `profile-settings-form`, `set-password-form`, `organization-switcher`.
+
+## Landing
+
+- **Recadrages spécifiques au mobile pour les visuels des grappes.** Les recadrages 4:3
+  (`public/landing/crops/`, `scripts/landing-images.ts`) sont calibrés pour ~640 px
+  d'affichage sur desktop ; à 375 px de large, le visuel fait ~320 px et le texte de
+  l'interface n'y fait plus que 6 à 8 px. Piste : une seconde série de recadrages plus
+  serrés, servie sous `lg` (`<picture>`/`sizes` ou deux `Image` selon le breakpoint).
+
+- **Deux avertissements de preload sur `dashboard.png` dans le hero.** La console
+  signale « was preloaded using link preload but not used within a few seconds » pour
+  `/_next/image?url=/landing/dashboard.png&w=750` et `&w=640` : l'affiche du hero
+  (`components/landing/hero-media.tsx`, `Screenshot` avec `preload`) précharge des
+  variantes que le navigateur n'utilise pas. Vérifier `HERO_SIZES` et le préchargement.
