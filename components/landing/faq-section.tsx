@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { ScrollReveal } from "./scroll-reveal";
 
-const FAQ_KEYS = ["securite", "simplicite", "organisations", "paiements"] as const;
+const FAQ_KEYS = ["gratuite", "securite", "simplicite", "organisations", "paiements"] as const;
 
 export async function FaqSection() {
   const t = await getTranslations("landing.faq");

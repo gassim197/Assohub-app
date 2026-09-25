@@ -19,6 +19,7 @@ export async function FinalCtaSection() {
         >
           {t("cta")}
         </Button>
+        <p className="mt-3 text-sm text-sidebar-foreground/70">{t("freeNote")}</p>
       </ScrollReveal>
     </section>
   );

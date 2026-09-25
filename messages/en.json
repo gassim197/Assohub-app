@@ -1559,7 +1559,8 @@
       "subtitle": "Members, contributions, meetings and documents together in one place, designed for associations and NGOs in West Africa.",
       "ctaPrimary": "Create my association",
       "ctaSecondary": "Sign in",
-      "mediaAlt": "An association's AssoHub dashboard: active members, outstanding contributions, financial balance and upcoming meetings"
+      "mediaAlt": "An association's AssoHub dashboard: active members, outstanding contributions, financial balance and upcoming meetings",
+      "freeNote": "Free during launch · No credit card required"
     },
     "nav": {
       "label": "Features",
@@ -1702,6 +1703,10 @@
     "faq": {
       "title": "Frequently asked questions",
       "questions": {
+        "gratuite": {
+          "question": "Is AssoHub free?",
+          "answer": "Yes. During the launch phase, AssoHub is completely free, with all its features, and no credit card is required. If paid plans are ever offered, you will be notified in advance."
+        },
         "securite": {
           "question": "Who can see my association's data?",
           "answer": "Only the people you have added to your organization. One association's data is never visible from another."
@@ -1723,7 +1728,8 @@
     "finalCta": {
       "title": "Your association deserves better than a notebook",
       "subtitle": "Set up your association's space in a few minutes.",
-      "cta": "Create my association"
+      "cta": "Create my association",
+      "freeNote": "Free during launch · No credit card required"
     },
     "footer": {
       "tagline": "The digital infrastructure for African organizations",

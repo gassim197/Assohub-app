@@ -34,6 +34,7 @@ export async function HeroSection() {
             {t("ctaSecondary")}
           </Button>
         </div>
+        <p className="mt-3 text-sm text-muted-foreground">{t("freeNote")}</p>
       </div>
 
       <div className="mx-auto mt-12 max-w-5xl sm:mt-16">

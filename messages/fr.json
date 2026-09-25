@@ -1559,7 +1559,8 @@
       "subtitle": "Membres, cotisations, réunions et documents réunis dans un seul espace, pensé pour les associations et ONG d'Afrique de l'Ouest.",
       "ctaPrimary": "Créer mon association",
       "ctaSecondary": "Se connecter",
-      "mediaAlt": "Tableau de bord d'une association dans AssoHub : membres actifs, cotisations à percevoir, solde financier et prochaines réunions"
+      "mediaAlt": "Tableau de bord d'une association dans AssoHub : membres actifs, cotisations à percevoir, solde financier et prochaines réunions",
+      "freeNote": "Gratuit pendant le lancement · Sans carte bancaire"
     },
     "nav": {
       "label": "Fonctionnalités",
@@ -1702,6 +1703,10 @@
     "faq": {
       "title": "Questions fréquentes",
       "questions": {
+        "gratuite": {
+          "question": "AssoHub est-il gratuit ?",
+          "answer": "Oui. Pendant la phase de lancement, AssoHub est entièrement gratuit, avec toutes ses fonctionnalités, sans carte bancaire. Si des formules payantes sont proposées un jour, vous serez prévenus à l'avance."
+        },
         "securite": {
           "question": "Qui peut voir les données de mon association ?",
           "answer": "Uniquement les personnes que vous avez ajoutées à votre organisation. Les données d'une association ne sont jamais visibles depuis une autre."
@@ -1723,7 +1728,8 @@
     "finalCta": {
       "title": "Votre association mérite mieux qu'un cahier",
       "subtitle": "Créez l'espace de votre association en quelques minutes.",
-      "cta": "Créer mon association"
+      "cta": "Créer mon association",
+      "freeNote": "Gratuit pendant le lancement · Sans carte bancaire"
     },
     "footer": {
       "tagline": "L'infrastructure numérique des organisations africaines",
