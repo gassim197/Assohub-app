@@ -1681,6 +1681,24 @@
         }
       }
     },
+    "trust": {
+      "title": "Vos données entre de bonnes mains",
+      "subtitle": "AssoHub est conçu pour que les informations de votre association restent les vôtres.",
+      "cards": {
+        "espaces": {
+          "title": "Chaque association dans son espace",
+          "text": "Les informations de votre association ne sont visibles que par ses membres."
+        },
+        "documents": {
+          "title": "Des documents privés",
+          "text": "Vos fichiers ne s'ouvrent qu'après connexion, jamais par un lien public."
+        },
+        "paiements": {
+          "title": "Aucun argent ne transite par AssoHub",
+          "text": "Vos membres paient comme d'habitude. Vous enregistrez, AssoHub fait le suivi."
+        }
+      }
+    },
     "faq": {
       "title": "Questions fréquentes",
       "questions": {

@@ -1681,6 +1681,24 @@
         }
       }
     },
+    "trust": {
+      "title": "Your data in good hands",
+      "subtitle": "AssoHub is built so that your association's information stays yours.",
+      "cards": {
+        "espaces": {
+          "title": "Each association in its own space",
+          "text": "Your association's information is only visible to its members."
+        },
+        "documents": {
+          "title": "Private documents",
+          "text": "Your files only open once you are signed in, never through a public link."
+        },
+        "paiements": {
+          "title": "No money goes through AssoHub",
+          "text": "Your members pay the way they always have. You record it, AssoHub keeps track."
+        }
+      }
+    },
     "faq": {
       "title": "Frequently asked questions",
       "questions": {
