@@ -1,5 +1,6 @@
 import { LandingHeader } from "./landing-header";
 import { HeroSection } from "./hero-section";
+import { LaunchSection } from "./launch-section";
 import { SectionNav } from "./section-nav";
 import { FeatureCluster } from "./feature-cluster";
 import { TrustSection } from "./trust-section";
@@ -17,10 +18,11 @@ import { CLUSTERS } from "./landing-content";
  */
 export function LandingPage() {
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="brand-public flex min-h-full flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <HeroSection />
+        <LaunchSection />
         <SectionNav />
         {CLUSTERS.map((cluster, index) => (
           <FeatureCluster key={cluster.id} cluster={cluster} shaded={index % 2 === 1} />

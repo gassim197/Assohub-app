@@ -99,7 +99,9 @@
       "title": "Votre compte a été supprimé",
       "description": "Merci d'avoir utilisé AssoHub.",
       "backToLogin": "Retour à l'accueil"
-    }
+    },
+    "backToHome": "Retour à l’accueil AssoHub",
+    "registrationSteps": "Créez votre compte, puis configurez l’espace de votre association."
   },
   "onboarding": {
     "title": "Créez votre organisation",
@@ -1552,7 +1554,8 @@
   "landing": {
     "header": {
       "login": "Connexion",
-      "register": "Créer un compte"
+      "register": "Créer un compte",
+      "registerShort": "S’inscrire"
     },
     "hero": {
       "badge": "Pensé pour les associations d'Afrique de l'Ouest",
@@ -1570,7 +1573,8 @@
       "bubbles": {
         "dues": "Cotisations suivies",
         "reminders": "Relances en un clic"
-      }
+      },
+      "demoNote": "Aperçu du produit · Données de démonstration"
     },
     "nav": {
       "label": "Fonctionnalités",
@@ -1620,8 +1624,8 @@
             "bubble": "Un seul message par membre"
           },
           "moyens": {
-            "title": "Tous les moyens de paiement de vos membres",
-            "description": "Espèces, Orange Money, MTN MoMo, PayCard, Soutra Money, virement.",
+            "title": "Enregistrez les paiements reçus par votre association",
+            "description": "Espèces, Orange Money, MTN MoMo, PayCard, Soutra Money ou virement : votre association reçoit le paiement, puis vous l’enregistrez dans AssoHub. Aucun argent ne transite par la plateforme.",
             "alt": "Enregistrement d'un paiement de 50 000 GNF : liste des moyens de paiement ouverte, d'Espèces et Orange Money à Virement bancaire et Chèque",
             "bubble": "Paiement enregistré ✓"
           }
@@ -1732,6 +1736,10 @@
         "paiements": {
           "question": "Comment mes membres paient-ils leurs cotisations ?",
           "answer": "Comme d'habitude : en espèces auprès du trésorier, par Orange Money, MTN MoMo, PayCard, Soutra Money ou par virement. Aucun argent ne transite par AssoHub : vous enregistrez chaque paiement reçu, et AssoHub suit automatiquement qui a payé et qui est en retard."
+        },
+        "pilotes": {
+          "question": "Mon association a participé à la première version. Comment revenir ?",
+          "answer": "<contact>Contactez-nous</contact> avant de recréer votre association pour vérifier avec vous la reprise de votre compte et de vos données."
         }
       }
     },
@@ -1751,11 +1759,21 @@
         "mentionsLegales": "Mentions légales",
         "confidentialite": "Politique de confidentialité",
         "conditionsUtilisation": "Conditions d'utilisation"
-      }
+      },
+      "contact": "Contact"
     },
     "meta": {
       "title": "AssoHub — Gestion d'associations et d'ONG en Afrique de l'Ouest",
       "ogAlt": "Tableau de bord AssoHub : membres, cotisations, réunions et finances d'une association"
+    },
+    "launch": {
+      "pilots": "associations pilotes ont utilisé la première version d’AssoHub.",
+      "title": "V1.1 : une nouvelle étape pour votre association",
+      "description": "Retrouvez les outils de gestion de votre association et découvrez l’espace Documents pour centraliser vos fichiers et justificatifs.",
+      "link": "Découvrir l’espace Documents"
+    },
+    "support": {
+      "start": "Besoin d’aide pour démarrer ?"
     }
   },
   "legal": {

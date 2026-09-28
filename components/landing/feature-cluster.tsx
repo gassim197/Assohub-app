@@ -22,6 +22,7 @@ export async function FeatureCluster({
   shaded?: boolean;
 }) {
   const t = await getTranslations(`landing.clusters.${cluster.id}`);
+  const tHero = await getTranslations("landing.hero");
 
   const features = cluster.features.map((feature) => ({
     key: feature.key,
@@ -50,6 +51,9 @@ export async function FeatureCluster({
 
         <ScrollReveal className="mt-12 sm:mt-16">
           <FeatureAccordion id={cluster.id} features={features} />
+          <p className="mt-8 text-center text-xs leading-relaxed text-muted-foreground">
+            {tHero("demoNote")}
+          </p>
         </ScrollReveal>
       </div>
     </section>

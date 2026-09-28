@@ -10,8 +10,8 @@ type LogoProps = {
 }
 
 const COLORS = {
-  light: { hex: "#0F172A", network: "#10B981" },
-  dark:  { hex: "#FFFFFF", network: "#10B981" },
+  light: { hex: "#1A4F7A", network: "#3BB54A" },
+  dark:  { hex: "#FFFFFF", network: "#FFFFFF" },
 }
 
 type Colors = typeof COLORS.light
@@ -42,7 +42,7 @@ function HubMark({ c }: { c: Colors }) {
 
 export function Logo({ variant = "full", scheme = "light", className }: LogoProps) {
   const c = COLORS[scheme]
-  const textColor = scheme === "dark" ? "text-white" : "text-[#0F172A]"
+  const textColor = scheme === "dark" ? "text-white" : "text-[#1A4F7A]"
 
   if (variant === "mark") {
     return (
@@ -66,7 +66,7 @@ export function Logo({ variant = "full", scheme = "light", className }: LogoProp
         <HubMark c={c} />
       </span>
       <span className={cn("text-[1.125rem] font-bold tracking-tight leading-none", textColor)}>
-        AssoHub
+        Asso<span className={scheme === "dark" ? "text-white" : "text-[#3BB54A]"}>Hub</span>
       </span>
     </span>
   )

@@ -99,7 +99,9 @@
       "title": "Your account has been deleted",
       "description": "Thank you for using AssoHub.",
       "backToLogin": "Back to home"
-    }
+    },
+    "backToHome": "Back to the AssoHub homepage",
+    "registrationSteps": "Create your account, then set up your association’s space."
   },
   "onboarding": {
     "title": "Create your organization",
@@ -1552,7 +1554,8 @@
   "landing": {
     "header": {
       "login": "Sign in",
-      "register": "Create an account"
+      "register": "Create an account",
+      "registerShort": "Sign up"
     },
     "hero": {
       "badge": "Designed for associations in West Africa",
@@ -1570,7 +1573,8 @@
       "bubbles": {
         "dues": "Contributions tracked",
         "reminders": "One-click reminders"
-      }
+      },
+      "demoNote": "Product preview · Demonstration data"
     },
     "nav": {
       "label": "Features",
@@ -1620,8 +1624,8 @@
             "bubble": "One message per member"
           },
           "moyens": {
-            "title": "Every payment method your members use",
-            "description": "Cash, Orange Money, MTN MoMo, PayCard, Soutra Money, bank transfer.",
+            "title": "Record payments received by your association",
+            "description": "Cash, Orange Money, MTN MoMo, PayCard, Soutra Money or bank transfer: your association receives the payment, then you record it in AssoHub. No money passes through the platform.",
             "alt": "Recording a 50,000 GNF payment: the payment method list is open, from Cash and Orange Money to Bank transfer and Cheque",
             "bubble": "Payment recorded ✓"
           }
@@ -1732,6 +1736,10 @@
         "paiements": {
           "question": "How do my members pay their contributions?",
           "answer": "Just as they do today: in cash to the treasurer, via Orange Money, MTN MoMo, PayCard, Soutra Money or by bank transfer. No money goes through AssoHub: you record each payment received, and AssoHub automatically tracks who has paid and who is late."
+        },
+        "pilotes": {
+          "question": "My association used the first version. How do we return?",
+          "answer": "<contact>Contact us</contact> before creating your association again so we can check how to resume access to your account and data."
         }
       }
     },
@@ -1751,11 +1759,21 @@
         "mentionsLegales": "Legal notice",
         "confidentialite": "Privacy policy",
         "conditionsUtilisation": "Terms of use"
-      }
+      },
+      "contact": "Contact"
     },
     "meta": {
       "title": "AssoHub — Association and NGO management in West Africa",
       "ogAlt": "AssoHub dashboard: an association's members, contributions, meetings and finances"
+    },
+    "launch": {
+      "pilots": "pilot associations used the first version of AssoHub.",
+      "title": "V1.1: a new step for your association",
+      "description": "Explore your association’s management tools and the Documents space for keeping files and supporting records together.",
+      "link": "Explore the Documents space"
+    },
+    "support": {
+      "start": "Need help getting started?"
     }
   }
 }
