@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Logo } from "@/components/ui/logo";
 import { CLUSTER_IDS } from "./landing-content";
+import { SUPPORT_HREF } from "./support-link";
 
 /**
  * Footer partagé par la landing et les pages légales : les liens vers les
@@ -22,13 +23,16 @@ export async function LandingFooter() {
         </div>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-          <nav className="flex items-center gap-4 text-sm">
+          <nav className="flex flex-wrap items-center justify-center gap-4 text-sm">
             <Link href="/login" className="text-muted-foreground hover:text-foreground">
               {t("login")}
             </Link>
             <Link href="/register" className="text-muted-foreground hover:text-foreground">
               {t("register")}
             </Link>
+            <a href={SUPPORT_HREF} className="text-primary underline underline-offset-4">
+              {t("contact")}
+            </a>
           </nav>
           <p className="text-xs text-muted-foreground">{t("copyright", { year })}</p>
         </div>

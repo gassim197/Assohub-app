@@ -1,23 +1,23 @@
 <svg width="164" height="48" viewBox="0 0 164 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AssoHub">
   <g transform="scale(0.48)">
-    <polygon points="68,50 59,34.41 41,34.41 32,50 41,65.59 59,65.59" fill="#0F172A"/>
+    <polygon points="68,50 59,34.41 41,34.41 32,50 41,65.59 59,65.59" fill="#1A4F7A"/>
     <polygon points="86,50 68,18.82 32,18.82 14,50 32,81.18 68,81.18"
-      stroke="#10B981" stroke-width="4" stroke-linejoin="round" fill="none"/>
-    <circle cx="86"   cy="50"    r="7.5" fill="#10B981"/>
-    <circle cx="68"   cy="18.82" r="7.5" fill="#10B981"/>
-    <circle cx="32"   cy="18.82" r="7.5" fill="#10B981"/>
-    <circle cx="14"   cy="50"    r="7.5" fill="#10B981"/>
-    <circle cx="32"   cy="81.18" r="7.5" fill="#10B981"/>
-    <circle cx="68"   cy="81.18" r="7.5" fill="#10B981"/>
+      stroke="#3BB54A" stroke-width="4" stroke-linejoin="round" fill="none"/>
+    <circle cx="86"   cy="50"    r="7.5" fill="#3BB54A"/>
+    <circle cx="68"   cy="18.82" r="7.5" fill="#3BB54A"/>
+    <circle cx="32"   cy="18.82" r="7.5" fill="#3BB54A"/>
+    <circle cx="14"   cy="50"    r="7.5" fill="#3BB54A"/>
+    <circle cx="32"   cy="81.18" r="7.5" fill="#3BB54A"/>
+    <circle cx="68"   cy="81.18" r="7.5" fill="#3BB54A"/>
   </g>
   <text
     x="52"
     y="24"
-    fill="#0F172A"
+    fill="#1A4F7A"
     font-family="Geist, Inter, -apple-system, system-ui, sans-serif"
     font-size="20"
     font-weight="700"
     letter-spacing="-0.3"
     dominant-baseline="middle"
-  >AssoHub</text>
+  >Asso<tspan fill="#3BB54A">Hub</tspan></text>
 </svg>

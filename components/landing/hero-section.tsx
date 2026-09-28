@@ -4,6 +4,7 @@ import { ArrowRight, CircleCheck, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { HeroVisual } from "./hero-media";
+import { SupportLink } from "./support-link";
 
 /**
  * Destination du bouton « Voir la démo ». Tant qu'elle n'est pas définie
@@ -15,7 +16,7 @@ const DEMO_HREF: string | null = null;
 const ARGUMENT_KEYS = ["free", "noCard", "noInstall"] as const;
 
 /**
- * Trait emerald (#10B981, `--primary`) légèrement courbé, façon coup de
+ * Trait vert de marque (#3BB54A) légèrement courbé, façon coup de
  * pinceau, sous la seconde partie du titre. Tracé SVG vectoriel posé en fond
  * du texte avec `box-decoration-break: clone` : quand le titre passe sur
  * plusieurs lignes, chaque ligne reçoit son propre trait, à sa largeur — un
@@ -24,7 +25,7 @@ const ARGUMENT_KEYS = ["free", "noCard", "noInstall"] as const;
  */
 const BRUSH_UNDERLINE_STYLE = {
   backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 16" preserveAspectRatio="none"><path d="M3 11.5C58 4.5 126 2.5 196 5.5c36 1.6 69 4.2 101 7" fill="none" stroke="#10B981" stroke-opacity="0.7" stroke-width="5" stroke-linecap="round"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 16" preserveAspectRatio="none"><path d="M3 11.5C58 4.5 126 2.5 196 5.5c36 1.6 69 4.2 101 7" fill="none" stroke="#3BB54A" stroke-opacity="0.7" stroke-width="5" stroke-linecap="round"/></svg>',
   )}")`,
   backgroundRepeat: "no-repeat",
   backgroundPosition: "0 100%",
@@ -47,19 +48,22 @@ export async function HeroSection() {
     <section className="overflow-x-clip">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:grid-cols-12 lg:gap-10 lg:px-8 lg:pt-20 lg:pb-24">
         <div className="lg:col-span-5">
-          <p className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-brand-subtle px-2.5 py-1 text-xs font-medium text-foreground sm:px-3 sm:text-sm">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-primary" />
-            {t("badge")}
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">V1.1</span>
+            <p className="inline-flex items-center gap-2 rounded-full border border-brand/25 bg-brand-subtle px-2.5 py-1 text-xs font-medium text-foreground sm:px-3 sm:text-sm">
+              <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-brand" />
+              {t("badge")}
+            </p>
+          </div>
 
-          <h1 className="mt-6 text-4xl leading-[1.18] font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="mt-6 text-4xl leading-[1.18] font-bold tracking-tight text-balance text-primary sm:text-5xl lg:text-6xl">
             {t("titleLead")}{" "}
             {/*
-              Partie emerald : toujours sur ses propres lignes (`block`), équilibrée
+              Partie vert foncé : toujours sur ses propres lignes (`block`), équilibrée
               pour elle-même (« sans cahier / ni tableur », jamais un mot isolé) ;
               le soulignement est porté par le texte en ligne, une fois par ligne.
             */}
-            <span className="block text-balance text-primary">
+            <span className="block text-balance text-[#237A32]">
               <span className="box-decoration-clone" style={BRUSH_UNDERLINE_STYLE}>
                 {t("titleAccent")}
               </span>
@@ -71,7 +75,7 @@ export async function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" className="w-full sm:w-auto" render={<Link href="/register" />}>
+            <Button size="lg" className="min-h-12 w-full whitespace-normal px-5 sm:w-auto" render={<Link href="/register" />}>
               {t("ctaPrimary")}
               <ArrowRight aria-hidden="true" />
             </Button>
@@ -96,15 +100,19 @@ export async function HeroSection() {
               </li>
             ))}
           </ul>
+          <SupportLink className="mt-3 text-primary" />
         </div>
 
-        <div className="lg:col-span-7">
+        <figure className="min-w-0 lg:col-span-7">
           <HeroVisual
             alt={t("mediaAlt")}
             duesBubble={t("bubbles.dues")}
             remindersBubble={t("bubbles.reminders")}
           />
-        </div>
+          <figcaption className="mt-8 text-center text-xs leading-relaxed text-muted-foreground">
+            {t("demoNote")}
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

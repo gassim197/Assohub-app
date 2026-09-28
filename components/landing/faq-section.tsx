@@ -7,8 +7,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ScrollReveal } from "./scroll-reveal";
+import { SUPPORT_HREF } from "./support-link";
 
-const FAQ_KEYS = ["gratuite", "securite", "simplicite", "organisations", "paiements"] as const;
+const FAQ_KEYS = ["gratuite", "pilotes", "securite", "simplicite", "organisations", "paiements"] as const;
 
 export async function FaqSection() {
   const t = await getTranslations("landing.faq");
@@ -27,7 +28,11 @@ export async function FaqSection() {
           {FAQ_KEYS.map((key) => (
             <AccordionItem key={key} value={key}>
               <AccordionTrigger>{t(`questions.${key}.question`)}</AccordionTrigger>
-              <AccordionPanel>{t(`questions.${key}.answer`)}</AccordionPanel>
+              <AccordionPanel>
+                {t.rich(`questions.${key}.answer`, {
+                  contact: (chunks) => <a href={SUPPORT_HREF} className="text-primary underline underline-offset-4">{chunks}</a>,
+                })}
+              </AccordionPanel>
             </AccordionItem>
           ))}
         </Accordion>

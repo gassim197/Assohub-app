@@ -24,7 +24,7 @@ interface LegalPageProps {
  */
 export function LegalPage({ title, lastUpdated, sections, showToc = false }: LegalPageProps) {
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="brand-public flex min-h-full flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
