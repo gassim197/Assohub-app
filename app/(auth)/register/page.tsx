@@ -20,6 +20,7 @@ import { AuthDivider } from "@/components/auth/auth-divider";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -101,6 +102,7 @@ export default function RegisterPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">{t("auth.createAccount")}</CardTitle>
+        <CardDescription>{t("auth.registrationSteps")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <GoogleSignInButton callbackURL="/" />

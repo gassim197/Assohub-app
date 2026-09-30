@@ -2,6 +2,22 @@
 
 ## Design System
 
+### Public brand — launch V1.1
+
+The September 2026 communication guide is the reference for the public site.
+The `.brand-public` scope (landing, legal pages, auth layout) uses navy
+`#1A4F7A`, green `#3BB54A`, ink `#172B3A`, muted text `#526371`, and pale
+green `#EAF7EC`. Use navy with white for primary buttons and `#237A32` for
+green text on white; bright green is an accent, not a small-text background
+with white text. The existing authenticated application tokens below remain
+unchanged. `Logo` and `public/brand/*.svg` share the approved two-color logo;
+the dark-background logo is entirely white.
+
+Public text lives in both `messages/fr.json` and `messages/en.json`. Only
+the historical count of 14 pilot associations is established; do not imply
+satisfaction ratings or guarantee old-account/data migration. Route pilot
+return questions to the existing public contact until migration is verified.
+
 ### 9.1 Brand palette
 
 | Token | CSS var | Valeur | Hex |

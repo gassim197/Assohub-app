@@ -12,7 +12,7 @@ const HERO_SIZES = "(min-width: 1152px) 620px, (min-width: 1024px) 55vw, 92vw";
 
 /**
  * Visuel du hero : capture complète du tableau de bord (16:10) dans le cadre
- * fenêtre, posée sur un panneau emerald légèrement décalé (sans rotation, pour
+ * fenêtre, posée sur un panneau vert légèrement décalé (sans rotation, pour
  * ne pas déformer la capture), avec deux bulles de bénéfice en débordement.
  * Chargée en priorité (`preload`) : c'est l'élément LCP de la page.
  */
@@ -29,11 +29,11 @@ export function HeroVisual({
     <div className="relative">
       <div
         aria-hidden="true"
-        className="absolute -inset-10 -z-10 hidden rounded-full bg-primary/10 blur-3xl lg:block"
+        className="absolute -inset-10 -z-10 hidden rounded-full bg-brand/10 blur-3xl lg:block"
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 translate-x-2 translate-y-2 rounded-xl bg-primary/15 ring-1 ring-primary/20 sm:translate-x-4 sm:translate-y-4"
+        className="absolute inset-0 translate-x-2 translate-y-2 rounded-xl bg-brand/15 ring-1 ring-brand/20 sm:translate-x-4 sm:translate-y-4"
       />
       <div className="relative">
         <Screenshot

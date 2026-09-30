@@ -62,9 +62,11 @@ export function DemoVideoDialog({
       {/*
         Largeur plafonnée aussi par la hauteur d'écran (vidéo 16:10 + ≈ 10rem
         de titre, marges et bouton) : sur un écran bas, le bouton d'inscription
-        reste visible sans défiler dans la fenêtre.
+        reste visible sans défiler dans la fenêtre. `brand-public` : la fenêtre
+        est rendue dans un portail, hors du scope de la landing — sans lui, le
+        bouton reprendrait les couleurs de l'application.
       */}
-      <DialogContent className="w-[calc(100%-1rem)] max-w-[min(56rem,calc((90dvh-10rem)*1.6))] gap-4 p-4 sm:w-[calc(100%-2rem)] sm:gap-5 sm:p-6">
+      <DialogContent className="brand-public w-[calc(100%-1rem)] max-w-[min(56rem,calc((90dvh-10rem)*1.6))] gap-4 p-4 sm:w-[calc(100%-2rem)] sm:gap-5 sm:p-6">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

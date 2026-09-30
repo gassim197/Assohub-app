@@ -194,6 +194,26 @@
   --sidebar-ring: oklch(0.696 0.17 162.5);
 }
 
+/* Public-facing palette from AssoHub's September 2026 brand guide.
+   Keep the bright green for decoration; navy buttons and dark-green text
+   retain readable contrast on white, including the button hover state. */
+.brand-public {
+  --background: #ffffff;
+  --foreground: #172b3a;
+  --card: #ffffff;
+  --card-foreground: #172b3a;
+  --primary: #1a4f7a;
+  --primary-foreground: #ffffff;
+  --brand: #3bb54a;
+  --brand-foreground: #172b3a;
+  --brand-subtle: #eaf7ec;
+  --muted: #f5f6f8;
+  --muted-foreground: #526371;
+  --ring: #1a4f7a;
+  --sidebar: #1a4f7a;
+  --sidebar-foreground: #ffffff;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

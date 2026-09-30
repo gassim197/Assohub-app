@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "./scroll-reveal";
+import { SupportLink } from "./support-link";
 
 export async function FinalCtaSection() {
   const t = await getTranslations("landing.finalCta");
@@ -14,12 +15,13 @@ export async function FinalCtaSection() {
         <p className="mt-3 text-base text-sidebar-foreground/80 sm:text-lg">{t("subtitle")}</p>
         <Button
           size="lg"
-          className="mt-8 w-full sm:w-auto"
+          className="mt-8 min-h-12 w-full border-white/30 bg-white px-5 text-primary hover:bg-white/90 sm:w-auto"
           render={<Link href="/register" />}
         >
           {t("cta")}
         </Button>
         <p className="mt-3 text-sm text-sidebar-foreground/70">{t("freeNote")}</p>
+        <SupportLink className="mt-3 text-white" />
       </ScrollReveal>
     </section>
   );
