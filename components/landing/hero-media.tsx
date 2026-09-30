@@ -1,15 +1,7 @@
 import { FeatureBubble } from "./feature-bubble";
-import { Screenshot, ScreenshotFrame } from "./screenshot-frame";
+import { Screenshot } from "./screenshot-frame";
 
 const HERO_POSTER = "/landing/dashboard.png";
-
-/**
- * Emplacement prévu de la vidéo produit : `public/landing/hero.mp4` (non
- * livrée pour l'instant). Une fois le fichier en place, remplacer `null` par
- * "/landing/hero.mp4" suffit : la capture du tableau de bord sert alors de
- * poster.
- */
-const HERO_VIDEO_SRC: string | null = null;
 
 /**
  * Colonne visuel du hero : 7/12 de `max-w-6xl` (≈ 620 px) une fois la
@@ -56,47 +48,5 @@ export function HeroVisual({
       <FeatureBubble text={duesBubble} icon="wallet" position="top-right" />
       <FeatureBubble text={remindersBubble} icon="send" position="bottom-left" />
     </div>
-  );
-}
-
-/**
- * Vidéo muette en boucle dans le même cadre (16:10), avec la capture du
- * tableau de bord en poster. N'est plus utilisée par le hero depuis sa
- * refonte en deux colonnes : conservée pour une future page démo.
- */
-export function HeroMedia({
-  alt,
-  videoSrc = HERO_VIDEO_SRC,
-}: {
-  alt: string;
-  videoSrc?: string | null;
-}) {
-  if (videoSrc) {
-    return (
-      <ScreenshotFrame>
-        <video
-          src={videoSrc}
-          poster={HERO_POSTER}
-          aria-label={alt}
-          className="aspect-[16/10] h-auto w-full"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-      </ScreenshotFrame>
-    );
-  }
-
-  return (
-    <Screenshot
-      src={HERO_POSTER}
-      alt={alt}
-      width={2880}
-      height={1800}
-      sizes={HERO_SIZES}
-      preload
-    />
   );
 }

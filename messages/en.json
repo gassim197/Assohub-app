@@ -1560,7 +1560,11 @@
       "titleAccent": "without notebooks or spreadsheets",
       "subtitle": "Members, contributions, meetings and documents together in one place, designed for associations and NGOs in West Africa.",
       "ctaPrimary": "Create my association for free",
-      "ctaDemo": "Watch the demo",
+      "ctaDemo": "Watch the video · 1 min 30",
+      "video": {
+        "title": "Discover AssoHub in 90 seconds",
+        "label": "AssoHub product video: dashboard, members, contributions, meetings and documents"
+      },
       "args": {
         "free": "Free during launch",
         "noCard": "No credit card required",

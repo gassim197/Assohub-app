@@ -1,16 +1,10 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowRight, CircleCheck, Play } from "lucide-react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { DemoVideoDialog } from "./demo-video-dialog";
 import { HeroVisual } from "./hero-media";
-
-/**
- * Destination du bouton « Voir la démo ». Tant qu'elle n'est pas définie
- * (`null`), le bouton n'est pas affiché — la future page démo accueillera
- * probablement la vidéo (`HeroMedia`).
- */
-const DEMO_HREF: string | null = null;
 
 const ARGUMENT_KEYS = ["free", "noCard", "noInstall"] as const;
 
@@ -70,22 +64,22 @@ export async function HeroSection() {
             {t("subtitle")}
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          {/*
+            `flex-wrap` : la colonne texte (5/12, ≈ 430 px en desktop) ne tient
+            pas les deux boutons côte à côte — le second passe à la ligne au
+            lieu de déborder sous le visuel.
+          */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button size="lg" className="w-full sm:w-auto" render={<Link href="/register" />}>
               {t("ctaPrimary")}
               <ArrowRight aria-hidden="true" />
             </Button>
-            {DEMO_HREF ? (
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto"
-                render={<Link href={DEMO_HREF} />}
-              >
-                <Play aria-hidden="true" />
-                {t("ctaDemo")}
-              </Button>
-            ) : null}
+            <DemoVideoDialog
+              triggerLabel={t("ctaDemo")}
+              title={t("video.title")}
+              videoLabel={t("video.label")}
+              ctaLabel={t("ctaPrimary")}
+            />
           </div>
 
           <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
