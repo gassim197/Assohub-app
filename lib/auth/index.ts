@@ -4,6 +4,7 @@ import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { ensureFounderMember } from "@/lib/members/founder";
+import { notifyNewOrganization } from "@/lib/organizations/notify-new-organization";
 import { sendVerificationEmail as sendVerificationEmailViaResend } from "@/lib/email/verification-email";
 import { sendResetPasswordEmail } from "@/lib/email/reset-password-email";
 
@@ -91,6 +92,9 @@ export const auth = betterAuth({
             organizationId: organization.id,
             user: { id: user.id, name: user.name, email: user.email },
           });
+          // Suivi des inscriptions : email au fondateur d'AssoHub (best-effort,
+          // après la réponse ; inactif si ADMIN_NOTIFICATION_EMAIL est absent).
+          notifyNewOrganization({ organization, user });
         },
       },
     }),
